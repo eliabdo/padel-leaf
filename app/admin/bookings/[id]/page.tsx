@@ -140,6 +140,7 @@ export default async function AdminBookingDetailPage({
       totalCents: schema.bookings.totalCents,
       status: schema.bookings.status,
       notes: schema.bookings.notes,
+      paymentMethod: schema.bookings.paymentMethod,
       createdAt: schema.bookings.createdAt,
       courtName: schema.courts.name,
     })
@@ -165,6 +166,12 @@ export default async function AdminBookingDetailPage({
     { label: "Phone",    value: b.customerPhone },
     { label: "Email",    value: b.customerEmail },
     { label: "Total",    value: formatUsd(b.totalCents) },
+    { label: "Payment",  node: (() => {
+      const pm = b.paymentMethod ?? "venue";
+      if (pm === "whish") return <span style={{ display:"inline-flex", alignItems:"center", gap:6 }}><img src="/whish-icon.png" alt="Whish" style={{ width:20, height:20, borderRadius:"50%", objectFit:"cover" }} /><span style={{ fontFamily:"system-ui,sans-serif", fontSize:13, fontWeight:600, color:"#e8192c" }}>Whish</span></span>;
+      if (pm === "omt")   return <span style={{ display:"inline-flex", alignItems:"center", gap:6 }}><img src="/omt-logo.svg" alt="OMT" style={{ height:18, width:"auto" }} /><span style={{ fontFamily:"system-ui,sans-serif", fontSize:13, fontWeight:600, color:"#92400e" }}>OMT Pay</span></span>;
+      return <span style={{ fontFamily:"system-ui,sans-serif", fontSize:13, color:"#374151" }}>💵 Pay at Venue</span>;
+    })() },
     { label: "Created",  value: new Date(b.createdAt).toLocaleString() },
     ...(b.notes ? [{ label: "Notes", value: b.notes }] : []),
   ];

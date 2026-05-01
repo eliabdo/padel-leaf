@@ -24,6 +24,7 @@ const Schema = z.object({
   customerName:  z.string().min(1).max(120),
   customerEmail: z.string().email().max(200),
   customerPhone: z.string().min(4).max(40),
+  paymentMethod: z.enum(["venue", "whish", "omt"]).default("venue"),
 });
 
 export async function POST(req: NextRequest) {
@@ -39,7 +40,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Invalid input" }, { status: 400 });
   }
 
-  const { courtId, startsAtIso, durationMinutes, customerName, customerEmail, customerPhone } = parsed.data;
+  const { courtId, startsAtIso, durationMinutes, customerName, customerEmail, customerPhone, paymentMethod } = parsed.data;
   const startsAt = new Date(startsAtIso);
   const endsAt = new Date(startsAt.getTime() + durationMinutes * 60 * 1000);
 
@@ -95,6 +96,7 @@ export async function POST(req: NextRequest) {
         durationMinutes,
         totalCents,
         status: "confirmed",
+        paymentMethod,
       })
       .returning({ id: schema.bookings.id });
 

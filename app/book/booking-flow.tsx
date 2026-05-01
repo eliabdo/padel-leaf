@@ -275,7 +275,7 @@ export function BookingFlow({
                 }`}
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/whish-logo.svg" alt="Whish" className="h-5 w-auto" />
+                <img src="/whish-icon.png" alt="Whish" className="h-7 w-7 rounded-full object-cover" />
               </button>
 
               {/* OMT Pay */}
