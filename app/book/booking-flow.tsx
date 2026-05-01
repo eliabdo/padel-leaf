@@ -98,7 +98,7 @@ export function BookingFlow({
   }
 
   return (
-    <div className="space-y-10">
+    <div className="space-y-8">
       {/* DATE STRIP */}
       <div>
         <Label>Date</Label>
@@ -130,7 +130,7 @@ export function BookingFlow({
       {/* DURATION */}
       <div>
         <Label>Duration</Label>
-        <div className="flex gap-2">
+        <div className="flex gap-2 flex-wrap">
           {ALLOWED_DURATIONS.map((m) => (
             <button
               key={m}
@@ -229,13 +229,13 @@ export function BookingFlow({
 
       {/* TOTAL + CONFIRM — only shown after a slot is picked */}
       {selectedSlotIso && (
-        <div className="bg-sage-soft rounded-2xl p-8">
-          <div className="flex flex-wrap items-baseline justify-between gap-4 mb-6">
+        <div className="bg-sage-soft rounded-2xl p-5 sm:p-8">
+          <div className="flex flex-wrap items-start justify-between gap-3 mb-5">
             <div>
               <div className="text-xs uppercase tracking-[0.18em] text-forest font-semibold mb-1">
                 Total
               </div>
-              <div className="font-serif text-4xl text-forest-deep">
+              <div className="font-serif text-3xl sm:text-4xl text-forest-deep">
                 {formatUsd(totalCents)}
               </div>
               <div className="text-sm text-char-soft mt-1">
@@ -249,12 +249,12 @@ export function BookingFlow({
             <div className="text-xs uppercase tracking-[0.18em] text-forest font-semibold mb-3">
               Payment Method
             </div>
-            <div className="flex gap-3 flex-wrap">
+            <div className="grid grid-cols-1 sm:flex sm:flex-wrap gap-3">
               {/* Pay at Venue */}
               <button
                 type="button"
                 onClick={() => setPaymentMethod("venue")}
-                className={`flex items-center gap-2 px-4 py-3 rounded-xl border text-sm font-medium transition ${
+                className={`flex items-center justify-center gap-2 px-4 py-3 rounded-xl border text-sm font-medium transition w-full sm:w-auto ${
                   paymentMethod === "venue"
                     ? "bg-forest text-cream border-forest shadow-sm"
                     : "bg-cream text-charcoal border-forest/15 hover:border-forest/40"
@@ -268,9 +268,9 @@ export function BookingFlow({
               <button
                 type="button"
                 onClick={() => setPaymentMethod("whish")}
-                className={`flex items-center justify-center px-5 py-3 rounded-xl border transition ${
+                className={`flex items-center justify-center px-5 py-3 rounded-xl border transition w-full sm:w-auto ${
                   paymentMethod === "whish"
-                    ? "bg-white border-[#e8192c] shadow-sm ring-1 ring-[#e8192c]/30"
+                    ? "bg-[#e8192c] border-[#e8192c] shadow-sm"
                     : "bg-cream border-forest/15 hover:border-[#e8192c]/40"
                 }`}
               >
@@ -282,7 +282,7 @@ export function BookingFlow({
               <button
                 type="button"
                 onClick={() => setPaymentMethod("omt")}
-                className={`flex items-center justify-center px-5 py-3 rounded-xl border transition ${
+                className={`flex items-center justify-center px-5 py-3 rounded-xl border transition w-full sm:w-auto ${
                   paymentMethod === "omt"
                     ? "bg-[#fede00] border-[#fede00] shadow-sm ring-1 ring-[#fede00]/60"
                     : "bg-cream border-forest/15 hover:border-[#fede00]/60"
@@ -306,7 +306,7 @@ export function BookingFlow({
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="grid sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <Field name="name"  label="Name"  type="text"  required />
               <Field name="phone" label="Phone" type="tel"   required />
             </div>
@@ -315,7 +315,7 @@ export function BookingFlow({
             <button
               type="submit"
               disabled={submitting}
-              className="btn btn-primary w-full justify-center disabled:opacity-50"
+              className="btn btn-primary w-full justify-center disabled:opacity-50 py-4 text-base"
             >
               {submitting ? "Confirming…" : "Confirm reservation →"}
             </button>

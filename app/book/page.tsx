@@ -65,12 +65,12 @@ export default async function BookPage() {
     <>
       <SiteNav />
 
-      <header className="bg-forest text-cream py-16">
-        <div className="max-w-6xl mx-auto px-6">
+      <header className="bg-forest text-cream py-10 sm:py-16">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6">
           <div className="text-xs font-semibold tracking-[0.18em] uppercase text-sage mb-4">
             — Reserve
           </div>
-          <h1 className="text-4xl md:text-5xl mb-3">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl mb-3">
             Pick a date, court, <em className="italic font-medium text-sage">and play.</em>
           </h1>
           <p className="text-cream/75 max-w-md">
@@ -79,7 +79,7 @@ export default async function BookPage() {
         </div>
       </header>
 
-      <section className="max-w-6xl mx-auto px-6 py-12">
+      <section className="max-w-6xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
         <BookingFlow
           courts={courts}
           hourlyRateCents={hourlyRateCents}
