@@ -10,11 +10,13 @@ function ActionBtn({
   id,
   label,
   danger,
+  style: styleOverride,
 }: {
   action: Action;
   id: number;
   label: string;
   danger?: boolean;
+  style?: React.CSSProperties;
 }) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
@@ -32,8 +34,9 @@ function ActionBtn({
     });
   }
 
+  const finalStyle = styleOverride ? { ...style, ...styleOverride } : style;
   return (
-    <button type="button" disabled={pending} onClick={handleClick} style={style}>
+    <button type="button" disabled={pending} onClick={handleClick} style={finalStyle}>
       {pending ? "…" : label}
     </button>
   );
@@ -46,6 +49,9 @@ export default function StatusActions({
   deleteBooking,
   markCompleted,
   markNoShow,
+  markPaymentReceived,
+  paymentMethod,
+  paymentReceivedAt,
 }: {
   status: string;
   id: number;
@@ -53,9 +59,23 @@ export default function StatusActions({
   deleteBooking: Action;
   markCompleted: Action;
   markNoShow: Action;
+  markPaymentReceived: Action;
+  paymentMethod: string;
+  paymentReceivedAt: string | null;
 }) {
+  const needsPayment = (paymentMethod === "whish" || paymentMethod === "omt") && !paymentReceivedAt;
+  const payLabel = paymentMethod === "whish" ? "💳 Whish Payment Received" : "💳 OMT Payment Received";
+
   return (
     <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
+      {status === "confirmed" && needsPayment && (
+        <ActionBtn
+          action={markPaymentReceived}
+          id={id}
+          label={payLabel}
+          style={{ background: paymentMethod === "whish" ? "#e8192c" : "#fede00", color: paymentMethod === "whish" ? "#fff" : "#1a1a1a", border: "none", boxShadow: paymentMethod === "whish" ? "0 2px 6px rgba(232,25,44,0.30)" : "0 2px 6px rgba(254,222,0,0.40)" }}
+        />
+      )}
       {status === "confirmed" && (
         <>
           <ActionBtn action={markCompleted} id={id} label="Mark completed" />

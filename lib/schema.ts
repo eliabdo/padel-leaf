@@ -44,6 +44,7 @@ export const bookings = pgTable("bookings", {
   readAt: timestamp("read_at", { withTimezone: true }),
   cancelledAt: timestamp("cancelled_at", { withTimezone: true }),
   paymentMethod: text("payment_method").notNull().default("venue"), // venue | whish | omt
+  paymentReceivedAt: timestamp("payment_received_at", { withTimezone: true }),
 });
 
 /**

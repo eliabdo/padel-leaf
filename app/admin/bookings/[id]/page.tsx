@@ -47,6 +47,13 @@ async function markNoShow(formData: FormData): Promise<void> {
   await db.update(schema.bookings).set({ status: "no_show" }).where(eq(schema.bookings.id, id));
   redirect(`/admin/bookings/${id}`);
 }
+async function markPaymentReceived(formData: FormData): Promise<void> {
+  "use server";
+  const id = Number(formData.get("id"));
+  if (!Number.isInteger(id)) return;
+  await db.update(schema.bookings).set({ paymentReceivedAt: new Date() }).where(eq(schema.bookings.id, id));
+  redirect(`/admin/bookings/${id}`);
+}
 async function updateBooking(formData: FormData): Promise<void> {
   "use server";
   const id            = Number(formData.get("id"));
@@ -141,6 +148,7 @@ export default async function AdminBookingDetailPage({
       status: schema.bookings.status,
       notes: schema.bookings.notes,
       paymentMethod: schema.bookings.paymentMethod,
+      paymentReceivedAt: schema.bookings.paymentReceivedAt,
       createdAt: schema.bookings.createdAt,
       courtName: schema.courts.name,
     })
@@ -172,6 +180,12 @@ export default async function AdminBookingDetailPage({
       if (pm === "omt")   return <span style={{ display:"inline-flex", alignItems:"center", gap:6 }}><img src="/omt-logo.svg" alt="OMT" style={{ height:18, width:"auto" }} /><span style={{ fontFamily:"system-ui,sans-serif", fontSize:13, fontWeight:600, color:"#92400e" }}>OMT Pay</span></span>;
       return <span style={{ fontFamily:"system-ui,sans-serif", fontSize:13, color:"#374151" }}>💵 Pay at Venue</span>;
     })() },
+    ...((b.paymentMethod === "whish" || b.paymentMethod === "omt") ? [{
+      label: "Payment Status",
+      node: b.paymentReceivedAt
+        ? <span style={{ display:"inline-flex", alignItems:"center", gap:6, fontFamily:"system-ui,sans-serif", fontSize:13, fontWeight:600, color:"#15803d", background:"rgba(22,163,74,0.10)", border:"1px solid rgba(22,163,74,0.22)", borderRadius:20, padding:"3px 12px" }}>✓ Received</span>
+        : <span style={{ display:"inline-flex", alignItems:"center", gap:6, fontFamily:"system-ui,sans-serif", fontSize:13, fontWeight:500, color:"#b45309", background:"rgba(217,119,6,0.09)", border:"1px solid rgba(217,119,6,0.22)", borderRadius:20, padding:"3px 12px" }}>⏳ Pending</span>,
+    }] : []),
     { label: "Created",  value: new Date(b.createdAt).toLocaleString() },
     ...(b.notes ? [{ label: "Notes", value: b.notes }] : []),
   ];
@@ -219,6 +233,9 @@ export default async function AdminBookingDetailPage({
           deleteBooking={deleteBooking}
           markCompleted={markCompleted}
           markNoShow={markNoShow}
+          markPaymentReceived={markPaymentReceived}
+          paymentMethod={b.paymentMethod ?? "venue"}
+          paymentReceivedAt={b.paymentReceivedAt ? String(b.paymentReceivedAt) : null}
         />
       </div>
 

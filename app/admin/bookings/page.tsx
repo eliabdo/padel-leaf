@@ -1,4 +1,5 @@
 import Link from "next/link";
+import BookingsSearch from "./bookings-search";
 import { db, schema } from "@/lib/db";
 import { eq, desc, ne, inArray } from "drizzle-orm";
 import { formatTime, formatDateLong } from "@/lib/booking";
@@ -39,10 +40,11 @@ const tabAccent: Record<TabKey, string> = {
 export default async function AdminBookingsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ status?: string }>;
+  searchParams: Promise<{ status?: string; q?: string }>;
 }) {
   const sp        = await searchParams;
   const rawStatus = sp.status ?? "all";
+  const searchQ   = (sp.q ?? "").trim().toLowerCase();
   const activeTab: TabKey = (TABS.some(t => t.key === rawStatus) ? rawStatus : "all") as TabKey;
 
   // Fetch all so we can show per-tab counts without extra queries
@@ -56,6 +58,8 @@ export default async function AdminBookingsPage({
       endsAt:        schema.bookings.endsAt,
       totalCents:    schema.bookings.totalCents,
       status:        schema.bookings.status,
+      paymentMethod: schema.bookings.paymentMethod,
+      paymentReceivedAt: schema.bookings.paymentReceivedAt,
       courtName:     schema.courts.name,
     })
     .from(schema.bookings)
@@ -71,7 +75,10 @@ export default async function AdminBookingsPage({
     no_show:   allRows.filter(r => r.status === "no_show").length,
   };
 
-  const rows = activeTab === "all" ? allRows : allRows.filter(r => r.status === activeTab);
+  const byTab   = activeTab === "all" ? allRows : allRows.filter(r => r.status === activeTab);
+  const rows = searchQ
+    ? byTab.filter(r => r.customerName.toLowerCase().includes(searchQ))
+    : byTab;
 
   const accent = tabAccent[activeTab];
 
@@ -84,9 +91,12 @@ export default async function AdminBookingsPage({
           <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.10em", textTransform: "uppercase", color: "#16a34a", marginBottom: 6, fontFamily: "system-ui, sans-serif" }}>Admin</div>
           <h1 style={{ fontFamily: "system-ui, sans-serif", fontSize: 26, fontWeight: 700, color: "#0d2010", margin: 0 }}>Bookings</h1>
         </div>
-        <Link href="/admin/bookings/new" style={{ fontFamily: "system-ui, sans-serif", fontSize: 13, fontWeight: 600, color: "#fff", background: "#16a34a", borderRadius: 9, padding: "10px 22px", textDecoration: "none", boxShadow: "0 2px 8px rgba(22,163,74,0.30)" }}>
-          + Add booking
-        </Link>
+        <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
+          <BookingsSearch status={activeTab} />
+          <Link href="/admin/bookings/new" style={{ fontFamily: "system-ui, sans-serif", fontSize: 13, fontWeight: 600, color: "#fff", background: "#16a34a", borderRadius: 9, padding: "10px 22px", textDecoration: "none", boxShadow: "0 2px 8px rgba(22,163,74,0.30)" }}>
+            + Add booking
+          </Link>
+        </div>
       </div>
 
       {/* Status tabs */}
@@ -130,14 +140,14 @@ export default async function AdminBookingsPage({
           <table style={{ width: "100%", borderCollapse: "collapse", minWidth: 820 }}>
             <thead>
               <tr style={{ borderBottom: "1px solid rgba(22,163,74,0.10)", background: "#fafdfb" }}>
-                {["When", "Court", "Customer", "Contact", "Total", "Status", ""].map((h, i) => (
+                {["When", "Court", "Customer", "Contact", "Total", "Payment", "Status", ""].map((h, i) => (
                   <th key={i} style={{ padding: "11px 16px", textAlign: "left", fontFamily: "system-ui, sans-serif", fontSize: 11, fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase", color: "#9ca3af" }}>{h}</th>
                 ))}
               </tr>
             </thead>
             <tbody>
               {rows.length === 0 && (
-                <tr><td colSpan={7} style={{ padding: "52px 24px", textAlign: "center", color: "#9ca3af", fontFamily: "system-ui, sans-serif" }}>
+                <tr><td colSpan={8} style={{ padding: "52px 24px", textAlign: "center", color: "#9ca3af", fontFamily: "system-ui, sans-serif" }}>
                   No {activeTab === "all" ? "" : TABS.find(t => t.key === activeTab)?.label.toLowerCase() + " "}bookings yet.
                 </td></tr>
               )}
@@ -160,6 +170,33 @@ export default async function AdminBookingsPage({
                       <div style={{ fontFamily: "system-ui, sans-serif", fontSize: 11, color: "#9ca3af", marginTop: 2 }}>{b.customerEmail}</div>
                     </td>
                     <td style={{ padding: "13px 16px", fontFamily: "ui-monospace,'SF Mono',monospace", fontSize: 13, fontWeight: 600, color: "#111827", verticalAlign: "top" }}>{formatUsd(b.totalCents)}</td>
+                    <td style={{ padding: "13px 16px", verticalAlign: "top" }}>
+                      {b.paymentMethod === "whish" ? (
+                        <div style={{ display: "inline-flex", flexDirection: "column", alignItems: "flex-start", gap: 4 }}>
+                          <span style={{ display: "inline-flex", alignItems: "center", gap: 5 }}>
+                            <img src="/whish-icon.png" alt="Whish" style={{ width: 18, height: 18, borderRadius: "50%", objectFit: "cover" }} />
+                            <span style={{ fontFamily: "system-ui, sans-serif", fontSize: 12, fontWeight: 600, color: "#e8192c" }}>Whish</span>
+                          </span>
+                          {b.paymentReceivedAt
+                            ? <span style={{ fontSize: 10, fontWeight: 600, color: "#15803d", background: "rgba(22,163,74,0.10)", border: "1px solid rgba(22,163,74,0.22)", borderRadius: 10, padding: "1px 7px" }}>✓ Received</span>
+                            : <span style={{ fontSize: 10, fontWeight: 600, color: "#b45309", background: "rgba(217,119,6,0.09)", border: "1px solid rgba(217,119,6,0.22)", borderRadius: 10, padding: "1px 7px" }}>⏳ Pending</span>
+                          }
+                        </div>
+                      ) : b.paymentMethod === "omt" ? (
+                        <div style={{ display: "inline-flex", flexDirection: "column", alignItems: "flex-start", gap: 4 }}>
+                          <span style={{ display: "inline-flex", alignItems: "center", gap: 5 }}>
+                            <img src="/omt-logo.svg" alt="OMT" style={{ height: 16, width: "auto" }} />
+                            <span style={{ fontFamily: "system-ui, sans-serif", fontSize: 12, fontWeight: 600, color: "#92400e" }}>OMT Pay</span>
+                          </span>
+                          {b.paymentReceivedAt
+                            ? <span style={{ fontSize: 10, fontWeight: 600, color: "#15803d", background: "rgba(22,163,74,0.10)", border: "1px solid rgba(22,163,74,0.22)", borderRadius: 10, padding: "1px 7px" }}>✓ Received</span>
+                            : <span style={{ fontSize: 10, fontWeight: 600, color: "#b45309", background: "rgba(217,119,6,0.09)", border: "1px solid rgba(217,119,6,0.22)", borderRadius: 10, padding: "1px 7px" }}>⏳ Pending</span>
+                          }
+                        </div>
+                      ) : (
+                        <span style={{ fontFamily: "system-ui, sans-serif", fontSize: 12, color: "#6b7280" }}>💵 Venue</span>
+                      )}
+                    </td>
                     <td style={{ padding: "13px 16px", verticalAlign: "top" }}>
                       <span style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.04em", textTransform: "uppercase", padding: "3px 10px", borderRadius: 20, fontFamily: "system-ui, sans-serif", ...statusBadge(b.status) }}>
                         {b.status === "no_show" ? "No-show" : b.status}
