@@ -7,7 +7,13 @@ export const dynamic = "force-dynamic";
 async function loginAction(formData: FormData): Promise<void> {
   "use server";
   const password = String(formData.get("password") ?? "");
+  // #region agent log
+  fetch("http://127.0.0.1:7589/ingest/dca80672-932e-4ef8-bfcb-5f2627301044",{method:"POST",headers:{"Content-Type":"application/json","X-Debug-Session-Id":"e69d34"},body:JSON.stringify({sessionId:"e69d34",runId:"admin-login-debug-1",hypothesisId:"H3",location:"app/admin/login/page.tsx:10",message:"loginAction form payload",data:{passwordLength:password.length,passwordTrimmedLength:password.trim().length},timestamp:Date.now()})}).catch(()=>{});
+  // #endregion
   const ok = await verifyAdminPassword(password);
+  // #region agent log
+  fetch("http://127.0.0.1:7589/ingest/dca80672-932e-4ef8-bfcb-5f2627301044",{method:"POST",headers:{"Content-Type":"application/json","X-Debug-Session-Id":"e69d34"},body:JSON.stringify({sessionId:"e69d34",runId:"admin-login-debug-1",hypothesisId:"H4",location:"app/admin/login/page.tsx:14",message:"loginAction verify result",data:{ok},timestamp:Date.now()})}).catch(()=>{});
+  // #endregion
   if (!ok) {
     redirect("/admin/login?e=1");
   }
