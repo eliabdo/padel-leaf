@@ -61,7 +61,7 @@ export default async function AdminBlockOutsPage() {
           <div style={{ fontFamily: "system-ui, sans-serif", fontSize: 14, fontWeight: 700, color: "#0d2010" }}>New block-out</div>
         </div>
         <div style={{ padding: "24px", display: "flex", flexDirection: "column", gap: 18 }}>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+          <div className="admin-form-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
             <div>
               <label style={labelStyle}>Court</label>
               <select name="courtId" required style={{ ...inputStyle, cursor: "pointer" }}>
@@ -73,7 +73,7 @@ export default async function AdminBlockOutsPage() {
               <input name="reason" placeholder="Maintenance / Rain / Tournament" style={inputStyle} />
             </div>
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+          <div className="admin-form-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
             <div>
               <label style={labelStyle}>Starts at</label>
               <input name="startsAt" type="datetime-local" required style={{ ...inputStyle, colorScheme: "light" }} />

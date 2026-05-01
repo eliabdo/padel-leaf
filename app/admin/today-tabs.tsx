@@ -64,7 +64,7 @@ export default function TodayTabs({ upcoming, completed, cancelled }: Props) {
     <div style={{ background: "#fff", border: "1px solid rgba(22,163,74,0.12)", borderRadius: 14, overflow: "hidden", boxShadow: "0 1px 3px rgba(0,0,0,0.04), 0 4px 16px rgba(0,0,0,0.03)" }}>
 
       {/* Tab bar */}
-      <div style={{ display: "flex", alignItems: "stretch", borderBottom: "1px solid rgba(22,163,74,0.10)", padding: "0 4px", background: "#fafdfb" }}>
+      <div className="admin-tabs-bar" style={{ display: "flex", alignItems: "stretch", borderBottom: "1px solid rgba(22,163,74,0.10)", padding: "0 4px", background: "#fafdfb" }}>
         {TABS.map(t => {
           const isActive = t.id === active;
           return (

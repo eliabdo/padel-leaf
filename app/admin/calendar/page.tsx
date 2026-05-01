@@ -475,6 +475,7 @@ function MonthView({
   todayKey: string;
 }) {
   const dayLabels = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+  const MAX_PILLS = 3;
 
   return (
     <div className="rounded-2xl overflow-hidden"
@@ -483,8 +484,8 @@ function MonthView({
       {/* Day-of-week header */}
       <div className="grid grid-cols-7" style={{ borderBottom: `1px solid ${D.border}`, background: D.header }}>
         {dayLabels.map(label => (
-          <div key={label} className="py-3 text-center">
-            <span className="text-[10px] font-mono uppercase tracking-[0.2em]" style={{ color: D.dim }}>{label}</span>
+          <div key={label} className="py-4 text-center">
+            <span className="text-[11px] font-mono font-bold uppercase tracking-[0.18em]" style={{ color: D.mid }}>{label}</span>
           </div>
         ))}
       </div>
@@ -498,44 +499,75 @@ function MonthView({
           const confirmed = dayBk.filter(b => b.status !== "cancelled");
           const isLastRow = idx >= cells.length - 7;
 
+          const allPills  = confirmed.slice().sort((a, b) => new Date(a.startsAt).getTime() - new Date(b.startsAt).getTime());
+          const visible   = allPills.slice(0, MAX_PILLS);
+          const overflow  = allPills.length - MAX_PILLS;
+
           return (
-            <Link key={key} href={`/admin/calendar?view=day&date=${key}`}
-              className="relative min-h-[96px] p-2 transition-all hover:bg-green-50"
+            <div key={key} className="relative flex flex-col"
               style={{
+                minHeight: 140,
                 borderRight:  (idx % 7) < 6 ? `1px solid ${D.border}` : undefined,
                 borderBottom: !isLastRow ? `1px solid ${D.border}` : undefined,
                 background:   isToday ? "rgba(22,163,74,0.05)" : D.panel,
                 ...(isToday ? { boxShadow: `inset 0 0 0 1.5px rgba(22,163,74,0.35)` } : {}),
               }}>
 
-              {/* Date number */}
-              <div className={`text-[12px] font-mono font-bold mb-1.5 w-6 h-6 flex items-center justify-center rounded-full`}
-                style={{
-                  color: isToday ? "#16a34a" : inMonth ? D.soft : D.dim,
-                  background: isToday ? "rgba(22,163,74,0.12)" : "transparent",
-                }}>
-                {d}
-              </div>
+              {/* Date number — links to day view */}
+              <Link href={`/admin/calendar?view=day&date=${key}`}
+                className="flex items-center justify-between px-3 pt-3 pb-1.5 hover:opacity-75 transition-opacity">
+                <div className="flex items-center justify-center rounded-full"
+                  style={{
+                    width: 28, height: 28,
+                    fontFamily: "system-ui, sans-serif", fontSize: 14, fontWeight: 700,
+                    color: isToday ? "#fff" : inMonth ? D.soft : D.dim,
+                    background: isToday ? "#16a34a" : "transparent",
+                  }}>
+                  {d}
+                </div>
+                {confirmed.length > 0 && (
+                  <span style={{ fontFamily: "system-ui, sans-serif", fontSize: 10, fontWeight: 600, color: D.dim }}>
+                    {confirmed.length} bk
+                  </span>
+                )}
+              </Link>
 
-              {/* Booking pills */}
-              <div className="flex flex-col gap-0.5">
-                {courts.map(court => {
-                  const n = NEON[court.name as CourtName] ?? NEON.Laurel;
-                  const courtBk = confirmed.filter(b => b.courtId === court.id);
-                  if (courtBk.length === 0) return null;
+              {/* Booking pills — each links to its booking detail */}
+              <div className="flex flex-col gap-1 px-2 pb-2">
+                {visible.map(bk => {
+                  const court = courts.find(c => c.id === bk.courtId);
+                  const n = NEON[(court?.name ?? "Laurel") as CourtName];
                   return (
-                    <div key={court.id} className="flex items-center gap-1 rounded px-1.5 py-0.5 overflow-hidden"
+                    <Link key={bk.id} href={`/admin/bookings/${bk.id}`}
+                      className="flex items-center gap-1.5 rounded-md px-2 py-1 overflow-hidden transition-all hover:brightness-95"
                       style={{ background: n.bg, border: `1px solid ${n.b}` }}>
-                      <div className="w-1 h-1 rounded-full flex-shrink-0"
-                        style={{ background: n.c, boxShadow: `0 0 4px ${n.c}` }} />
-                      <span className="text-[9px] font-mono truncate" style={{ color: n.c }}>
-                        {courtBk.length > 1 ? `${court.name} ×${courtBk.length}` : courtBk[0].customerName}
-                      </span>
-                    </div>
+                      <div className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: n.c }} />
+                      <div className="flex flex-col min-w-0">
+                        <span className="text-[11px] font-semibold truncate leading-tight"
+                          style={{ color: n.c, fontFamily: "system-ui, sans-serif" }}>
+                          {bk.customerName}
+                        </span>
+                        <span className="text-[10px] truncate leading-tight"
+                          style={{ color: D.mid, fontFamily: "ui-monospace, monospace" }}>
+                          {fmtBeirut(new Date(bk.startsAt))} · {court?.name ?? ""}
+                        </span>
+                      </div>
+                    </Link>
                   );
                 })}
+                {overflow > 0 && (
+                  <Link href={`/admin/calendar?view=day&date=${key}`}
+                    className="rounded-md px-2 py-0.5 text-center transition-all hover:brightness-95"
+                    style={{
+                      fontFamily: "system-ui, sans-serif", fontSize: 10, fontWeight: 600,
+                      color: D.mid, background: "rgba(107,114,128,0.08)",
+                      border: "1px solid rgba(107,114,128,0.15)",
+                    }}>
+                    +{overflow} more
+                  </Link>
+                )}
               </div>
-            </Link>
+            </div>
           );
         })}
       </div>

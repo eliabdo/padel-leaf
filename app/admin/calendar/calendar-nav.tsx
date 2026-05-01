@@ -27,7 +27,6 @@ function shiftMonth(key: string, months: number): string {
   const date = new Date(y, m - 1 + months, 1);
   return fmtKey(date.getFullYear(), date.getMonth() + 1, 1);
 }
-
 export default function CalendarNav({ dateKey, todayKey, view }: Props) {
   const router = useRouter();
   const go = (date: string, v: CalView = view) => router.push(`/admin/calendar?view=${v}&date=${date}`);
@@ -45,7 +44,6 @@ export default function CalendarNav({ dateKey, todayKey, view }: Props) {
 
   const isToday = dateKey === todayKey;
 
-  // ── Styles ──────────────────────────────────────────────────────────────────
   const base: React.CSSProperties = {
     fontFamily: "system-ui, sans-serif", fontSize: 12, fontWeight: 500,
     padding: "7px 14px", borderRadius: 8, cursor: "pointer",
@@ -67,8 +65,6 @@ export default function CalendarNav({ dateKey, todayKey, view }: Props) {
 
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
-
-      {/* View switcher */}
       <div style={{ display: "flex", gap: 2, padding: "3px", borderRadius: 10, background: "#f3f4f6", border: "1px solid #e5e7eb" }}>
         {(["day", "week", "month"] as CalView[]).map(v => (
           <button key={v} onClick={() => go(dateKey, v)} style={view === v ? active : base}>
@@ -76,11 +72,7 @@ export default function CalendarNav({ dateKey, todayKey, view }: Props) {
           </button>
         ))}
       </div>
-
-      {/* Divider */}
       <div style={{ width: 1, height: 26, background: "#e5e7eb", flexShrink: 0 }} />
-
-      {/* Navigation */}
       <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
         <button onClick={prev} style={arrow} aria-label="Previous">← Prev</button>
         {!isToday && (

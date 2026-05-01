@@ -83,7 +83,7 @@ export default async function AdminNewBookingPage({
 
         <div><label style={labelStyle}>Customer name</label><input name="customerName" type="text" required style={inputStyle} /></div>
 
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+        <div className="admin-form-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
           <div><label style={labelStyle}>Phone</label><input name="customerPhone" type="tel" required style={inputStyle} /></div>
           <div><label style={labelStyle}>Email</label><input name="customerEmail" type="email" required style={inputStyle} /></div>
         </div>
@@ -95,7 +95,7 @@ export default async function AdminNewBookingPage({
           </select>
         </div>
 
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+        <div className="admin-form-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
           <div>
             <label style={labelStyle}>Starts at</label>
             <input name="startsAt" type="datetime-local" required defaultValue={params.startsAt ?? ""} style={{ ...inputStyle, colorScheme: "light", ...(hasOverlap ? { borderColor: "rgba(220,38,38,0.40)" } : {}) }} />
