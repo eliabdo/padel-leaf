@@ -10,8 +10,17 @@ import {
   generateSlotStarts,
   rangesOverlap,
 } from "@/lib/booking";
+import type { Metadata } from "next";
 
-export const metadata = { title: "Reserve a court" };
+export const metadata: Metadata = {
+  title: "Reserve a Court",
+  description: "Book an outdoor padel court in Mezher, Bsalim online. Choose your date, court, and duration — pay at the venue. 3 courts, 30-min slots, easy cancellation.",
+  openGraph: {
+    title: "Reserve a Padel Court · Padel Leaf",
+    description: "Book online in seconds. Three outdoor courts in Mezher, Bsalim — pay at the venue.",
+  },
+};
+
 export const dynamic = "force-dynamic";
 
 export default async function BookPage() {

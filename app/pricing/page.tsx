@@ -3,7 +3,17 @@ import { SiteNav } from "../components/site-nav";
 import { SiteFooter } from "../components/site-footer";
 import { SectionHeader } from "../components/section-header";
 
-export const metadata = { title: "Pricing" };
+import type { Metadata } from "next";
+export const metadata: Metadata = {
+  title: "Pricing",
+  description: "Transparent padel court pricing at Padel Leaf. Hourly rate, pay at the venue. No hidden fees, no membership required.",
+  openGraph: {
+    title: "Court Pricing · Padel Leaf",
+    description: "Simple hourly pricing. Pay at the venue — no hidden fees, no membership required.",
+  },
+};
+
+
 
 export default function PricingPage() {
   return (

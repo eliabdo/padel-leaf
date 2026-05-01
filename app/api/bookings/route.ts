@@ -27,6 +27,17 @@ const Schema = z.object({
   paymentMethod: z.enum(["venue", "whish", "omt"]).default("venue"),
 });
 
+
+const CORS = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type",
+};
+
+export async function OPTIONS() {
+  return new Response(null, { status: 204, headers: CORS });
+}
+
 export async function POST(req: NextRequest) {
   let raw: unknown;
   try {
@@ -100,16 +111,16 @@ export async function POST(req: NextRequest) {
       })
       .returning({ id: schema.bookings.id });
 
-    return NextResponse.json({ id: created.id }, { status: 201 });
+    return NextResponse.json({ id: created.id }, { status: 201, headers: CORS });
   } catch (err) {
     // The EXCLUDE constraint will throw on race-condition double-bookings
     if (err instanceof Error && /no_overlap/.test(err.message)) {
       return NextResponse.json(
         { error: "That slot just got booked. Pick another." },
-        { status: 409 },
+        { status: 409, headers: CORS },
       );
     }
     console.error("Booking insert failed", err);
-    return NextResponse.json({ error: "Something went wrong" }, { status: 500 });
+    return NextResponse.json({ error: "Something went wrong" }, { status: 500, headers: CORS });
   }
 }

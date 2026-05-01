@@ -1,0 +1,23 @@
+{
+  "expo": {
+    "name": "Padel Leaf",
+    "slug": "padel-leaf",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "backgroundColor": "#1a3d2b"
+    },
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.padelleaf.app"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#1a3d2b"
+      },
+      "package": "com.padelleaf.app"
+    }
+  }
+}

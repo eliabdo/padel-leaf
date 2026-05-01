@@ -10,17 +10,28 @@ import {
 } from "@/lib/booking";
 import { asc } from "drizzle-orm";
 
+
+const CORS = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "GET, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type",
+};
+
+export async function OPTIONS() {
+  return new Response(null, { status: 204, headers: CORS });
+}
+
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const dateKey = searchParams.get("date") ?? "";
   const durationStr = searchParams.get("duration") ?? "90";
 
   if (!/^\d{4}-\d{2}-\d{2}$/.test(dateKey)) {
-    return NextResponse.json({ error: "Invalid date" }, { status: 400 });
+    return NextResponse.json({ error: "Invalid date" }, { status: 400, headers: CORS });
   }
   const duration = Number(durationStr);
   if (!ALLOWED_DURATIONS.includes(duration as 60 | 90 | 120)) {
-    return NextResponse.json({ error: "Invalid duration" }, { status: 400 });
+    return NextResponse.json({ error: "Invalid duration" }, { status: 400, headers: CORS });
   }
 
   const dayStart = parseDateKey(dateKey);
@@ -78,5 +89,5 @@ export async function GET(req: NextRequest) {
     }),
   };
 
-  return NextResponse.json(result);
+  return NextResponse.json(result, { headers: CORS });
 }

@@ -2,7 +2,17 @@ import { SiteNav } from "../components/site-nav";
 import { SiteFooter } from "../components/site-footer";
 import { SectionHeader } from "../components/section-header";
 
-export const metadata = { title: "Find Us" };
+import type { Metadata } from "next";
+export const metadata: Metadata = {
+  title: "Find Us",
+  description: "Directions to Padel Leaf in Mezher, Bsalim, Mount Lebanon. Easy access, free parking on site.",
+  openGraph: {
+    title: "Find Padel Leaf · Mezher, Bsalim",
+    description: "Directions to Padel Leaf in Mezher, Bsalim. Easy access with free parking.",
+  },
+};
+
+
 
 // Replace this with your real WhatsApp number when ready (international format, no +)
 const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "9610000000";

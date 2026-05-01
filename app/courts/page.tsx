@@ -3,7 +3,17 @@ import { SiteNav } from "../components/site-nav";
 import { SiteFooter } from "../components/site-footer";
 import { SectionHeader } from "../components/section-header";
 
-export const metadata = { title: "Our Courts" };
+import type { Metadata } from "next";
+export const metadata: Metadata = {
+  title: "Our Courts",
+  description: "Three premium outdoor padel courts — Laurel, Oak, and Olive — in Mezher, Bsalim, Mount Lebanon. Synthetic clay surface, LED lighting, open year-round.",
+  openGraph: {
+    title: "Our Padel Courts · Padel Leaf",
+    description: "Laurel, Oak, and Olive — three outdoor courts with synthetic clay surface and LED lights in Mezher, Bsalim.",
+  },
+};
+
+
 
 const COURTS = [
   {

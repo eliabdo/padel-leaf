@@ -35,6 +35,12 @@ export const metadata: Metadata = {
     siteName: "Padel Leaf",
   },
   robots: { index: true, follow: true },
+  twitter: {
+    card: "summary_large_image",
+    title: "Padel Leaf — Outdoor padel, played right.",
+    description: "Three premium outdoor padel courts in Mezher, Bsalim, Mount Lebanon. Reserve by the hour.",
+  },
+  alternates: { canonical: "https://padel-leaf.vercel.app" },
 };
 
 export default function RootLayout({
@@ -42,7 +48,35 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" data-scroll-behavior="smooth" className={`${playfair.variable} ${inter.variable}`}>
-      <body className="min-h-screen flex flex-col">{children}</body>
+      <body className="min-h-screen flex flex-col">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": ["SportsActivityLocation", "LocalBusiness"],
+            "name": "Padel Leaf",
+            "description": "Three premium outdoor padel courts in Mezher, Bsalim, Mount Lebanon.",
+            "url": "https://padel-leaf.vercel.app",
+            "address": {
+              "@type": "PostalAddress",
+              "streetAddress": "Mezher",
+              "addressLocality": "Bsalim",
+              "addressRegion": "Mount Lebanon",
+              "addressCountry": "LB"
+            },
+            "geo": { "@type": "GeoCoordinates", "latitude": 33.8938, "longitude": 35.5731 },
+            "openingHours": "Mo-Su 07:00-23:00",
+            "priceRange": "$$",
+            "sport": "Padel",
+            "amenityFeature": [
+              { "@type": "LocationFeatureSpecification", "name": "Outdoor courts", "value": true },
+              { "@type": "LocationFeatureSpecification", "name": "LED lighting",   "value": true },
+              { "@type": "LocationFeatureSpecification", "name": "Free parking",   "value": true }
+            ]
+          }) }}
+        />
+        {children}
+      </body>
     </html>
   );
 }

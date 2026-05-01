@@ -2,7 +2,17 @@ import { SiteNav } from "../components/site-nav";
 import { SiteFooter } from "../components/site-footer";
 import { SectionHeader } from "../components/section-header";
 
-export const metadata = { title: "The Club" };
+import type { Metadata } from "next";
+export const metadata: Metadata = {
+  title: "About Padel Leaf",
+  description: "Padel Leaf is an outdoor padel club in Mezher, Bsalim, Mount Lebanon. Three courts, a passionate community, and a focus on the game over everything else.",
+  openGraph: {
+    title: "About Padel Leaf · Our Story",
+    description: "An outdoor padel club in Mezher, Bsalim built for players who take the game seriously.",
+  },
+};
+
+
 
 export default function AboutPage() {
   return (
