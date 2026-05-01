@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { destroyAdminSession, getAdminSession } from "@/lib/session";
 
@@ -15,8 +16,12 @@ export default async function AdminLayout({
 }: {
   children: React.ReactNode;
 }) {
-  // /admin/login renders its own page outside this layout via route group convention,
-  // so any layout child is by definition a protected route.
+  const headerStore = await headers();
+  const pathname = headerStore.get("x-admin-pathname") ?? "";
+  if (pathname.startsWith("/admin/login")) {
+    return <>{children}</>;
+  }
+
   const session = await getAdminSession();
   if (!session.valid) redirect("/admin/login");
 

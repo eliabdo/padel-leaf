@@ -9,7 +9,14 @@ export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
   if (!pathname.startsWith("/admin")) return NextResponse.next();
-  if (pathname === "/admin/login") return NextResponse.next();
+  const requestHeaders = new Headers(req.headers);
+  requestHeaders.set("x-admin-pathname", pathname);
+
+  if (pathname.startsWith("/admin/login")) {
+    return NextResponse.next({
+      request: { headers: requestHeaders },
+    });
+  }
 
   const cookie = req.cookies.get("pl_admin_session")?.value;
   if (!cookie) {
@@ -17,7 +24,9 @@ export function middleware(req: NextRequest) {
     url.pathname = "/admin/login";
     return NextResponse.redirect(url);
   }
-  return NextResponse.next();
+  return NextResponse.next({
+    request: { headers: requestHeaders },
+  });
 }
 
 export const config = {
