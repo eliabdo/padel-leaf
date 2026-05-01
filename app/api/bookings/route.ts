@@ -1,0 +1,112 @@
+import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
+import { db, schema } from "@/lib/db";
+import { and, eq } from "drizzle-orm";
+import {
+  ALLOWED_DURATIONS,
+  isPastNoticeWindow,
+  rangesOverlap,
+} from "@/lib/booking";
+import { getActiveHourlyRateCents, priceForDuration } from "@/lib/pricing";
+
+// #region agent log
+fetch("http://127.0.0.1:7589/ingest/dca80672-932e-4ef8-bfcb-5f2627301044",{method:"POST",headers:{"Content-Type":"application/json","X-Debug-Session-Id":"e69d34"},body:JSON.stringify({sessionId:"e69d34",runId:"prebuild-sweep-1",hypothesisId:"H3",location:"app/api/bookings/route.ts:12",message:"bookings route module loaded",data:{hasDatabaseUrl:Boolean(process.env.DATABASE_URL)},timestamp:Date.now()})}).catch(()=>{});
+// #endregion
+
+const Schema = z.object({
+  courtId: z.number().int().positive(),
+  startsAtIso: z.string().datetime(),
+  durationMinutes: z.number().int().refine(
+    (n) => (ALLOWED_DURATIONS as readonly number[]).includes(n),
+    "Invalid duration",
+  ),
+  customerName:  z.string().min(1).max(120),
+  customerEmail: z.string().email().max(200),
+  customerPhone: z.string().min(4).max(40),
+});
+
+export async function POST(req: NextRequest) {
+  let raw: unknown;
+  try {
+    raw = await req.json();
+  } catch {
+    return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
+  }
+
+  const parsed = Schema.safeParse(raw);
+  if (!parsed.success) {
+    return NextResponse.json({ error: "Invalid input" }, { status: 400 });
+  }
+
+  const { courtId, startsAtIso, durationMinutes, customerName, customerEmail, customerPhone } = parsed.data;
+  const startsAt = new Date(startsAtIso);
+  const endsAt = new Date(startsAt.getTime() + durationMinutes * 60 * 1000);
+
+  if (isPastNoticeWindow(startsAt)) {
+    return NextResponse.json(
+      { error: "Bookings need at least 1 hour notice." },
+      { status: 400 },
+    );
+  }
+
+  // Confirm court exists
+  const [court] = await db.select().from(schema.courts).where(eq(schema.courts.id, courtId));
+  if (!court) {
+    return NextResponse.json({ error: "Court not found" }, { status: 404 });
+  }
+
+  // Soft check for overlap (the DB EXCLUDE constraint is the source of truth)
+  const sameDayBookings = await db
+    .select()
+    .from(schema.bookings)
+    .where(and(eq(schema.bookings.courtId, courtId), eq(schema.bookings.status, "confirmed")));
+  const conflict = sameDayBookings.some((b) =>
+    rangesOverlap(startsAt, endsAt, new Date(b.startsAt), new Date(b.endsAt)),
+  );
+  if (conflict) {
+    return NextResponse.json({ error: "That slot just got booked. Pick another." }, { status: 409 });
+  }
+
+  const blockOuts = await db
+    .select()
+    .from(schema.blockOuts)
+    .where(eq(schema.blockOuts.courtId, courtId));
+  const blocked = blockOuts.some((b) =>
+    rangesOverlap(startsAt, endsAt, new Date(b.startsAt), new Date(b.endsAt)),
+  );
+  if (blocked) {
+    return NextResponse.json({ error: "That court is unavailable for that time." }, { status: 409 });
+  }
+
+  const hourlyRateCents = await getActiveHourlyRateCents();
+  const totalCents = priceForDuration(hourlyRateCents, durationMinutes);
+
+  try {
+    const [created] = await db
+      .insert(schema.bookings)
+      .values({
+        courtId,
+        customerName,
+        customerEmail,
+        customerPhone,
+        startsAt,
+        endsAt,
+        durationMinutes,
+        totalCents,
+        status: "confirmed",
+      })
+      .returning({ id: schema.bookings.id });
+
+    return NextResponse.json({ id: created.id }, { status: 201 });
+  } catch (err) {
+    // The EXCLUDE constraint will throw on race-condition double-bookings
+    if (err instanceof Error && /no_overlap/.test(err.message)) {
+      return NextResponse.json(
+        { error: "That slot just got booked. Pick another." },
+        { status: 409 },
+      );
+    }
+    console.error("Booking insert failed", err);
+    return NextResponse.json({ error: "Something went wrong" }, { status: 500 });
+  }
+}
