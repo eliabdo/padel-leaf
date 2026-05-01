@@ -3,9 +3,6 @@ import ical from "ical-generator";
 import { db, schema } from "@/lib/db";
 import { eq } from "drizzle-orm";
 
-// #region agent log
-fetch("http://127.0.0.1:7589/ingest/dca80672-932e-4ef8-bfcb-5f2627301044",{method:"POST",headers:{"Content-Type":"application/json","X-Debug-Session-Id":"e69d34"},body:JSON.stringify({sessionId:"e69d34",runId:"prebuild-sweep-1",hypothesisId:"H2",location:"app/api/bookings/[id]/ics/route.ts:6",message:"ics route module loaded",data:{hasDatabaseUrl:Boolean(process.env.DATABASE_URL)},timestamp:Date.now()})}).catch(()=>{});
-// #endregion
 
 export async function GET(
   _req: NextRequest,

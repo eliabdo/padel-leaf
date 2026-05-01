@@ -10,9 +10,6 @@ import {
 import { getActiveHourlyRateCents } from "@/lib/pricing-db";
 import { priceForDuration } from "@/lib/pricing";
 
-// #region agent log
-fetch("http://127.0.0.1:7589/ingest/dca80672-932e-4ef8-bfcb-5f2627301044",{method:"POST",headers:{"Content-Type":"application/json","X-Debug-Session-Id":"e69d34"},body:JSON.stringify({sessionId:"e69d34",runId:"prebuild-sweep-1",hypothesisId:"H3",location:"app/api/bookings/route.ts:12",message:"bookings route module loaded",data:{hasDatabaseUrl:Boolean(process.env.DATABASE_URL)},timestamp:Date.now()})}).catch(()=>{});
-// #endregion
 
 const Schema = z.object({
   courtId: z.number().int().positive(),
