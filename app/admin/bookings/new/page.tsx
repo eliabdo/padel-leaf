@@ -3,7 +3,8 @@ import { asc } from "drizzle-orm";
 import Link from "next/link";
 import { db, schema } from "@/lib/db";
 import { ALLOWED_DURATIONS } from "@/lib/booking";
-import { getActiveHourlyRateCents, priceForDuration } from "@/lib/pricing";
+import { getActiveHourlyRateCents } from "@/lib/pricing-db";
+import { priceForDuration } from "@/lib/pricing";
 
 export const metadata = { title: "Admin · Add booking" };
 export const dynamic = "force-dynamic";

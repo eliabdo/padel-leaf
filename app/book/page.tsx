@@ -3,7 +3,7 @@ import { asc } from "drizzle-orm";
 import { SiteNav } from "../components/site-nav";
 import { SiteFooter } from "../components/site-footer";
 import { BookingFlow } from "./booking-flow";
-import { getActiveHourlyRateCents } from "@/lib/pricing";
+import { getActiveHourlyRateCents } from "@/lib/pricing-db";
 
 export const metadata = { title: "Reserve a court" };
 export const dynamic = "force-dynamic";
