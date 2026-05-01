@@ -1,5 +1,7 @@
 import { redirect } from "next/navigation";
-import { asc, desc, eq } from "drizzle-orm";
+import BlockOutDateFields from "./block-out-date-fields";
+import BlockOutReasonField from "./block-out-reason-field";
+import { asc, desc, eq, and, inArray, lt, gt } from "drizzle-orm";
 import { db, schema } from "@/lib/db";
 import { formatDateLong, formatTime } from "@/lib/booking";
 
@@ -8,12 +10,60 @@ export const dynamic = "force-dynamic";
 
 async function createBlockOut(formData: FormData): Promise<void> {
   "use server";
-  const courtId = Number(formData.get("courtId"));
+  const courtIdRaw = String(formData.get("courtId") ?? "");
   const startsAt = new Date(String(formData.get("startsAt")));
   const endsAt   = new Date(String(formData.get("endsAt")));
   const reason   = String(formData.get("reason") ?? "").trim() || "Maintenance";
-  if (!courtId || isNaN(startsAt.getTime()) || isNaN(endsAt.getTime())) throw new Error("Missing fields");
-  await db.insert(schema.blockOuts).values({ courtId, startsAt, endsAt, reason });
+  if (!courtIdRaw || isNaN(startsAt.getTime()) || isNaN(endsAt.getTime())) throw new Error("Missing fields");
+
+  if (courtIdRaw === "all") {
+    // Block all courts — venue closed
+    const courts = await db.select({ id: schema.courts.id }).from(schema.courts);
+    const courtIds = courts.map((c) => c.id);
+    await db.insert(schema.blockOuts).values(
+      courtIds.map((id) => ({ courtId: id, startsAt, endsAt, reason })),
+    );
+    // Cancel any confirmed bookings that overlap this block-out window
+    const overlap = await db
+      .select({ id: schema.bookings.id })
+      .from(schema.bookings)
+      .where(
+        and(
+          inArray(schema.bookings.courtId, courtIds),
+          eq(schema.bookings.status, "confirmed"),
+          lt(schema.bookings.startsAt, endsAt),
+          gt(schema.bookings.endsAt,   startsAt),
+        ),
+      );
+    if (overlap.length > 0) {
+      await db
+        .update(schema.bookings)
+        .set({ status: "cancelled", cancelledAt: new Date() })
+        .where(inArray(schema.bookings.id, overlap.map((b) => b.id)));
+    }
+  } else {
+    const courtId = Number(courtIdRaw);
+    if (!courtId) throw new Error("Invalid court");
+    await db.insert(schema.blockOuts).values({ courtId, startsAt, endsAt, reason });
+    // Cancel any confirmed bookings that overlap this block-out window
+    const overlap = await db
+      .select({ id: schema.bookings.id })
+      .from(schema.bookings)
+      .where(
+        and(
+          eq(schema.bookings.courtId, courtId),
+          eq(schema.bookings.status, "confirmed"),
+          lt(schema.bookings.startsAt, endsAt),
+          gt(schema.bookings.endsAt,   startsAt),
+        ),
+      );
+    if (overlap.length > 0) {
+      await db
+        .update(schema.bookings)
+        .set({ status: "cancelled", cancelledAt: new Date() })
+        .where(inArray(schema.bookings.id, overlap.map((b) => b.id)));
+    }
+  }
   redirect("/admin/block-outs");
 }
 async function deleteBlockOut(formData: FormData): Promise<void> {
@@ -65,24 +115,15 @@ export default async function AdminBlockOutsPage() {
             <div>
               <label style={labelStyle}>Court</label>
               <select name="courtId" required style={{ ...inputStyle, cursor: "pointer" }}>
-                {courts.map(c => <option key={c.id} value={c.id}>Court · {c.name}</option>)}
+                <option value="all">⛔ All Courts — Venue closed</option>
+                <optgroup label="Individual courts">
+                  {courts.map(c => <option key={c.id} value={c.id}>Court · {c.name}</option>)}
+                </optgroup>
               </select>
             </div>
-            <div>
-              <label style={labelStyle}>Reason</label>
-              <input name="reason" placeholder="Maintenance / Rain / Tournament" style={inputStyle} />
-            </div>
+            <BlockOutReasonField />
           </div>
-          <div className="admin-form-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
-            <div>
-              <label style={labelStyle}>Starts at</label>
-              <input name="startsAt" type="datetime-local" required style={{ ...inputStyle, colorScheme: "light" }} />
-            </div>
-            <div>
-              <label style={labelStyle}>Ends at</label>
-              <input name="endsAt" type="datetime-local" required style={{ ...inputStyle, colorScheme: "light" }} />
-            </div>
-          </div>
+          <BlockOutDateFields />
           <div>
             <button type="submit" style={{ fontFamily: "system-ui, sans-serif", fontSize: 13, fontWeight: 600, color: "#fff", background: "#16a34a", border: "none", borderRadius: 9, padding: "10px 22px", cursor: "pointer", boxShadow: "0 2px 8px rgba(22,163,74,0.28)" }}>
               Add block-out

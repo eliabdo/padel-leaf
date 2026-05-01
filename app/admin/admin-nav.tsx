@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const NAV = [
   { href: "/admin",            label: "Today" },
@@ -10,15 +10,34 @@ const NAV = [
   { href: "/admin/customers",  label: "Customers" },
   { href: "/admin/messages",   label: "Messages" },
   { href: "/admin/block-outs", label: "Block-outs" },
+  { href: "/admin/revenue",    label: "Finance" },
   { href: "/admin/pricing",    label: "Pricing" },
 ];
 
 interface Props {
   logoutForm: React.ReactNode;
+  unreadCount?: number;
 }
 
-export default function AdminNav({ logoutForm }: Props) {
+export default function AdminNav({ logoutForm, unreadCount = 0 }: Props) {
   const [open, setOpen] = useState(false);
+  const [liveCount, setLiveCount] = useState(unreadCount);
+
+  useEffect(() => {
+    // Fetch immediately then poll every 30 s
+    async function fetchCount() {
+      try {
+        const res = await fetch("/api/admin/unread-count", { cache: "no-store" });
+        if (res.ok) {
+          const data = await res.json();
+          setLiveCount(data.count ?? 0);
+        }
+      } catch {}
+    }
+    fetchCount();
+    const id = setInterval(fetchCount, 5_000);
+    return () => clearInterval(id);
+  }, []);
 
   const linkBase: React.CSSProperties = {
     fontFamily: "system-ui, sans-serif",
@@ -68,8 +87,13 @@ export default function AdminNav({ logoutForm }: Props) {
           {/* Desktop nav */}
           <nav className="admin-desktop-nav" style={{ display: "flex", gap: 2, flexWrap: "nowrap" }}>
             {NAV.map(({ href, label }) => (
-              <Link key={href} href={href} style={linkBase} className="admin-nav-link">
+              <Link key={href} href={href} style={{ ...linkBase, display: "flex", alignItems: "center", gap: 4 }} className="admin-nav-link">
                 {label}
+                {href === "/admin/messages" && liveCount > 0 && (
+                  <span style={{ display:"inline-flex", alignItems:"center", justifyContent:"center", background:"#dc2626", color:"#fff", fontSize:10, fontWeight:700, minWidth:16, height:16, borderRadius:999, padding:"0 3px" }}>
+                    {liveCount > 99 ? "99+" : liveCount}
+                  </span>
+                )}
               </Link>
             ))}
           </nav>
@@ -134,7 +158,14 @@ export default function AdminNav({ logoutForm }: Props) {
                 }}
                 className="admin-nav-link"
               >
-                {label}
+                <span style={{ display:"flex", alignItems:"center", gap:6 }}>
+                  {label}
+                  {href === "/admin/messages" && liveCount > 0 && (
+                    <span style={{ display:"inline-flex", alignItems:"center", justifyContent:"center", background:"#dc2626", color:"#fff", fontSize:10, fontWeight:700, minWidth:16, height:16, borderRadius:999, padding:"0 3px" }}>
+                      {liveCount > 99 ? "99+" : liveCount}
+                    </span>
+                  )}
+                </span>
               </Link>
             ))}
             <div style={{ marginTop: 12, paddingTop: 12, borderTop: "1px solid rgba(22,163,74,0.10)" }}>

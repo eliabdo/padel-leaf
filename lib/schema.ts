@@ -41,6 +41,7 @@ export const bookings = pgTable("bookings", {
   status: text("status").notNull().default("confirmed"),  // confirmed | cancelled | completed | no_show
   notes: text("notes"),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  readAt: timestamp("read_at", { withTimezone: true }),
   cancelledAt: timestamp("cancelled_at", { withTimezone: true }),
 });
 
@@ -108,3 +109,17 @@ export type NewBooking = typeof bookings.$inferInsert;
 export type BlockOut = typeof blockOuts.$inferSelect;
 export type PricingRule = typeof pricingRules.$inferSelect;
 export type ContactMessage = typeof contactMessages.$inferSelect;
+
+/**
+ * Revenue items — manual line items added by admin (e.g. shop sales, lessons).
+ * Completed bookings are the primary revenue source; these supplement them.
+ */
+export const revenueItems = pgTable("revenue_items", {
+  id: serial("id").primaryKey(),
+  label: text("label").notNull(),              // e.g. "Equipment rental", "Lesson fee"
+  amountCents: integer("amount_cents").notNull(),
+  notes: text("notes"),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+export type RevenueItem = typeof revenueItems.$inferSelect;

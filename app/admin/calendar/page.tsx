@@ -261,9 +261,18 @@ function DayView({
                 {cBo.map(bo => {
                   const { top, height } = boPos(bo);
                   return (
-                    <div key={bo.id} className="absolute left-1 right-1 rounded-lg px-2 py-1 z-10 overflow-hidden"
-                      style={{ top: `${top}px`, height: `${height}px`, background: "rgba(107,114,128,0.07)", border: "1px solid rgba(107,114,128,0.18)" }}>
-                      <div className="text-[10px] font-mono truncate" style={{ color: D.dim }}>⊘ {bo.reason}</div>
+                    <div key={bo.id} className="absolute left-1 right-1 rounded-lg z-10 overflow-hidden"
+                      style={{
+                        top: `${top}px`, height: `${height}px`,
+                        background: "repeating-linear-gradient(45deg, rgba(107,114,128,0.06), rgba(107,114,128,0.06) 5px, rgba(107,114,128,0.13) 5px, rgba(107,114,128,0.13) 10px)",
+                        border: "1.5px solid rgba(107,114,128,0.30)",
+                      }}>
+                      <div className="px-2 py-1.5">
+                        <div className="text-[11px] font-mono font-semibold truncate" style={{ color: "#6b7280" }}>⊘ Block-out</div>
+                        {height >= 40 && (
+                          <div className="text-[10px] font-mono truncate mt-0.5" style={{ color: D.dim }}>{bo.reason}</div>
+                        )}
+                      </div>
                     </div>
                   );
                 })}
@@ -294,7 +303,13 @@ function DayView({
                         <div className="text-[10px] font-mono leading-tight truncate mt-0.5" style={{ color: D.mid }}>
                           {fmtBeirut(new Date(bk.startsAt))}–{fmtBeirut(new Date(bk.endsAt))}
                         </div>
-                        {height >= 64 && (
+                        {height >= 52 && (
+                          <div className="text-[10px] font-mono leading-tight truncate mt-0.5"
+                            style={{ color: cancelled ? D.dim : n.c, opacity: 0.75 }}>
+                            {courts.find(c => c.id === bk.courtId)?.name ?? ""}
+                          </div>
+                        )}
+                        {height >= 72 && (
                           <div className="text-[10px] font-mono leading-tight truncate mt-0.5"
                             style={{ color: cancelled ? D.dim : n.c, opacity: 0.7 }}>
                             {formatUsd(bk.totalCents)}
@@ -398,9 +413,15 @@ function WeekView({
                 {dayBo.map(bo => {
                   const { top, height } = boPos(bo);
                   return (
-                    <div key={bo.id} className="absolute left-0.5 right-0.5 rounded px-1.5 py-0.5 z-10 overflow-hidden"
-                      style={{ top: `${top}px`, height: `${height}px`, background: "rgba(107,114,128,0.07)", border: "1px solid rgba(107,114,128,0.18)" }}>
-                      <div className="text-[9px] font-mono truncate" style={{ color: D.dim }}>⊘</div>
+                    <div key={bo.id} className="absolute left-0.5 right-0.5 rounded-md z-10 overflow-hidden"
+                      style={{
+                        top: `${top}px`, height: `${height}px`,
+                        background: "repeating-linear-gradient(45deg, rgba(107,114,128,0.06), rgba(107,114,128,0.06) 4px, rgba(107,114,128,0.13) 4px, rgba(107,114,128,0.13) 8px)",
+                        border: "1.5px solid rgba(107,114,128,0.28)",
+                      }}>
+                      <div className="px-1.5 py-1">
+                        <div className="text-[9px] font-mono font-semibold truncate" style={{ color: "#6b7280" }}>⊘ {bo.reason}</div>
+                      </div>
                     </div>
                   );
                 })}
@@ -446,7 +467,13 @@ function WeekView({
                           </div>
                           {height >= 40 && (
                             <div className="text-[9px] font-mono truncate leading-tight" style={{ color: D.dim }}>
-                              {fmtBeirut(new Date(bk.startsAt))}
+                              {fmtBeirut(new Date(bk.startsAt))}–{fmtBeirut(new Date(bk.endsAt))}
+                            </div>
+                          )}
+                          {height >= 60 && (
+                            <div className="text-[9px] font-mono truncate leading-tight mt-0.5"
+                              style={{ color: n.c, opacity: 0.75 }}>
+                              {courts.find(c => c.id === bk.courtId)?.name ?? ""}
                             </div>
                           )}
                         </div>
@@ -467,11 +494,12 @@ function WeekView({
 // MONTH VIEW
 // ─────────────────────────────────────────────────────────────────────────────
 function MonthView({
-  courts, cells, bookingsByDay, todayKey,
+  courts, cells, bookingsByDay, blockOutsByDay, todayKey,
 }: {
   courts: CourtRow[];
   cells: { key: string; inMonth: boolean }[];
   bookingsByDay: Map<string, BkRow[]>;
+  blockOutsByDay: Map<string, BoRow[]>;
   todayKey: string;
 }) {
   const dayLabels = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
@@ -499,9 +527,11 @@ function MonthView({
           const confirmed = dayBk.filter(b => b.status !== "cancelled");
           const isLastRow = idx >= cells.length - 7;
 
+          const dayBo     = blockOutsByDay.get(key) ?? [];
           const allPills  = confirmed.slice().sort((a, b) => new Date(a.startsAt).getTime() - new Date(b.startsAt).getTime());
-          const visible   = allPills.slice(0, MAX_PILLS);
-          const overflow  = allPills.length - MAX_PILLS;
+          const maxBookingPills = Math.max(0, MAX_PILLS - dayBo.length);
+          const visible   = allPills.slice(0, maxBookingPills);
+          const overflow  = allPills.length - maxBookingPills;
 
           return (
             <div key={key} className="relative flex flex-col"
@@ -532,8 +562,22 @@ function MonthView({
                 )}
               </Link>
 
-              {/* Booking pills — each links to its booking detail */}
+              {/* Booking & block-out pills */}
               <div className="flex flex-col gap-1 px-2 pb-2">
+                {dayBo.map(bo => (
+                  <div key={`bo-${bo.id}`}
+                    className="flex items-center gap-1.5 rounded-md px-2 py-1 overflow-hidden"
+                    style={{
+                      background: "repeating-linear-gradient(45deg, rgba(107,114,128,0.05), rgba(107,114,128,0.05) 4px, rgba(107,114,128,0.11) 4px, rgba(107,114,128,0.11) 8px)",
+                      border: "1.5px solid rgba(107,114,128,0.28)",
+                    }}>
+                    <span className="text-[10px] font-mono flex-shrink-0" style={{ color: "#9ca3af" }}>⊘</span>
+                    <span className="text-[11px] font-semibold truncate leading-tight"
+                      style={{ color: "#6b7280", fontFamily: "system-ui, sans-serif" }}>
+                      {bo.reason}
+                    </span>
+                  </div>
+                ))}
                 {visible.map(bk => {
                   const court = courts.find(c => c.id === bk.courtId);
                   const n = NEON[(court?.name ?? "Laurel") as CourtName];
@@ -549,7 +593,7 @@ function MonthView({
                         </span>
                         <span className="text-[10px] truncate leading-tight"
                           style={{ color: D.mid, fontFamily: "ui-monospace, monospace" }}>
-                          {fmtBeirut(new Date(bk.startsAt))} · {court?.name ?? ""}
+                          {fmtBeirut(new Date(bk.startsAt))}–{fmtBeirut(new Date(bk.endsAt))} · {court?.name ?? ""}
                         </span>
                       </div>
                     </Link>
@@ -691,9 +735,33 @@ export default async function AdminCalendarPage({
             <div className="text-[9px] font-mono uppercase tracking-[0.35em] mb-2" style={{ color: D.dim }}>
               ◈ COURT CALENDAR
             </div>
-            <h1 className="font-mono text-2xl font-bold tracking-tight" style={{ color: D.bright }}>
-              {displayLabel}
-            </h1>
+            <div className="flex items-center gap-3">
+              <Link
+                href={`/admin/calendar?view=${view}&date=${
+                  view === "day"   ? shiftKey(dateKey, -1) :
+                  view === "week"  ? shiftKey(dateKey, -7) :
+                  (() => { const [y,m] = parseKey(dateKey); const d2 = new Date(y, m-2, 1); return localKey(d2.getFullYear(), d2.getMonth()+1, 1); })()
+                }`}
+                className="flex items-center justify-center w-8 h-8 rounded-lg transition-all hover:brightness-90"
+                style={{ background: "rgba(22,163,74,0.10)", border: "1px solid rgba(22,163,74,0.22)", color: "#15803d", fontSize: 16, fontWeight: 700, textDecoration: "none" }}
+                aria-label="Previous">
+                ‹
+              </Link>
+              <h1 className="font-mono text-2xl tracking-tight" style={{ color: D.bright, fontWeight: 900, letterSpacing: "-0.02em" }}>
+                {displayLabel}
+              </h1>
+              <Link
+                href={`/admin/calendar?view=${view}&date=${
+                  view === "day"   ? shiftKey(dateKey, 1) :
+                  view === "week"  ? shiftKey(dateKey, 7) :
+                  (() => { const [y,m] = parseKey(dateKey); const d2 = new Date(y, m, 1); return localKey(d2.getFullYear(), d2.getMonth()+1, 1); })()
+                }`}
+                className="flex items-center justify-center w-8 h-8 rounded-lg transition-all hover:brightness-90"
+                style={{ background: "rgba(22,163,74,0.10)", border: "1px solid rgba(22,163,74,0.22)", color: "#15803d", fontSize: 16, fontWeight: 700, textDecoration: "none" }}
+                aria-label="Next">
+                ›
+              </Link>
+            </div>
             {view !== "month" && dateKey === todayKey && (
               <div className="text-[10px] font-mono mt-1 flex items-center gap-1.5">
                 <div className="w-1 h-1 rounded-full animate-pulse" style={{ background: D.now }} />
@@ -732,6 +800,7 @@ export default async function AdminCalendarPage({
             courts={courts}
             cells={monthCells}
             bookingsByDay={bookingsByDay}
+            blockOutsByDay={blockOutsByDay}
             todayKey={todayKey}
           />
         )}
@@ -749,6 +818,11 @@ export default async function AdminCalendarPage({
                 </div>
               );
             })}
+            <div className="flex items-center gap-1.5">
+              <div className="w-4 h-2 rounded-sm flex-shrink-0"
+                style={{ background: "repeating-linear-gradient(45deg, rgba(107,114,128,0.10), rgba(107,114,128,0.10) 2px, rgba(107,114,128,0.22) 2px, rgba(107,114,128,0.22) 4px)", border: "1px solid rgba(107,114,128,0.28)" }} />
+              <span className="text-[10px] font-mono uppercase tracking-widest" style={{ color: D.soft }}>Block-out</span>
+            </div>
             {showNow && nowTop !== null && (
               <div className="flex items-center gap-1.5">
                 <div className="w-4 h-px" style={{ background: D.now }} />

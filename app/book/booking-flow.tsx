@@ -24,15 +24,19 @@ type AvailabilityResp = {
     id: number;
     name: string;
     slots: { startIso: string; available: boolean; blocked?: boolean }[];
+    allBlocked: boolean;
+    blockOutReasons: string[];
   }[];
 };
 
 export function BookingFlow({
   courts,
   hourlyRateCents,
+  blockedDates = [],
 }: {
   courts: Court[];
   hourlyRateCents: number;
+  blockedDates?: string[];
 }) {
   const router = useRouter();
   const dates = useMemo(() => next14Days(), []);
@@ -42,6 +46,7 @@ export function BookingFlow({
   const [availability, setAvailability] = useState<AvailabilityResp | null>(null);
   const [loading, setLoading] = useState(true);
   const [selectedSlotIso, setSelectedSlotIso] = useState<string | null>(null);
+  const [paymentMethod, setPaymentMethod] = useState<"venue" | "whish" | "omt">("venue");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -71,9 +76,10 @@ export function BookingFlow({
       courtId,
       startsAtIso: selectedSlotIso,
       durationMinutes: duration,
-      customerName:  String(f.get("name")  ?? ""),
-      customerEmail: String(f.get("email") ?? ""),
-      customerPhone: String(f.get("phone") ?? ""),
+      customerName:    String(f.get("name")  ?? ""),
+      customerEmail:   String(f.get("email") ?? ""),
+      customerPhone:   String(f.get("phone") ?? ""),
+      paymentMethod,
     };
 
     try {
@@ -99,14 +105,19 @@ export function BookingFlow({
         <div className="flex gap-2 overflow-x-auto pb-2 -mx-6 px-6">
           {dates.map((d) => {
             const isSelected = dateOnlyKey(d) === dateOnlyKey(selectedDate);
+            const isDateBlocked = blockedDates.includes(dateOnlyKey(d));
             return (
               <button
                 key={d.toISOString()}
-                onClick={() => setSelectedDate(parseDateKey(dateOnlyKey(d)))}
+                onClick={() => { if (!isDateBlocked) setSelectedDate(parseDateKey(dateOnlyKey(d))); }}
+                disabled={isDateBlocked}
+                title={isDateBlocked ? "All courts unavailable" : undefined}
                 className={`shrink-0 px-4 py-3 rounded-xl border text-sm transition ${
-                  isSelected
-                    ? "bg-forest text-cream border-forest"
-                    : "bg-cream text-charcoal border-forest/15 hover:border-forest/40"
+                  isDateBlocked
+                    ? "bg-cream/50 text-charcoal/30 border-forest/10 cursor-not-allowed line-through"
+                    : isSelected
+                      ? "bg-forest text-cream border-forest"
+                      : "bg-cream text-charcoal border-forest/15 hover:border-forest/40"
                 }`}
               >
                 <div className="font-medium">{formatDateShort(d)}</div>
@@ -140,19 +151,26 @@ export function BookingFlow({
       <div>
         <Label>Court</Label>
         <div className="flex gap-2 flex-wrap">
-          {courts.map((c) => (
-            <button
-              key={c.id}
-              onClick={() => { setCourtId(c.id); setSelectedSlotIso(null); }}
-              className={`px-5 py-3 rounded-xl border text-sm transition ${
-                courtId === c.id
-                  ? "bg-forest text-cream border-forest"
-                  : "bg-cream text-charcoal border-forest/15 hover:border-forest/40"
-              }`}
-            >
-              Court · {c.name}
-            </button>
-          ))}
+          {courts.map((c) => {
+            const courtData = availability?.courts.find(ct => ct.id === c.id);
+            const blocked   = courtData?.allBlocked ?? false;
+            return (
+              <button
+                key={c.id}
+                onClick={() => { if (!blocked) { setCourtId(c.id); setSelectedSlotIso(null); } }}
+                disabled={blocked}
+                className={`px-5 py-3 rounded-xl border text-sm transition ${
+                  blocked
+                    ? "bg-cream/50 text-charcoal/40 border-forest/10 cursor-not-allowed line-through"
+                    : courtId === c.id
+                      ? "bg-forest text-cream border-forest"
+                      : "bg-cream text-charcoal border-forest/15 hover:border-forest/40"
+                }`}
+              >
+                Court · {c.name}
+              </button>
+            );
+          })}
         </div>
       </div>
 
@@ -163,6 +181,18 @@ export function BookingFlow({
           <div className="text-char-soft text-sm">Loading availability…</div>
         ) : !courtAvail ? (
           <div className="text-char-soft text-sm">No courts found.</div>
+        ) : courtAvail.allBlocked ? (
+          <div className="rounded-xl border border-clay/30 bg-clay/5 px-5 py-4 flex items-start gap-3">
+            <span className="text-lg leading-none mt-0.5">🚫</span>
+            <div>
+              <div className="font-semibold text-clay text-sm">Court unavailable</div>
+              <div className="text-char-soft text-sm mt-1">
+                {courtAvail.blockOutReasons.length > 0
+                  ? courtAvail.blockOutReasons.join(" · ")
+                  : "This court is blocked for the full day."}
+              </div>
+            </div>
+          </div>
         ) : (
           <div className="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-6 gap-2">
             {courtAvail.slots.map((s) => {
@@ -197,23 +227,84 @@ export function BookingFlow({
         )}
       </div>
 
-      {/* TOTAL + CONFIRM */}
-      <div className="bg-sage-soft rounded-2xl p-8">
-        <div className="flex flex-wrap items-baseline justify-between gap-4 mb-6">
-          <div>
-            <div className="text-xs uppercase tracking-[0.18em] text-forest font-semibold mb-1">
-              Total
-            </div>
-            <div className="font-serif text-4xl text-forest-deep">
-              {formatUsd(totalCents)}
-            </div>
-            <div className="text-sm text-char-soft mt-1">
-              {duration} min · pay at the venue
+      {/* TOTAL + CONFIRM — only shown after a slot is picked */}
+      {selectedSlotIso && (
+        <div className="bg-sage-soft rounded-2xl p-8">
+          <div className="flex flex-wrap items-baseline justify-between gap-4 mb-6">
+            <div>
+              <div className="text-xs uppercase tracking-[0.18em] text-forest font-semibold mb-1">
+                Total
+              </div>
+              <div className="font-serif text-4xl text-forest-deep">
+                {formatUsd(totalCents)}
+              </div>
+              <div className="text-sm text-char-soft mt-1">
+                {duration} min · pay at the venue
+              </div>
             </div>
           </div>
-        </div>
 
-        {selectedSlotIso ? (
+          {/* PAYMENT METHOD */}
+          <div className="mb-6">
+            <div className="text-xs uppercase tracking-[0.18em] text-forest font-semibold mb-3">
+              Payment Method
+            </div>
+            <div className="flex gap-3 flex-wrap">
+              {/* Pay at Venue */}
+              <button
+                type="button"
+                onClick={() => setPaymentMethod("venue")}
+                className={`flex items-center gap-2 px-4 py-3 rounded-xl border text-sm font-medium transition ${
+                  paymentMethod === "venue"
+                    ? "bg-forest text-cream border-forest shadow-sm"
+                    : "bg-cream text-charcoal border-forest/15 hover:border-forest/40"
+                }`}
+              >
+                <span>💵</span>
+                <span>Pay at Venue</span>
+              </button>
+
+              {/* Whish */}
+              <button
+                type="button"
+                onClick={() => setPaymentMethod("whish")}
+                className={`flex items-center justify-center px-5 py-3 rounded-xl border transition ${
+                  paymentMethod === "whish"
+                    ? "bg-white border-[#e8192c] shadow-sm ring-1 ring-[#e8192c]/30"
+                    : "bg-cream border-forest/15 hover:border-[#e8192c]/40"
+                }`}
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/whish-logo.svg" alt="Whish" className="h-5 w-auto" />
+              </button>
+
+              {/* OMT Pay */}
+              <button
+                type="button"
+                onClick={() => setPaymentMethod("omt")}
+                className={`flex items-center justify-center px-5 py-3 rounded-xl border transition ${
+                  paymentMethod === "omt"
+                    ? "bg-[#fede00] border-[#fede00] shadow-sm ring-1 ring-[#fede00]/60"
+                    : "bg-cream border-forest/15 hover:border-[#fede00]/60"
+                }`}
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/omt-logo.svg" alt="OMT Pay" className="h-5 w-auto" />
+              </button>
+            </div>
+
+            {paymentMethod === "whish" && (
+              <p className="mt-3 text-xs text-[#b91c1c] bg-[#fff5f5] border border-[#e8192c]/20 rounded-xl px-4 py-3 leading-relaxed">
+                You will receive Whish payment instructions by email after booking.
+              </p>
+            )}
+            {paymentMethod === "omt" && (
+              <p className="mt-3 text-xs text-[#92650a] bg-[#fffbeb] border border-[#fede00]/50 rounded-xl px-4 py-3 leading-relaxed">
+                You will receive OMT Pay instructions by email after booking.
+              </p>
+            )}
+          </div>
+
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid sm:grid-cols-2 gap-4">
               <Field name="name"  label="Name"  type="text"  required />
@@ -233,12 +324,8 @@ export function BookingFlow({
               up to 24h before, full fee owed for same-day cancellations.
             </p>
           </form>
-        ) : (
-          <div className="text-char-soft text-sm text-center py-4">
-            Pick a time slot above to continue.
-          </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 }

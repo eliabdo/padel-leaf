@@ -3,6 +3,7 @@ import { asc, and, eq, lt, gt } from "drizzle-orm";
 import Link from "next/link";
 import { db, schema } from "@/lib/db";
 import { ALLOWED_DURATIONS } from "@/lib/booking";
+import SlotPicker from "../slot-picker";
 import { getActiveHourlyRateCents } from "@/lib/pricing-db";
 import { priceForDuration } from "@/lib/pricing";
 
@@ -35,7 +36,7 @@ async function createManualBooking(formData: FormData): Promise<void> {
 
   const hourlyRateCents = await getActiveHourlyRateCents();
   const totalCents = priceForDuration(hourlyRateCents, durationMinutes);
-  await db.insert(schema.bookings).values({ courtId, customerName, customerEmail, customerPhone, startsAt, endsAt, durationMinutes, totalCents, status: "confirmed", notes });
+  await db.insert(schema.bookings).values({ courtId, customerName, customerEmail, customerPhone, startsAt, endsAt, durationMinutes, totalCents, status: "confirmed", notes, readAt: new Date() });
   redirect("/admin");
 }
 
@@ -98,7 +99,7 @@ export default async function AdminNewBookingPage({
         <div className="admin-form-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
           <div>
             <label style={labelStyle}>Starts at</label>
-            <input name="startsAt" type="datetime-local" required defaultValue={params.startsAt ?? ""} style={{ ...inputStyle, colorScheme: "light", ...(hasOverlap ? { borderColor: "rgba(220,38,38,0.40)" } : {}) }} />
+            <SlotPicker name="startsAt" defaultValue={params.startsAt ?? ""} hasError={hasOverlap} />
           </div>
           <div>
             <label style={labelStyle}>Duration</label>

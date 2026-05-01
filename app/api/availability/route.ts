@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db, schema } from "@/lib/db";
-import { and, eq, gte, lt } from "drizzle-orm";
+import { and, eq, gte, lt, gt } from "drizzle-orm";
 import {
   generateSlotStarts,
   isPastNoticeWindow,
@@ -9,10 +9,6 @@ import {
   ALLOWED_DURATIONS,
 } from "@/lib/booking";
 import { asc } from "drizzle-orm";
-
-// #region agent log
-fetch("http://127.0.0.1:7589/ingest/dca80672-932e-4ef8-bfcb-5f2627301044",{method:"POST",headers:{"Content-Type":"application/json","X-Debug-Session-Id":"e69d34"},body:JSON.stringify({sessionId:"e69d34",runId:"prebuild-sweep-1",hypothesisId:"H3",location:"app/api/availability/route.ts:13",message:"availability route module loaded",data:{hasDatabaseUrl:Boolean(process.env.DATABASE_URL)},timestamp:Date.now()})}).catch(()=>{});
-// #endregion
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
@@ -40,10 +36,11 @@ export async function GET(req: NextRequest) {
         eq(schema.bookings.status, "confirmed"),
       ),
     ),
+    // Catch any block-out that overlaps the day (starts before day ends AND ends after day starts)
     db.select().from(schema.blockOuts).where(
       and(
-        gte(schema.blockOuts.startsAt, dayStart),
         lt(schema.blockOuts.startsAt, dayEnd),
+        gt(schema.blockOuts.endsAt,   dayStart),
       ),
     ),
   ]);
@@ -52,7 +49,7 @@ export async function GET(req: NextRequest) {
 
   const result = {
     courts: courts.map((court) => {
-      const courtBookings = bookings.filter((b) => b.courtId === court.id);
+      const courtBookings  = bookings.filter((b) => b.courtId === court.id);
       const courtBlockOuts = blockOuts.filter((b) => b.courtId === court.id);
 
       const slots = slotStarts.map((startsAt) => {
@@ -73,7 +70,11 @@ export async function GET(req: NextRequest) {
         };
       });
 
-      return { id: court.id, name: court.name, slots };
+      // Court is fully blocked when every slot is unavailable due to a block-out
+      const allBlocked = slots.length > 0 && slots.every((s) => !s.available && s.blocked);
+      const blockOutReasons = [...new Set(courtBlockOuts.map((b) => b.reason))];
+
+      return { id: court.id, name: court.name, slots, allBlocked, blockOutReasons };
     }),
   };
 

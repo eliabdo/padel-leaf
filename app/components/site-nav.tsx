@@ -39,12 +39,8 @@ export function SiteNav() {
         </div>
 
         <div className="flex items-center gap-2">
-          {/* Full CTA on sm+, short label on xs */}
-          <Link href="/book" className="btn btn-primary hidden sm:inline-flex">
+          <Link href="/book" className="btn btn-primary">
             Reserve a court →
-          </Link>
-          <Link href="/book" className="btn btn-primary sm:hidden" style={{ padding: "8px 14px", fontSize: 13 }}>
-            Reserve →
           </Link>
 
           {/* Hamburger – mobile only */}
