@@ -99,28 +99,39 @@ export function BookingFlow({
 
   return (
     <div className="space-y-8">
-      {/* DATE STRIP */}
+      {/* DATE STRIP — responsive grid, no horizontal scroll */}
       <div>
         <Label>Date</Label>
-        <div className="flex gap-2 overflow-x-auto pb-2 -mx-6 px-6">
+        <div className="grid grid-cols-4 sm:grid-cols-7 gap-1.5">
           {dates.map((d) => {
             const isSelected = dateOnlyKey(d) === dateOnlyKey(selectedDate);
             const isDateBlocked = blockedDates.includes(dateOnlyKey(d));
+            const dayName = d.toLocaleDateString("en-GB", { weekday: "short" });
+            const dayNum  = d.getDate();
+            const mon     = d.toLocaleDateString("en-GB", { month: "short" });
             return (
               <button
                 key={d.toISOString()}
                 onClick={() => { if (!isDateBlocked) setSelectedDate(parseDateKey(dateOnlyKey(d))); }}
                 disabled={isDateBlocked}
                 title={isDateBlocked ? "All courts unavailable" : undefined}
-                className={`shrink-0 px-4 py-3 rounded-xl border text-sm transition ${
+                className={`flex flex-col items-center justify-center py-2.5 px-1 rounded-xl border text-center transition ${
                   isDateBlocked
-                    ? "bg-cream/50 text-charcoal/30 border-forest/10 cursor-not-allowed line-through"
+                    ? "bg-cream/50 text-charcoal/30 border-forest/10 cursor-not-allowed"
                     : isSelected
                       ? "bg-forest text-cream border-forest"
                       : "bg-cream text-charcoal border-forest/15 hover:border-forest/40"
                 }`}
               >
-                <div className="font-medium">{formatDateShort(d)}</div>
+                <span className={`text-[10px] font-semibold uppercase tracking-wide leading-none mb-1 ${isSelected ? "text-cream/80" : "text-charcoal/50"}`}>
+                  {dayName}
+                </span>
+                <span className={`text-base font-bold leading-none ${isDateBlocked ? "line-through" : ""}`}>
+                  {dayNum}
+                </span>
+                <span className={`text-[9px] leading-none mt-1 ${isSelected ? "text-cream/70" : "text-charcoal/40"}`}>
+                  {mon}
+                </span>
               </button>
             );
           })}
@@ -194,7 +205,7 @@ export function BookingFlow({
             </div>
           </div>
         ) : (
-          <div className="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-6 gap-2">
+          <div className="grid grid-cols-3 xs:grid-cols-4 sm:grid-cols-5 md:grid-cols-6 gap-1.5">
             {courtAvail.slots.map((s) => {
               const isSelected = s.startIso === selectedSlotIso;
               const baseClass =
