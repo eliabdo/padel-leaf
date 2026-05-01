@@ -12,19 +12,15 @@ const SESSION_COOKIE = "pl_admin_session";
 const SESSION_DURATION_DAYS = 14;
 
 export async function verifyAdminPassword(password: string): Promise<boolean> {
-  const hash = process.env.ADMIN_PASSWORD_HASH;
-  // #region agent log
-  fetch("http://127.0.0.1:7589/ingest/dca80672-932e-4ef8-bfcb-5f2627301044",{method:"POST",headers:{"Content-Type":"application/json","X-Debug-Session-Id":"e69d34"},body:JSON.stringify({sessionId:"e69d34",runId:"admin-login-debug-1",hypothesisId:"H1",location:"lib/session.ts:16",message:"verifyAdminPassword input + env shape",data:{passwordLength:password.length,hasHash:Boolean(hash),hashLength:hash?.length ?? 0,hashPrefix:hash?.slice(0,4) ?? null,hashHasEquals:hash?.includes("=") ?? false,hashHasWhitespace:(hash?.trim() ?? "")!== (hash ?? "")},timestamp:Date.now()})}).catch(()=>{});
-  // #endregion
-  if (!hash) {
+  const raw = process.env.ADMIN_PASSWORD_HASH;
+  if (!raw) {
     console.error("ADMIN_PASSWORD_HASH is not set");
     return false;
   }
-  const result = await bcrypt.compare(password, hash);
-  // #region agent log
-  fetch("http://127.0.0.1:7589/ingest/dca80672-932e-4ef8-bfcb-5f2627301044",{method:"POST",headers:{"Content-Type":"application/json","X-Debug-Session-Id":"e69d34"},body:JSON.stringify({sessionId:"e69d34",runId:"admin-login-debug-1",hypothesisId:"H2",location:"lib/session.ts:24",message:"bcrypt comparison result",data:{match:result},timestamp:Date.now()})}).catch(()=>{});
-  // #endregion
-  return result;
+  // The hash is base64-encoded in .env.local to prevent dotenv-expand from
+  // mangling the $ characters that are part of every bcrypt hash.
+  const hash = Buffer.from(raw, "base64").toString("utf8");
+  return bcrypt.compare(password, hash);
 }
 
 export async function createAdminSession(): Promise<void> {

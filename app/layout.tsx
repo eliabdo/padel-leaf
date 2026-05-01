@@ -41,7 +41,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${playfair.variable} ${inter.variable}`}>
+    <html lang="en" data-scroll-behavior="smooth" className={`${playfair.variable} ${inter.variable}`}>
       <body className="min-h-screen flex flex-col">{children}</body>
     </html>
   );

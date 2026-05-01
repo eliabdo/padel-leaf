@@ -10,15 +10,12 @@ async function createBlockOut(formData: FormData): Promise<void> {
   "use server";
   const courtId = Number(formData.get("courtId"));
   const startsAt = new Date(String(formData.get("startsAt")));
-  const endsAt = new Date(String(formData.get("endsAt")));
-  const reason = String(formData.get("reason") ?? "").trim() || "Maintenance";
-  if (!courtId || isNaN(startsAt.getTime()) || isNaN(endsAt.getTime())) {
-    throw new Error("Missing fields");
-  }
+  const endsAt   = new Date(String(formData.get("endsAt")));
+  const reason   = String(formData.get("reason") ?? "").trim() || "Maintenance";
+  if (!courtId || isNaN(startsAt.getTime()) || isNaN(endsAt.getTime())) throw new Error("Missing fields");
   await db.insert(schema.blockOuts).values({ courtId, startsAt, endsAt, reason });
   redirect("/admin/block-outs");
 }
-
 async function deleteBlockOut(formData: FormData): Promise<void> {
   "use server";
   const id = Number(formData.get("id"));
@@ -27,103 +24,119 @@ async function deleteBlockOut(formData: FormData): Promise<void> {
   redirect("/admin/block-outs");
 }
 
+const FALLBACK_COLOR = { text: "#6b7280", bg: "rgba(107,114,128,0.10)" };
+const courtColor: Record<string, { text: string; bg: string }> = {
+  Laurel: { text: "#15803d", bg: "rgba(22,163,74,0.10)" },
+  Oak:    { text: "#b45309", bg: "rgba(217,119,6,0.10)" },
+  Olive:  { text: "#0369a1", bg: "rgba(3,105,161,0.10)" },
+};
+const inputStyle: React.CSSProperties = {
+  width: "100%", boxSizing: "border-box",
+  fontFamily: "system-ui, sans-serif", fontSize: 14, color: "#111827",
+  background: "#fff", border: "1px solid rgba(22,163,74,0.22)",
+  borderRadius: 9, padding: "10px 14px", outline: "none",
+};
+const labelStyle: React.CSSProperties = {
+  display: "block", fontFamily: "system-ui, sans-serif", fontSize: 11,
+  fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: "#6b7280", marginBottom: 7,
+};
+
 export default async function AdminBlockOutsPage() {
   const [courts, items] = await Promise.all([
     db.select().from(schema.courts).orderBy(asc(schema.courts.sortOrder)),
-    db.select({
-      id: schema.blockOuts.id,
-      courtName: schema.courts.name,
-      startsAt: schema.blockOuts.startsAt,
-      endsAt:   schema.blockOuts.endsAt,
-      reason:   schema.blockOuts.reason,
-      createdAt: schema.blockOuts.createdAt,
-    })
-    .from(schema.blockOuts)
-    .innerJoin(schema.courts, eq(schema.blockOuts.courtId, schema.courts.id))
-    .orderBy(desc(schema.blockOuts.startsAt))
-    .limit(100),
+    db.select({ id: schema.blockOuts.id, courtName: schema.courts.name, startsAt: schema.blockOuts.startsAt, endsAt: schema.blockOuts.endsAt, reason: schema.blockOuts.reason })
+      .from(schema.blockOuts).innerJoin(schema.courts, eq(schema.blockOuts.courtId, schema.courts.id)).orderBy(desc(schema.blockOuts.startsAt)).limit(100),
   ]);
 
   return (
-    <div className="max-w-4xl mx-auto px-6 py-10 space-y-10">
-      <h1 className="font-serif text-4xl text-forest-deep">Block-outs</h1>
+    <div style={{ maxWidth: 920, margin: "0 auto", padding: "36px 28px", display: "flex", flexDirection: "column", gap: 28 }}>
+      <div>
+        <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.10em", textTransform: "uppercase", color: "#16a34a", marginBottom: 6, fontFamily: "system-ui, sans-serif" }}>Schedule</div>
+        <h1 style={{ fontFamily: "system-ui, sans-serif", fontSize: 26, fontWeight: 700, color: "#0d2010", margin: 0 }}>Block-outs</h1>
+      </div>
 
-      <form action={createBlockOut} className="bg-cream rounded-2xl border border-forest/15 p-6 space-y-4">
-        <h2 className="font-serif text-xl text-forest-deep mb-2">New block-out</h2>
-
-        <div className="grid sm:grid-cols-2 gap-4">
-          <div>
-            <Label>Court</Label>
-            <select name="courtId" required className="w-full px-4 py-3 rounded-lg border border-forest/20 bg-cream">
-              {courts.map((c) => (
-                <option key={c.id} value={c.id}>Court · {c.name}</option>
-              ))}
-            </select>
+      {/* Create form */}
+      <form action={createBlockOut} style={{ background: "#fff", border: "1px solid rgba(22,163,74,0.12)", borderRadius: 14, overflow: "hidden", boxShadow: "0 1px 3px rgba(0,0,0,0.04), 0 4px 16px rgba(0,0,0,0.03)" }}>
+        <div style={{ padding: "16px 24px", background: "#fafdfb", borderBottom: "1px solid rgba(22,163,74,0.08)" }}>
+          <div style={{ fontFamily: "system-ui, sans-serif", fontSize: 14, fontWeight: 700, color: "#0d2010" }}>New block-out</div>
+        </div>
+        <div style={{ padding: "24px", display: "flex", flexDirection: "column", gap: 18 }}>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+            <div>
+              <label style={labelStyle}>Court</label>
+              <select name="courtId" required style={{ ...inputStyle, cursor: "pointer" }}>
+                {courts.map(c => <option key={c.id} value={c.id}>Court · {c.name}</option>)}
+              </select>
+            </div>
+            <div>
+              <label style={labelStyle}>Reason</label>
+              <input name="reason" placeholder="Maintenance / Rain / Tournament" style={inputStyle} />
+            </div>
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+            <div>
+              <label style={labelStyle}>Starts at</label>
+              <input name="startsAt" type="datetime-local" required style={{ ...inputStyle, colorScheme: "light" }} />
+            </div>
+            <div>
+              <label style={labelStyle}>Ends at</label>
+              <input name="endsAt" type="datetime-local" required style={{ ...inputStyle, colorScheme: "light" }} />
+            </div>
           </div>
           <div>
-            <Label>Reason</Label>
-            <input name="reason" placeholder="Maintenance / Rain / Tournament" className="w-full px-4 py-3 rounded-lg border border-forest/20 bg-cream" />
+            <button type="submit" style={{ fontFamily: "system-ui, sans-serif", fontSize: 13, fontWeight: 600, color: "#fff", background: "#16a34a", border: "none", borderRadius: 9, padding: "10px 22px", cursor: "pointer", boxShadow: "0 2px 8px rgba(22,163,74,0.28)" }}>
+              Add block-out
+            </button>
           </div>
         </div>
-
-        <div className="grid sm:grid-cols-2 gap-4">
-          <div>
-            <Label>Starts at</Label>
-            <input name="startsAt" type="datetime-local" required className="w-full px-4 py-3 rounded-lg border border-forest/20 bg-cream" />
-          </div>
-          <div>
-            <Label>Ends at</Label>
-            <input name="endsAt"   type="datetime-local" required className="w-full px-4 py-3 rounded-lg border border-forest/20 bg-cream" />
-          </div>
-        </div>
-
-        <button className="btn btn-primary">Add block-out</button>
       </form>
 
-      <div className="bg-cream rounded-2xl border border-forest/15 overflow-hidden">
-        <div className="px-6 py-4 border-b border-forest/10">
-          <h2 className="font-serif text-xl text-forest-deep">Active & past block-outs</h2>
+      {/* List */}
+      <div style={{ background: "#fff", border: "1px solid rgba(22,163,74,0.12)", borderRadius: 14, overflow: "hidden", boxShadow: "0 1px 3px rgba(0,0,0,0.04), 0 4px 16px rgba(0,0,0,0.03)" }}>
+        <div style={{ padding: "16px 24px", background: "#fafdfb", borderBottom: "1px solid rgba(22,163,74,0.08)" }}>
+          <div style={{ fontFamily: "system-ui, sans-serif", fontSize: 14, fontWeight: 700, color: "#0d2010" }}>Active &amp; past block-outs</div>
         </div>
         {items.length === 0 ? (
-          <div className="p-10 text-center text-char-soft">No block-outs.</div>
+          <div style={{ padding: "52px 24px", textAlign: "center", color: "#9ca3af", fontFamily: "system-ui, sans-serif" }}>No block-outs.</div>
         ) : (
-          <table className="w-full text-sm">
-            <thead className="bg-cream-deep text-xs uppercase tracking-wider text-char-soft">
-              <tr><Th>Court</Th><Th>When</Th><Th>Reason</Th><Th></Th></tr>
-            </thead>
-            <tbody>
-              {items.map((b) => (
-                <tr key={b.id} className="border-t border-forest/10">
-                  <Td>Court {b.courtName}</Td>
-                  <Td>
-                    <div>{formatDateLong(new Date(b.startsAt))}</div>
-                    <div className="text-char-soft text-xs">
-                      {formatTime(new Date(b.startsAt))} — {formatTime(new Date(b.endsAt))}
-                    </div>
-                  </Td>
-                  <Td>{b.reason}</Td>
-                  <Td>
-                    <form action={deleteBlockOut}>
-                      <input type="hidden" name="id" value={b.id} />
-                      <button className="text-clay hover:underline text-sm">Remove</button>
-                    </form>
-                  </Td>
+          <div style={{ overflowX: "auto" }}>
+            <table style={{ width: "100%", borderCollapse: "collapse" }}>
+              <thead>
+                <tr style={{ borderBottom: "1px solid rgba(22,163,74,0.10)", background: "#fafdfb" }}>
+                  {["Court", "When", "Reason", ""].map((h, i) => (
+                    <th key={i} style={{ padding: "10px 16px", textAlign: "left", fontFamily: "system-ui, sans-serif", fontSize: 11, fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase", color: "#9ca3af" }}>{h}</th>
+                  ))}
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {items.map((b, idx) => {
+                  const cc = courtColor[b.courtName] ?? FALLBACK_COLOR;
+                  return (
+                    <tr key={b.id} style={{ borderTop: "1px solid rgba(22,163,74,0.07)", background: idx % 2 === 1 ? "rgba(22,163,74,0.015)" : "#fff" }}>
+                      <td style={{ padding: "13px 16px", verticalAlign: "top" }}>
+                        <span style={{ fontSize: 12, fontWeight: 600, padding: "3px 10px", borderRadius: 20, fontFamily: "system-ui, sans-serif", background: cc.bg, color: cc.text }}>{b.courtName}</span>
+                      </td>
+                      <td style={{ padding: "13px 16px", verticalAlign: "top" }}>
+                        <div style={{ fontFamily: "system-ui, sans-serif", fontSize: 13, color: "#111827", fontWeight: 500 }}>{formatDateLong(new Date(b.startsAt))}</div>
+                        <div style={{ fontFamily: "ui-monospace, 'SF Mono', monospace", fontSize: 11, color: "#9ca3af", marginTop: 2 }}>{formatTime(new Date(b.startsAt))} — {formatTime(new Date(b.endsAt))}</div>
+                      </td>
+                      <td style={{ padding: "13px 16px", fontFamily: "system-ui, sans-serif", fontSize: 13, color: "#374151", verticalAlign: "top" }}>{b.reason}</td>
+                      <td style={{ padding: "13px 16px", verticalAlign: "top" }}>
+                        <form action={deleteBlockOut}>
+                          <input type="hidden" name="id" value={b.id} />
+                          <button type="submit" style={{ fontFamily: "system-ui, sans-serif", fontSize: 12, fontWeight: 500, color: "#dc2626", background: "rgba(220,38,38,0.07)", border: "1px solid rgba(220,38,38,0.22)", borderRadius: 7, padding: "4px 12px", cursor: "pointer" }}>
+                            Remove
+                          </button>
+                        </form>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
     </div>
   );
-}
-
-function Label({ children }: { children: React.ReactNode }) {
-  return <div className="text-xs uppercase tracking-[0.18em] text-forest font-semibold mb-2">{children}</div>;
-}
-function Th({ children }: { children?: React.ReactNode }) {
-  return <th className="px-4 py-3 text-left font-semibold">{children}</th>;
-}
-function Td({ children }: { children?: React.ReactNode }) {
-  return <td className="px-4 py-3 align-top">{children}</td>;
 }

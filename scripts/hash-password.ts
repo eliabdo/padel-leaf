@@ -13,5 +13,7 @@ if (!password) {
 }
 
 const hash = bcrypt.hashSync(password, 10);
-console.log("\nADMIN_PASSWORD_HASH=" + hash + "\n");
+const b64  = Buffer.from(hash).toString("base64");
+console.log("\nADMIN_PASSWORD_HASH=" + b64 + "\n");
 console.log("Paste the line above into your .env.local file.");
+console.log("(Stored as base64 to prevent dotenv from mangling the $ signs in the bcrypt hash.)");

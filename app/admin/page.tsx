@@ -1,8 +1,9 @@
 import Link from "next/link";
 import { db, schema } from "@/lib/db";
-import { and, eq, gte, lt, asc, sql } from "drizzle-orm";
-import { formatTime, formatDateLong } from "@/lib/booking";
+import { and, eq, gte, lt, asc } from "drizzle-orm";
+import { formatDateLong } from "@/lib/booking";
 import { formatUsd } from "@/lib/pricing";
+import TodayTabs, { type BookingRow } from "./today-tabs";
 
 export const metadata = { title: "Admin · Today" };
 export const dynamic = "force-dynamic";
@@ -12,14 +13,13 @@ export default async function AdminTodayPage() {
   const today = new Date(now); today.setHours(0, 0, 0, 0);
   const tomorrow = new Date(today); tomorrow.setDate(today.getDate() + 1);
 
-  const [todayBookings, revenueRow] = await Promise.all([
-    db.select({
+  const allBookings = await db
+    .select({
       id: schema.bookings.id,
       customerName:  schema.bookings.customerName,
       customerPhone: schema.bookings.customerPhone,
       startsAt: schema.bookings.startsAt,
       endsAt:   schema.bookings.endsAt,
-      durationMinutes: schema.bookings.durationMinutes,
       totalCents: schema.bookings.totalCents,
       status: schema.bookings.status,
       courtName: schema.courts.name,
@@ -30,115 +30,70 @@ export default async function AdminTodayPage() {
       gte(schema.bookings.startsAt, today),
       lt(schema.bookings.startsAt, tomorrow),
     ))
-    .orderBy(asc(schema.bookings.startsAt)),
+    .orderBy(asc(schema.bookings.startsAt));
 
-    db.select({
-      total: sql<number>`coalesce(sum(${schema.bookings.totalCents}), 0)::int`,
-    })
-    .from(schema.bookings)
-    .where(and(
-      gte(schema.bookings.startsAt, today),
-      lt(schema.bookings.startsAt, tomorrow),
-      eq(schema.bookings.status, "confirmed"),
-    )),
-  ]);
+  const toRow = (b: typeof allBookings[0]): BookingRow => ({
+    ...b, startsAt: b.startsAt.toISOString(), endsAt: b.endsAt.toISOString(),
+  });
 
-  const todayRevenue = revenueRow[0]?.total ?? 0;
+  const upcoming  = allBookings.filter(b => b.status === "confirmed").map(toRow);
+  const completed = allBookings.filter(b => b.status === "completed").map(toRow);
+  const cancelled = allBookings.filter(b => b.status === "cancelled" || b.status === "no_show").map(toRow);
+  const completedRevenue = completed.reduce((s, b) => s + b.totalCents, 0);
 
   return (
-    <div className="max-w-7xl mx-auto px-6 py-10">
-      <div className="text-xs uppercase tracking-[0.18em] text-forest font-semibold mb-2">
-        — Today
-      </div>
-      <h1 className="font-serif text-4xl text-forest-deep mb-8">
-        {formatDateLong(today)}
-      </h1>
+    <div style={{ maxWidth: 1360, margin: "0 auto", padding: "36px 28px" }}>
 
-      <div className="grid sm:grid-cols-3 gap-6 mb-12">
-        <Card label="Bookings today"  value={String(todayBookings.length)} />
-        <Card label="Revenue (today)" value={formatUsd(todayRevenue)} />
-        <Card label="Quick action">
-          <Link href="/admin/bookings/new" className="btn btn-primary text-sm">
-            Add booking
-          </Link>
-        </Card>
-      </div>
-
-      <div className="bg-cream rounded-2xl border border-forest/15 overflow-hidden">
-        <div className="px-6 py-4 border-b border-forest/10 flex items-center justify-between">
-          <h2 className="font-serif text-xl text-forest-deep">Today&apos;s schedule</h2>
-          <Link href="/admin/bookings" className="text-sm text-forest hover:underline">
-            All bookings →
-          </Link>
-        </div>
-        {todayBookings.length === 0 ? (
-          <div className="p-10 text-center text-char-soft">
-            No bookings yet today.
+      {/* Header */}
+      <div style={{ marginBottom: 32, display: "flex", alignItems: "flex-end", justifyContent: "space-between", flexWrap: "wrap", gap: 16 }}>
+        <div>
+          <div style={{ fontFamily: "system-ui, sans-serif", fontSize: 11, fontWeight: 600, letterSpacing: "0.10em", textTransform: "uppercase", color: "#16a34a", marginBottom: 6 }}>
+            Today
           </div>
-        ) : (
-          <table className="w-full text-sm">
-            <thead className="bg-cream-deep text-xs uppercase tracking-wider text-char-soft">
-              <tr>
-                <Th>Time</Th>
-                <Th>Court</Th>
-                <Th>Customer</Th>
-                <Th>Phone</Th>
-                <Th>Total</Th>
-                <Th>Status</Th>
-                <Th></Th>
-              </tr>
-            </thead>
-            <tbody>
-              {todayBookings.map((b) => {
-                const s = new Date(b.startsAt);
-                const e = new Date(b.endsAt);
-                return (
-                  <tr key={b.id} className="border-t border-forest/10">
-                    <Td>{formatTime(s)} — {formatTime(e)}</Td>
-                    <Td>Court {b.courtName}</Td>
-                    <Td>{b.customerName}</Td>
-                    <Td>{b.customerPhone}</Td>
-                    <Td>{formatUsd(b.totalCents)}</Td>
-                    <Td>
-                      <span className={`inline-block px-2 py-0.5 rounded text-xs ${
-                        b.status === "confirmed" ? "bg-sage-soft text-forest-deep" :
-                        b.status === "cancelled" ? "bg-clay/15 text-clay" :
-                        "bg-cream-deep text-char-soft"
-                      }`}>
-                        {b.status}
-                      </span>
-                    </Td>
-                    <Td>
-                      <Link href={`/admin/bookings/${b.id}`} className="text-forest hover:underline">
-                        Manage →
-                      </Link>
-                    </Td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        )}
+          <h1 style={{ fontFamily: "system-ui, sans-serif", fontSize: 26, fontWeight: 700, color: "#0d2010", margin: 0 }}>
+            {formatDateLong(today)}
+          </h1>
+        </div>
+        <Link href="/admin/bookings/new" style={{
+          fontFamily: "system-ui, sans-serif", fontSize: 13, fontWeight: 600,
+          color: "#fff", background: "#16a34a",
+          border: "none", borderRadius: 9,
+          padding: "10px 22px", textDecoration: "none",
+          boxShadow: "0 2px 8px rgba(22,163,74,0.30), 0 1px 3px rgba(22,163,74,0.20)",
+        }}>
+          + Add booking
+        </Link>
       </div>
+
+      {/* Stat cards */}
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 16, marginBottom: 32 }}>
+        <StatCard label="Total bookings" value={String(allBookings.length)} />
+        <StatCard label="Upcoming" value={String(upcoming.length)} accent="#16a34a" bg="rgba(22,163,74,0.06)" />
+        <StatCard label="Completed" value={String(completed.length)} accent="#2563eb" bg="rgba(37,99,235,0.06)" />
+        <StatCard label="Revenue (completed)" value={formatUsd(completedRevenue)} accent="#0891b2" bg="rgba(8,145,178,0.06)" />
+      </div>
+
+      {/* Tabs */}
+      <TodayTabs upcoming={upcoming} completed={completed} cancelled={cancelled} />
     </div>
   );
 }
 
-function Card({ label, value, children }: { label: string; value?: string; children?: React.ReactNode }) {
+function StatCard({ label, value, accent = "#16a34a", bg = "rgba(22,163,74,0.06)" }: {
+  label: string; value: string; accent?: string; bg?: string;
+}) {
   return (
-    <div className="bg-cream rounded-2xl border border-forest/15 p-6">
-      <div className="text-xs uppercase tracking-[0.18em] text-char-soft font-semibold mb-2">
+    <div style={{
+      background: "#fff", border: "1px solid rgba(22,163,74,0.12)", borderRadius: 12,
+      padding: "22px 24px", borderLeft: `3px solid ${accent}`,
+      boxShadow: "0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.03)",
+    }}>
+      <div style={{ fontFamily: "system-ui, sans-serif", fontSize: 11, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: "#6b7280", marginBottom: 10 }}>
         {label}
       </div>
-      {value && <div className="font-serif text-3xl text-forest-deep">{value}</div>}
-      {children}
+      <div style={{ fontFamily: "ui-monospace, 'SF Mono', monospace", fontSize: 28, fontWeight: 700, color: accent }}>
+        {value}
+      </div>
     </div>
   );
-}
-
-function Th({ children }: { children?: React.ReactNode }) {
-  return <th className="px-4 py-3 text-left font-semibold">{children}</th>;
-}
-function Td({ children }: { children?: React.ReactNode }) {
-  return <td className="px-4 py-3">{children}</td>;
 }

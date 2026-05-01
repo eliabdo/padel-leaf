@@ -1,65 +1,52 @@
 import { db, schema } from "@/lib/db";
-import { sql, desc, eq } from "drizzle-orm";
+import { sql, desc } from "drizzle-orm";
 import { formatUsd } from "@/lib/pricing";
 
 export const metadata = { title: "Admin · Customers" };
 export const dynamic = "force-dynamic";
 
 export default async function AdminCustomersPage() {
-  // Group bookings by email — quick aggregate over the bookings table.
   const customers = await db
-    .select({
-      email:    schema.bookings.customerEmail,
-      lastName: sql<string>`max(${schema.bookings.customerName})`,
-      lastPhone: sql<string>`max(${schema.bookings.customerPhone})`,
-      total:    sql<number>`count(*)::int`,
-      lifetimeSpentCents: sql<number>`coalesce(sum(case when ${schema.bookings.status} = 'completed' then ${schema.bookings.totalCents} else 0 end), 0)::int`,
-      lastBookingAt: sql<Date>`max(${schema.bookings.startsAt})`,
-    })
-    .from(schema.bookings)
-    .groupBy(schema.bookings.customerEmail)
-    .orderBy(desc(sql`max(${schema.bookings.startsAt})`));
+    .select({ email: schema.bookings.customerEmail, lastName: sql<string>`max(${schema.bookings.customerName})`, lastPhone: sql<string>`max(${schema.bookings.customerPhone})`, total: sql<number>`count(*)::int`, lifetimeSpentCents: sql<number>`coalesce(sum(case when ${schema.bookings.status} = 'completed' then ${schema.bookings.totalCents} else 0 end), 0)::int`, lastBookingAt: sql<Date>`max(${schema.bookings.startsAt})` })
+    .from(schema.bookings).groupBy(schema.bookings.customerEmail).orderBy(desc(sql`max(${schema.bookings.startsAt})`));
 
   return (
-    <div className="max-w-7xl mx-auto px-6 py-10">
-      <h1 className="font-serif text-4xl text-forest-deep mb-8">Customers</h1>
+    <div style={{ maxWidth: 1360, margin: "0 auto", padding: "36px 28px" }}>
+      <div style={{ marginBottom: 28 }}>
+        <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.10em", textTransform: "uppercase", color: "#16a34a", marginBottom: 6, fontFamily: "system-ui, sans-serif" }}>Admin</div>
+        <h1 style={{ fontFamily: "system-ui, sans-serif", fontSize: 26, fontWeight: 700, color: "#0d2010", margin: 0 }}>Customers</h1>
+      </div>
 
-      <div className="bg-cream rounded-2xl border border-forest/15 overflow-x-auto">
-        <table className="w-full text-sm min-w-[800px]">
-          <thead className="bg-cream-deep text-xs uppercase tracking-wider text-char-soft">
-            <tr>
-              <Th>Name</Th>
-              <Th>Email</Th>
-              <Th>Phone</Th>
-              <Th>Bookings</Th>
-              <Th>Lifetime</Th>
-              <Th>Last visit</Th>
-            </tr>
-          </thead>
-          <tbody>
-            {customers.length === 0 && (
-              <tr><td colSpan={6} className="px-4 py-10 text-center text-char-soft">No customers yet.</td></tr>
-            )}
-            {customers.map((c) => (
-              <tr key={c.email} className="border-t border-forest/10">
-                <Td>{c.lastName}</Td>
-                <Td>{c.email}</Td>
-                <Td>{c.lastPhone}</Td>
-                <Td>{c.total}</Td>
-                <Td>{formatUsd(c.lifetimeSpentCents)}</Td>
-                <Td>{new Date(c.lastBookingAt).toLocaleDateString()}</Td>
+      <div style={{ background: "#fff", border: "1px solid rgba(22,163,74,0.12)", borderRadius: 14, overflow: "hidden", boxShadow: "0 1px 3px rgba(0,0,0,0.04), 0 4px 16px rgba(0,0,0,0.03)" }}>
+        <div style={{ overflowX: "auto" }}>
+          <table style={{ width: "100%", borderCollapse: "collapse", minWidth: 760 }}>
+            <thead>
+              <tr style={{ borderBottom: "1px solid rgba(22,163,74,0.10)", background: "#fafdfb" }}>
+                {["Name", "Email", "Phone", "Bookings", "Lifetime value", "Last visit"].map((h, i) => (
+                  <th key={i} style={{ padding: "11px 16px", textAlign: "left", fontFamily: "system-ui, sans-serif", fontSize: 11, fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase", color: "#9ca3af" }}>{h}</th>
+                ))}
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {customers.length === 0 && (
+                <tr><td colSpan={6} style={{ padding: "52px 24px", textAlign: "center", color: "#9ca3af", fontFamily: "system-ui, sans-serif" }}>No customers yet.</td></tr>
+              )}
+              {customers.map((c, idx) => (
+                <tr key={c.email} style={{ borderTop: "1px solid rgba(22,163,74,0.07)", background: idx % 2 === 1 ? "rgba(22,163,74,0.015)" : "#fff" }}>
+                  <td style={{ padding: "13px 16px", fontFamily: "system-ui, sans-serif", fontSize: 13, fontWeight: 600, color: "#111827" }}>{c.lastName}</td>
+                  <td style={{ padding: "13px 16px", fontFamily: "system-ui, sans-serif", fontSize: 13, color: "#374151" }}>{c.email}</td>
+                  <td style={{ padding: "13px 16px", fontFamily: "ui-monospace, 'SF Mono', monospace", fontSize: 12, color: "#374151" }}>{c.lastPhone}</td>
+                  <td style={{ padding: "13px 16px" }}>
+                    <span style={{ fontFamily: "ui-monospace, 'SF Mono', monospace", fontSize: 14, fontWeight: 700, color: "#16a34a" }}>{c.total}</span>
+                  </td>
+                  <td style={{ padding: "13px 16px", fontFamily: "ui-monospace, 'SF Mono', monospace", fontSize: 13, fontWeight: 600, color: "#111827" }}>{formatUsd(c.lifetimeSpentCents)}</td>
+                  <td style={{ padding: "13px 16px", fontFamily: "system-ui, sans-serif", fontSize: 13, color: "#6b7280" }}>{new Date(c.lastBookingAt).toLocaleDateString()}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );
-}
-
-function Th({ children }: { children?: React.ReactNode }) {
-  return <th className="px-4 py-3 text-left font-semibold">{children}</th>;
-}
-function Td({ children }: { children?: React.ReactNode }) {
-  return <td className="px-4 py-3">{children}</td>;
 }
