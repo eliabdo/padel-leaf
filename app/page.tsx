@@ -4,8 +4,23 @@ import { SiteNav } from "./components/site-nav";
 import { SiteFooter } from "./components/site-footer";
 import { Marquee } from "./components/marquee";
 import { SectionHeader } from "./components/section-header";
+import { db, schema } from "@/lib/db";
+import { eq, asc } from "drizzle-orm";
+import { priceForDuration, formatUsd, FALLBACK_HOURLY_CENTS } from "@/lib/pricing";
 
-export default function Home() {
+export const dynamic = "force-dynamic";
+
+export default async function Home() {
+  const rules = await db.select().from(schema.pricingRules)
+    .where(eq(schema.pricingRules.active, true))
+    .orderBy(asc(schema.pricingRules.id))
+    .limit(1);
+
+  const hourlyCents = rules[0]?.hourlyRateCents ?? FALLBACK_HOURLY_CENTS;
+  const hourlyLabel = formatUsd(hourlyCents);
+  const p60  = formatUsd(priceForDuration(hourlyCents, 60));
+  const p90  = formatUsd(priceForDuration(hourlyCents, 90));
+  const p120 = formatUsd(priceForDuration(hourlyCents, 120));
   return (
     <>
       <SiteNav />
@@ -80,7 +95,7 @@ export default function Home() {
           <Stat label="Courts"   value="3 · outdoor" />
           <Stat label="Open"     value="7am — 11pm" />
           <Stat label="Surface"  value="Synthetic turf" />
-          <Stat label="Rate"     value="$20 / hour" />
+          <Stat label="Rate"     value={`${hourlyLabel} / hour`} />
         </div>
       </section>
 
@@ -121,9 +136,9 @@ export default function Home() {
         </p>
 
         <div className="mt-10 max-w-2xl">
-          <PriceRow label="60 minutes"  price="$20.00" />
-          <PriceRow label="90 minutes"  price="$30.00" />
-          <PriceRow label="120 minutes" price="$40.00" />
+          <PriceRow label="60 minutes"  price={p60} />
+          <PriceRow label="90 minutes"  price={p90} />
+          <PriceRow label="120 minutes" price={p120} />
         </div>
 
         <div className="mt-10 flex gap-3 flex-wrap">
@@ -192,21 +207,4 @@ function CourtCard({ name, tag, desc }: { name: string; tag: string; desc: strin
           <line x1="140" y1="10" x2="140" y2="90" stroke="#B5E6BD" strokeWidth="1" strokeDasharray="4,3"/>
           <circle cx="100" cy="50" r="12" stroke="#B5E6BD" strokeWidth="1" fill="none"/>
         </svg>
-        <span className="absolute top-4 right-4 text-xs tracking-[0.2em] text-sage/70 font-bold uppercase">{tag}</span>
-      </div>
-      <div className="p-7">
-        <h3 className="font-serif text-xl text-forest-deep mb-2">Court · {name}</h3>
-        <p className="text-sm text-char-soft leading-relaxed">{desc}</p>
-      </div>
-    </div>
-  );
-}
-
-function PriceRow({ label, price }: { label: string; price: string }) {
-  return (
-    <div className="flex items-baseline justify-between py-4 border-b border-forest/10 group hover:bg-sage/5 px-2 -mx-2 rounded transition-colors">
-      <div className="text-char-soft">{label}</div>
-      <div className="font-serif text-xl text-forest-deep">{price}</div>
-    </div>
-  );
-}
+        <span className="absolute top-4 r
