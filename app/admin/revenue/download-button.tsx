@@ -14,7 +14,10 @@ export function RevenueDownloadButton({ dateKey }: Props) {
     setLoading(true);
     try {
       const res = await fetch(`/api/admin/revenue-pdf?date=${dateKey}`);
-      if (!res.ok) throw new Error("PDF generation failed");
+      if (!res.ok) {
+        const text = await res.text();
+        throw new Error(`PDF failed (${res.status}): ${text.slice(0, 300)}`);
+      }
       const blob = await res.blob();
       const url  = URL.createObjectURL(blob);
       const a    = document.createElement("a");
@@ -26,7 +29,7 @@ export function RevenueDownloadButton({ dateKey }: Props) {
       URL.revokeObjectURL(url);
     } catch (err) {
       console.error(err);
-      alert("Could not generate PDF. Please try again.");
+      alert(err instanceof Error ? err.message : "Could not generate PDF.");
     } finally {
       setLoading(false);
     }
