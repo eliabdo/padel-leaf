@@ -17,7 +17,7 @@ export default function Home() {
           backgroundColor: "#0d2010",
           backgroundImage: [
             "linear-gradient(135deg, rgba(13,32,16,0.90) 0%, rgba(13,32,16,0.70) 55%, rgba(13,32,16,0.82) 100%)",
-            "url('https://images.unsplash.com/_RByC3M71KE?auto=format&fit=crop&w=1920&q=80')",
+            "url('https://images.pexels.com/photos/31559322/pexels-photo-31559322.jpeg?auto=compress&cs=tinysrgb&w=1920')",
           ].join(", "),
           backgroundSize: "cover",
           backgroundPosition: "center 40%",
@@ -139,7 +139,7 @@ export default function Home() {
           backgroundColor: "#0d2010",
           backgroundImage: [
             "linear-gradient(to bottom, rgba(13,32,16,0.88) 0%, rgba(13,32,16,0.75) 50%, rgba(13,32,16,0.92) 100%)",
-            "url('https://images.unsplash.com/_RByC3M71KE?auto=format&fit=crop&w=1920&q=80')",
+            "url('https://images.pexels.com/photos/31559322/pexels-photo-31559322.jpeg?auto=compress&cs=tinysrgb&w=1920')",
           ].join(", "),
           backgroundSize: "cover",
           backgroundPosition: "center 60%",
