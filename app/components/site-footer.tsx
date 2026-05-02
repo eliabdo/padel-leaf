@@ -9,7 +9,7 @@ export function SiteFooter() {
           <div>
             <div className="flex items-center gap-3 mb-5">
               <Image
-                src="/logo.jpg"
+                src="/logo2.png"
                 alt="Padel Leaf"
                 width={48}
                 height={48}
