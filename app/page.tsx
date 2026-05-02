@@ -142,11 +142,11 @@ export default function Home() {
 
 function Stat({ label, value }: { label: string; value: string }) {
   return (
-    <div>
-      <div className="text-xs font-semibold tracking-[0.18em] uppercase text-char-soft mb-2">
+    <div className="group">
+      <div className="text-[10px] font-bold tracking-[0.22em] uppercase text-char-soft/70 mb-2">
         {label}
       </div>
-      <div className="font-serif text-2xl md:text-3xl text-forest-deep">
+      <div className="font-serif text-2xl md:text-3xl text-forest-deep group-hover:text-forest transition-colors">
         {value}
       </div>
     </div>
@@ -155,22 +155,24 @@ function Stat({ label, value }: { label: string; value: string }) {
 
 function CourtCard({ name, tag, desc }: { name: string; tag: string; desc: string }) {
   return (
-    <div className="bg-cream rounded-2xl overflow-hidden border border-forest/10 hover:shadow-xl hover:-translate-y-1 transition-all">
-      <div className="h-44 bg-gradient-to-br from-forest-mid to-forest flex items-center justify-center">
-        <svg viewBox="0 0 200 100" className="w-3/4 h-auto" fill="none">
-          <rect x="10" y="10" width="180" height="80" stroke="#B5E6BD" strokeWidth="2" />
-          <line x1="100" y1="10" x2="100" y2="90" stroke="#B5E6BD" strokeWidth="1.5" />
-          <line x1="10"  y1="50" x2="60"  y2="50" stroke="#B5E6BD" strokeWidth="1" />
-          <line x1="140" y1="50" x2="190" y2="50" stroke="#B5E6BD" strokeWidth="1" />
-          <line x1="60"  y1="10" x2="60"  y2="90" stroke="#B5E6BD" strokeWidth="1" strokeDasharray="3,3" />
-          <line x1="140" y1="10" x2="140" y2="90" stroke="#B5E6BD" strokeWidth="1" strokeDasharray="3,3" />
+    <div className="group bg-cream rounded-3xl overflow-hidden border border-forest/10 hover:border-forest/25 hover:shadow-2xl hover:-translate-y-1.5 transition-all duration-300"
+         style={{ boxShadow: "0 1px 3px rgba(2,90,3,0.06), 0 4px 16px rgba(2,90,3,0.04)" }}>
+      <div className="h-48 bg-gradient-to-br from-forest-mid to-forest-deep relative overflow-hidden flex items-center justify-center">
+        <div className="absolute inset-0 opacity-20"
+             style={{ background: "radial-gradient(circle at 30% 70%, rgba(181,230,189,0.6), transparent 60%)" }} />
+        <svg viewBox="0 0 200 100" className="w-3/4 h-auto relative z-10" fill="none">
+          <rect x="10" y="10" width="180" height="80" stroke="#B5E6BD" strokeWidth="2" rx="2"/>
+          <line x1="100" y1="10" x2="100" y2="90" stroke="#B5E6BD" strokeWidth="1.5"/>
+          <line x1="10"  y1="50" x2="60"  y2="50" stroke="#B5E6BD" strokeWidth="1"/>
+          <line x1="140" y1="50" x2="190" y2="50" stroke="#B5E6BD" strokeWidth="1"/>
+          <line x1="60"  y1="10" x2="60"  y2="90" stroke="#B5E6BD" strokeWidth="1" strokeDasharray="4,3"/>
+          <line x1="140" y1="10" x2="140" y2="90" stroke="#B5E6BD" strokeWidth="1" strokeDasharray="4,3"/>
+          <circle cx="100" cy="50" r="12" stroke="#B5E6BD" strokeWidth="1" fill="none"/>
         </svg>
+        <span className="absolute top-4 right-4 text-xs tracking-[0.2em] text-sage/70 font-bold uppercase">{tag}</span>
       </div>
-      <div className="p-6">
-        <div className="flex items-baseline justify-between mb-2">
-          <h3 className="font-serif text-xl text-forest-deep">Court · {name}</h3>
-          <span className="text-xs tracking-[0.18em] text-forest/60 font-semibold">{tag}</span>
-        </div>
+      <div className="p-7">
+        <h3 className="font-serif text-xl text-forest-deep mb-2">Court · {name}</h3>
         <p className="text-sm text-char-soft leading-relaxed">{desc}</p>
       </div>
     </div>
@@ -179,7 +181,7 @@ function CourtCard({ name, tag, desc }: { name: string; tag: string; desc: strin
 
 function PriceRow({ label, price }: { label: string; price: string }) {
   return (
-    <div className="flex items-baseline justify-between py-4 border-b border-forest/10">
+    <div className="flex items-baseline justify-between py-4 border-b border-forest/10 group hover:bg-sage/5 px-2 -mx-2 rounded transition-colors">
       <div className="text-char-soft">{label}</div>
       <div className="font-serif text-xl text-forest-deep">{price}</div>
     </div>

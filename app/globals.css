@@ -1,7 +1,6 @@
 @import "tailwindcss";
 
 @theme {
-  /* Brand palette — extracted from the logo */
   --color-forest: #025A03;
   --color-forest-deep: #013A02;
   --color-forest-mid: #0A7A1F;
@@ -13,15 +12,11 @@
   --color-char-soft: #555555;
   --color-clay: #C46A3D;
 
-  /* Typography — Next.js Google Fonts inject --font-display and --font-body
-     onto the html element via app/layout.tsx, so the chain resolves correctly. */
   --font-serif: var(--font-display), Georgia, serif;
   --font-sans: var(--font-body), system-ui, sans-serif;
 }
 
-html {
-  scroll-behavior: smooth;
-}
+html { scroll-behavior: smooth; }
 
 body {
   font-family: var(--font-sans);
@@ -29,57 +24,99 @@ body {
   background: var(--color-cream);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
 h1, h2, h3, h4 {
   font-family: var(--font-serif);
   font-weight: 600;
-  line-height: 1.15;
-  letter-spacing: -0.01em;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
 }
 
-/* Marquee animation for the ticker bar */
+/* ── Marquee ── */
 @keyframes marquee {
   from { transform: translateX(0); }
   to   { transform: translateX(-50%); }
 }
-.animate-marquee {
-  animation: marquee 35s linear infinite;
-}
+.animate-marquee { animation: marquee 35s linear infinite; }
 
-/* Pulse for the "live" availability dot */
+/* ── Pulse dot ── */
 @keyframes pulse-dot {
-  0%, 100% { box-shadow: 0 0 0 4px rgba(10, 122, 31, 0.18); }
-  50%      { box-shadow: 0 0 0 8px rgba(10, 122, 31, 0.05); }
+  0%, 100% { box-shadow: 0 0 0 4px rgba(10,122,31,0.18); }
+  50%       { box-shadow: 0 0 0 8px rgba(10,122,31,0.05); }
 }
-.animate-pulse-dot {
-  animation: pulse-dot 2s infinite;
+.animate-pulse-dot { animation: pulse-dot 2s infinite; }
+
+/* ── Fade up (hero / sections) ── */
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-up { animation: fade-up 0.55s cubic-bezier(0.16,1,0.3,1) both; }
+.animate-fade-up-2 { animation: fade-up 0.55s 0.1s cubic-bezier(0.16,1,0.3,1) both; }
+.animate-fade-up-3 { animation: fade-up 0.55s 0.2s cubic-bezier(0.16,1,0.3,1) both; }
+
+/* ── Shimmer (loading) ── */
+@keyframes shimmer {
+  from { background-position: -200% 0; }
+  to   { background-position: 200% 0; }
 }
 
-/* Selection in brand color */
-::selection {
-  background: var(--color-forest);
-  color: var(--color-cream);
-}
+/* ── Selection ── */
+::selection { background: var(--color-forest); color: var(--color-cream); }
 
-/* Buttons base */
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(2,90,3,0.18); border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(2,90,3,0.32); }
+
+/* ── Focus ring ── */
+*:focus-visible { outline: 2px solid var(--color-forest); outline-offset: 2px; border-radius: 3px; }
+
+/* ── Buttons ── */
 .btn {
   display: inline-flex; align-items: center; gap: 0.5rem;
-  padding: 0.7rem 1.4rem; border-radius: 9999px;
-  font-weight: 500; font-size: 0.875rem;
+  padding: 0.72rem 1.5rem; border-radius: 9999px;
+  font-weight: 600; font-size: 0.875rem; letter-spacing: 0.01em;
   cursor: pointer; border: none;
-  transition: background 0.2s, color 0.2s, transform 0.1s, border-color 0.2s;
+  transition: background 0.18s, color 0.18s, transform 0.12s, box-shadow 0.18s, border-color 0.18s;
   text-decoration: none; white-space: nowrap;
 }
-.btn-primary { background: var(--color-forest); color: var(--color-cream); }
-.btn-primary:hover { background: var(--color-forest-deep); }
+.btn:active { transform: scale(0.97) !important; }
+
+.btn-primary {
+  background: var(--color-forest); color: var(--color-cream);
+  box-shadow: 0 2px 8px rgba(2,90,3,0.28), 0 1px 2px rgba(2,90,3,0.12);
+}
+.btn-primary:hover {
+  background: var(--color-forest-deep);
+  box-shadow: 0 6px 20px rgba(2,90,3,0.32), 0 2px 4px rgba(2,90,3,0.15);
+  transform: translateY(-1px);
+}
+
 .btn-outline {
   background: transparent; color: var(--color-forest);
   border: 1.5px solid var(--color-forest);
 }
-.btn-outline:hover { background: var(--color-forest); color: var(--color-cream); }
+.btn-outline:hover {
+  background: var(--color-forest); color: var(--color-cream);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(2,90,3,0.22);
+}
+
 .btn-ghost {
   background: transparent; color: var(--color-cream);
-  border: 1.5px solid rgba(255,255,255,0.4);
+  border: 1.5px solid rgba(255,255,255,0.35);
 }
-.btn-ghost:hover { background: rgba(255,255,255,0.12); }
+.btn-ghost:hover {
+  background: rgba(255,255,255,0.10);
+  border-color: rgba(255,255,255,0.6);
+  transform: translateY(-1px);
+}
+
+/* ── Public form inputs ── */
+input, textarea, select {
+  transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
+}

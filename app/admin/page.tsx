@@ -104,8 +104,8 @@ function StatCard({ label, value, accent = "#16a34a", bg = "rgba(22,163,74,0.06)
   label: string; value: string; accent?: string; bg?: string;
 }) {
   return (
-    <div style={{
-      background: "#fff", border: "1px solid rgba(22,163,74,0.12)", borderRadius: 12,
+    <div className="admin-stat-card" style={{
+      background: "#fff", border: "1px solid rgba(22,163,74,0.12)", borderRadius: 14,
       padding: "22px 24px", borderLeft: `3px solid ${accent}`,
       boxShadow: "0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.03)",
     }}>
@@ -124,11 +124,11 @@ function LinkedStatCard({ href, label, value, accent = "#16a34a", bg = "rgba(22,
 }) {
   return (
     <Link href={href} style={{ textDecoration: "none" }}>
-      <div style={{
-        background: "#fff", border: "1px solid rgba(22,163,74,0.12)", borderRadius: 12,
+      <div className="admin-stat-card" style={{
+        background: "#fff", border: "1px solid rgba(22,163,74,0.12)", borderRadius: 14,
         padding: "22px 24px", borderLeft: `3px solid ${accent}`,
         boxShadow: "0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.03)",
-        cursor: "pointer", transition: "box-shadow 0.15s",
+        cursor: "pointer",
       }}>
         <div style={{ fontFamily: "system-ui, sans-serif", fontSize: 11, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: "#6b7280", marginBottom: 10 }}>
           {label} ↗

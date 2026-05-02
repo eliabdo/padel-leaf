@@ -4,6 +4,7 @@ import { eq, desc, and, gte, lt, isNull } from "drizzle-orm";
 import { formatUsd } from "@/lib/pricing";
 import { formatDateLong, formatTime, parseDateKey, dateOnlyKey } from "@/lib/booking";
 import Link from "next/link";
+import { RevenueDownloadButton } from "./download-button";
 
 export const metadata = { title: "Admin · Revenue" };
 export const dynamic = "force-dynamic";
@@ -130,8 +131,11 @@ export default async function AdminRevenuePage({
             <Link href={isToday ? "#" : `/admin/revenue?date=${nextKey}`} style={navBtn(isToday)}>›</Link>
           </div>
         </div>
-        {/* Day total */}
-        <div style={{ background: "rgba(22,163,74,0.07)", border: "1px solid rgba(22,163,74,0.18)", borderRadius: 12, padding: "16px 24px", textAlign: "right" }}>
+        {/* Right side: PDF download + Day total */}
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 10 }}>
+          <RevenueDownloadButton dateKey={viewKey} />
+          {/* Day total */}
+          <div style={{ background: "rgba(22,163,74,0.07)", border: "1px solid rgba(22,163,74,0.18)", borderRadius: 12, padding: "16px 24px", textAlign: "right" }}>
           <div style={{ fontFamily: "system-ui, sans-serif", fontSize: 11, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: "#6b7280", marginBottom: 6 }}>Day total</div>
           <div style={{ fontFamily: "ui-monospace, 'SF Mono', monospace", fontSize: 28, fontWeight: 700, color: "#0d2010" }}>{formatUsd(dayTotal)}</div>
           {manualTotal > 0 && (
@@ -139,6 +143,7 @@ export default async function AdminRevenuePage({
               {formatUsd(bookingTotal)} bookings · {formatUsd(manualTotal)} other
             </div>
           )}
+          </div>
         </div>
       </div>
 

@@ -63,18 +63,21 @@ export default function StatusActions({
   paymentMethod: string;
   paymentReceivedAt: string | null;
 }) {
-  const needsPayment = (paymentMethod === "whish" || paymentMethod === "omt") && !paymentReceivedAt;
-  const payLabel = paymentMethod === "whish" ? "💳 Whish Payment Received" : "💳 OMT Payment Received";
+  const isVenue      = paymentMethod === "venue";
+  const needsPayment = (paymentMethod === "whish" || paymentMethod === "omt" || isVenue) && !paymentReceivedAt;
+  const payLabel =
+    paymentMethod === "whish" ? "💳 Whish Payment Received" :
+    paymentMethod === "omt"   ? "💳 OMT Payment Received"   :
+                                "💵 Paid at Venue";
+  const payStyle: React.CSSProperties =
+    paymentMethod === "whish" ? { background: "#e8192c", color: "#fff", border: "none", boxShadow: "0 2px 6px rgba(232,25,44,0.30)" } :
+    paymentMethod === "omt"   ? { background: "#fede00", color: "#1a1a1a", border: "none", boxShadow: "0 2px 6px rgba(254,222,0,0.40)" } :
+                                { background: "#0d2010", color: "#fff", border: "none", boxShadow: "0 2px 6px rgba(0,0,0,0.25)" };
 
   return (
     <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
       {status === "confirmed" && needsPayment && (
-        <ActionBtn
-          action={markPaymentReceived}
-          id={id}
-          label={payLabel}
-          style={{ background: paymentMethod === "whish" ? "#e8192c" : "#fede00", color: paymentMethod === "whish" ? "#fff" : "#1a1a1a", border: "none", boxShadow: paymentMethod === "whish" ? "0 2px 6px rgba(232,25,44,0.30)" : "0 2px 6px rgba(254,222,0,0.40)" }}
-        />
+        <ActionBtn action={markPaymentReceived} id={id} label={payLabel} style={payStyle} />
       )}
       {status === "confirmed" && (
         <>

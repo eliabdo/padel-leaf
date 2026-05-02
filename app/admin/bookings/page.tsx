@@ -194,7 +194,13 @@ export default async function AdminBookingsPage({
                           }
                         </div>
                       ) : (
-                        <span style={{ fontFamily: "system-ui, sans-serif", fontSize: 12, color: "#6b7280" }}>💵 Venue</span>
+                        <div style={{ display: "inline-flex", flexDirection: "column", alignItems: "flex-start", gap: 4 }}>
+                          <span style={{ fontFamily: "system-ui, sans-serif", fontSize: 12, fontWeight: 600, color: "#374151" }}>💵 Venue</span>
+                          {b.paymentReceivedAt
+                            ? <span style={{ fontSize: 10, fontWeight: 600, color: "#15803d", background: "rgba(22,163,74,0.10)", border: "1px solid rgba(22,163,74,0.22)", borderRadius: 10, padding: "1px 7px" }}>✓ Received</span>
+                            : <span style={{ fontSize: 10, fontWeight: 600, color: "#b45309", background: "rgba(217,119,6,0.09)", border: "1px solid rgba(217,119,6,0.22)", borderRadius: 10, padding: "1px 7px" }}>⏳ Pending</span>
+                          }
+                        </div>
                       )}
                     </td>
                     <td style={{ padding: "13px 16px", verticalAlign: "top" }}>
@@ -203,7 +209,7 @@ export default async function AdminBookingsPage({
                       </span>
                     </td>
                     <td style={{ padding: "13px 16px", verticalAlign: "top" }}>
-                      <Link href={`/admin/bookings/${b.id}`} style={{ fontFamily: "system-ui, sans-serif", fontSize: 12, fontWeight: 600, color: "#16a34a", textDecoration: "none", display: "inline-block", padding: "5px 14px", borderRadius: 8, border: "1px solid rgba(22,163,74,0.30)", background: "rgba(22,163,74,0.06)" }}>Manage →</Link>
+                      <Link href={`/admin/bookings/${b.id}`} className="admin-row-action" style={{ fontFamily: "system-ui, sans-serif", fontSize: 12, fontWeight: 600, color: "#16a34a", textDecoration: "none", display: "inline-block", padding: "5px 14px", borderRadius: 8, border: "1px solid rgba(22,163,74,0.30)", background: "rgba(22,163,74,0.06)" }}>Manage →</Link>
                     </td>
                   </tr>
                 );

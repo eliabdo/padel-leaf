@@ -1,5 +1,4 @@
 import { headers } from "next/headers";
-
 import { redirect } from "next/navigation";
 import { destroyAdminSession, getAdminSession } from "@/lib/session";
 import AdminNav from "./admin-nav";
@@ -27,7 +26,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         color: "#6b7280", background: "none",
         border: "1px solid #e5e7eb", borderRadius: 8,
         padding: "6px 14px", cursor: "pointer",
-        transition: "all 0.15s ease", width: "100%",
+        transition: "all 0.15s", width: "100%",
       }}>
         Sign out
       </button>
@@ -35,41 +34,92 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   );
 
   return (
-    <div style={{
-      minHeight: "100vh", display: "flex", flexDirection: "column",
-      background: "#f0f5f1",
-      backgroundImage: "radial-gradient(circle, rgba(22,163,74,0.09) 1px, transparent 1px)",
-      backgroundSize: "22px 22px",
-    }}>
-      {/* Top accent bar */}
-      <div style={{ height: 3, background: "linear-gradient(90deg, #15803d, #4ade80, #15803d)", flexShrink: 0 }} />
+    <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", background: "#f4f7f5" }}>
+
+      {/* Top accent line */}
+      <div style={{ height: 3, background: "linear-gradient(90deg, #15803d 0%, #4ade80 50%, #15803d 100%)", flexShrink: 0 }} />
 
       <AdminNav logoutForm={logoutForm} />
 
       <main style={{ flex: 1 }}>{children}</main>
 
       <style>{`
-        .admin-nav-link:hover { background: rgba(22,163,74,0.08) !important; color: #15803d !important; }
+        /* ── Nav links ──────────────────────────────────────────── */
+        .admin-nav-link { transition: background 0.15s, color 0.15s !important; }
+        .admin-nav-link:hover  { background: rgba(22,163,74,0.09) !important; color: #15803d !important; }
+        .admin-nav-link.active { background: rgba(22,163,74,0.13) !important; color: #15803d !important; font-weight: 700 !important; }
 
-        /* Desktop defaults */
-        .admin-desktop-nav { display: flex !important; gap: 2px; }
+        /* ── Table rows ─────────────────────────────────────────── */
+        tbody tr { transition: background 0.10s; }
+        tbody tr:hover td { background: rgba(22,163,74,0.05) !important; }
+
+        /* ── Cards hover lift ───────────────────────────────────── */
+        .admin-card { transition: box-shadow 0.2s, transform 0.2s; }
+        .admin-card:hover { box-shadow: 0 8px 28px rgba(0,0,0,0.09) !important; transform: translateY(-1px); }
+
+        /* ── Inputs & selects focus ─────────────────────────────── */
+        input:not([type=hidden]):not([type=checkbox]):not([type=radio]):focus,
+        select:focus,
+        textarea:focus {
+          border-color: rgba(22,163,74,0.55) !important;
+          box-shadow: 0 0 0 3px rgba(22,163,74,0.10) !important;
+          outline: none !important;
+        }
+
+        /* ── Submit / primary buttons ───────────────────────────── */
+        button[type=submit] { transition: filter 0.15s, transform 0.12s, box-shadow 0.15s !important; }
+        button[type=submit]:hover:not(:disabled) {
+          filter: brightness(1.07);
+          transform: translateY(-1px);
+          box-shadow: 0 6px 20px rgba(22,163,74,0.35) !important;
+        }
+        button[type=submit]:active:not(:disabled) { transform: translateY(0) scale(0.98); }
+
+        /* ── Stat cards ──────────────────────────────────────────── */
+        .admin-stat-card {
+          transition: box-shadow 0.2s, transform 0.2s;
+          cursor: default;
+        }
+        .admin-stat-card:hover {
+          box-shadow: 0 10px 30px rgba(0,0,0,0.10) !important;
+          transform: translateY(-2px);
+        }
+
+        /* ── "Manage →" / "View →" row-action links ─────────────── */
+        .admin-row-action {
+          transition: background 0.15s, border-color 0.15s, transform 0.12s !important;
+        }
+        .admin-row-action:hover {
+          background: rgba(22,163,74,0.13) !important;
+          border-color: rgba(22,163,74,0.45) !important;
+          transform: translateY(-1px);
+        }
+
+        /* ── Logout button ───────────────────────────────────────── */
+        form button[type=submit] {
+          transition: background 0.15s, color 0.15s, border-color 0.15s !important;
+        }
+        form button[type=submit]:hover {
+          background: rgba(22,163,74,0.07) !important;
+          color: #15803d !important;
+          border-color: rgba(22,163,74,0.30) !important;
+          filter: none !important;
+          transform: none !important;
+          box-shadow: none !important;
+        }
+
+        /* ── Responsive ──────────────────────────────────────────── */
+        .admin-desktop-nav  { display: flex !important; gap: 2px; }
         .admin-desktop-only { display: block !important; }
-        .admin-mobile-only { display: none !important; }
+        .admin-mobile-only  { display: none !important; }
 
-        /* Mobile breakpoint */
         @media (max-width: 720px) {
-          .admin-desktop-nav { display: none !important; }
+          .admin-desktop-nav  { display: none !important; }
           .admin-desktop-only { display: none !important; }
-          .admin-mobile-only { display: flex !important; }
-
-          /* Tighter page padding */
+          .admin-mobile-only  { display: flex !important; }
           main > div { padding-left: 14px !important; padding-right: 14px !important; }
-
-          /* Stack 2-col form grids */
           .admin-form-grid { grid-template-columns: 1fr !important; }
-
-          /* Scrollable tab bars */
-          .admin-tabs-bar { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+          .admin-tabs-bar  { overflow-x: auto; -webkit-overflow-scrolling: touch; }
           .admin-tabs-bar button { flex-shrink: 0; }
         }
       `}</style>

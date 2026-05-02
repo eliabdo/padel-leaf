@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import { PhoneInput } from "@/app/components/phone-input";
 import {
   ALLOWED_DURATIONS,
   type Duration,
@@ -318,8 +319,11 @@ export function BookingFlow({
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <Field name="name"  label="Name"  type="text"  required />
-              <Field name="phone" label="Phone" type="tel"   required />
+              <Field name="name" label="Name" type="text" required />
+              <div>
+                <label className="block text-xs uppercase tracking-[0.18em] text-forest font-semibold mb-2">Phone</label>
+                <PhoneInput name="phone" required variant="booking" />
+              </div>
             </div>
             <Field name="email" label="Email" type="email" required />
             {error && <div className="text-sm text-clay">{error}</div>}

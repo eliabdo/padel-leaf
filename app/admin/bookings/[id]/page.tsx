@@ -6,6 +6,7 @@ import { db, schema } from "@/lib/db";
 import { eq, asc, and, lt, gt, ne } from "drizzle-orm";
 import { formatTime, formatDateLong, ALLOWED_DURATIONS } from "@/lib/booking";
 import { formatUsd, priceForDuration } from "@/lib/pricing";
+import { PhoneInput } from "@/app/components/phone-input";
 import { getActiveHourlyRateCents } from "@/lib/pricing-db";
 
 export const metadata = { title: "Admin · Booking" };
@@ -180,7 +181,7 @@ export default async function AdminBookingDetailPage({
       if (pm === "omt")   return <span style={{ display:"inline-flex", alignItems:"center", gap:6 }}><img src="/omt-logo.svg" alt="OMT" style={{ height:18, width:"auto" }} /><span style={{ fontFamily:"system-ui,sans-serif", fontSize:13, fontWeight:600, color:"#92400e" }}>OMT Pay</span></span>;
       return <span style={{ fontFamily:"system-ui,sans-serif", fontSize:13, color:"#374151" }}>💵 Pay at Venue</span>;
     })() },
-    ...((b.paymentMethod === "whish" || b.paymentMethod === "omt") ? [{
+    ...((b.paymentMethod === "whish" || b.paymentMethod === "omt" || (b.paymentMethod ?? "venue") === "venue") ? [{
       label: "Payment Status",
       node: b.paymentReceivedAt
         ? <span style={{ display:"inline-flex", alignItems:"center", gap:6, fontFamily:"system-ui,sans-serif", fontSize:13, fontWeight:600, color:"#15803d", background:"rgba(22,163,74,0.10)", border:"1px solid rgba(22,163,74,0.22)", borderRadius:20, padding:"3px 12px" }}>✓ Received</span>
@@ -259,7 +260,7 @@ export default async function AdminBookingDetailPage({
           <div className="admin-form-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
             <div>
               <label style={labelStyle}>Phone</label>
-              <input name="customerPhone" type="tel" required defaultValue={b.customerPhone} style={inputStyle} />
+              <PhoneInput name="customerPhone" required defaultValue={b.customerPhone} />
             </div>
             <div>
               <label style={labelStyle}>Email</label>
@@ -305,4 +306,3 @@ export default async function AdminBookingDetailPage({
     </div>
   );
 }
-

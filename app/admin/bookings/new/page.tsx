@@ -6,6 +6,7 @@ import { ALLOWED_DURATIONS } from "@/lib/booking";
 import SlotPicker from "../slot-picker";
 import { getActiveHourlyRateCents } from "@/lib/pricing-db";
 import { priceForDuration } from "@/lib/pricing";
+import { PhoneInput } from "@/app/components/phone-input";
 
 export const metadata = { title: "Admin · Add booking" };
 export const dynamic = "force-dynamic";
@@ -85,7 +86,7 @@ export default async function AdminNewBookingPage({
         <div><label style={labelStyle}>Customer name</label><input name="customerName" type="text" required style={inputStyle} /></div>
 
         <div className="admin-form-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
-          <div><label style={labelStyle}>Phone</label><input name="customerPhone" type="tel" required style={inputStyle} /></div>
+          <div><label style={labelStyle}>Phone</label><PhoneInput name="customerPhone" required /></div>
           <div><label style={labelStyle}>Email</label><input name="customerEmail" type="email" required style={inputStyle} /></div>
         </div>
 
@@ -112,6 +113,7 @@ export default async function AdminNewBookingPage({
         <div><label style={labelStyle}>Notes (optional)</label><textarea name="notes" rows={3} style={{ ...inputStyle, resize: "vertical" }} /></div>
 
         <button type="submit" style={{ fontFamily: "system-ui, sans-serif", fontSize: 14, fontWeight: 600, color: "#fff", background: "#16a34a", border: "none", borderRadius: 9, padding: "13px 24px", cursor: "pointer", boxShadow: "0 2px 8px rgba(22,163,74,0.30)", marginTop: 4 }}>
+          Add booking →
           Add booking →
         </button>
       </form>
