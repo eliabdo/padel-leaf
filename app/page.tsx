@@ -11,24 +11,12 @@ export default function Home() {
       <SiteNav />
 
       {/* HERO ─────────────────────────────────── */}
-      <header
-        className="text-cream relative overflow-hidden"
-        style={{
-          backgroundColor: "#0d2010",
-          backgroundImage: [
-            "linear-gradient(135deg, rgba(13,32,16,0.90) 0%, rgba(13,32,16,0.70) 55%, rgba(13,32,16,0.82) 100%)",
-            "url('https://images.pexels.com/photos/4536850/pexels-photo-4536850.jpeg?auto=compress&cs=tinysrgb&w=1920')",
-          ].join(", "),
-          backgroundSize: "cover",
-          backgroundPosition: "center 40%",
-        }}
-      >
-        {/* sage glow accents */}
+      <header className="bg-forest text-cream relative overflow-hidden">
         <div
-          className="absolute inset-0 pointer-events-none"
+          className="absolute inset-0 pointer-events-none opacity-60"
           style={{
             background:
-              "radial-gradient(circle at 75% 15%, rgba(181,230,189,0.12), transparent 45%), radial-gradient(circle at 10% 85%, rgba(181,230,189,0.08), transparent 40%)",
+              "radial-gradient(circle at 80% 20%, rgba(181,230,189,0.18), transparent 50%), radial-gradient(circle at 10% 90%, rgba(181,230,189,0.10), transparent 40%)",
           }}
         />
         <div className="max-w-7xl mx-auto px-6 py-28 md:py-36 grid md:grid-cols-[1.2fr_1fr] gap-16 items-center relative">
@@ -133,19 +121,8 @@ export default function Home() {
       </section>
 
       {/* CTA BAND ────────────────────────────── */}
-      <section
-        className="text-cream relative overflow-hidden"
-        style={{
-          backgroundColor: "#0d2010",
-          backgroundImage: [
-            "linear-gradient(to bottom, rgba(13,32,16,0.88) 0%, rgba(13,32,16,0.75) 50%, rgba(13,32,16,0.92) 100%)",
-            "url('https://images.pexels.com/photos/4536850/pexels-photo-4536850.jpeg?auto=compress&cs=tinysrgb&w=1920')",
-          ].join(", "),
-          backgroundSize: "cover",
-          backgroundPosition: "center 60%",
-        }}
-      >
-        <div className="max-w-7xl mx-auto px-6 py-28 text-center relative z-10">
+      <section className="bg-forest text-cream">
+        <div className="max-w-7xl mx-auto px-6 py-28 text-center">
           <h2 className="text-5xl md:text-6xl mb-6">
             See you <em className="italic font-medium text-sage">at the courts.</em>
           </h2>
