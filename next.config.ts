@@ -1,6 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  serverExternalPackages: ["pdf-lib"],
+  /* config options here */
 };
+
 export default nextConfig;

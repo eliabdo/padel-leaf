@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { db, schema } from "@/lib/db";
 import { eq, desc, and, gte, lt } from "drizzle-orm";
 import { parseDateKey, dateOnlyKey } from "@/lib/booking";
-import type { PDFDocument as PDFDocumentType, RGB } from "pdf-lib";
+import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
 import path from "path";
 import fs from "fs";
 
@@ -15,10 +15,19 @@ function usd(cents: number) {
 function fmtTime(d: Date) {
   return d.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
 }
-function hexToRgb(hex: string, rgbFn: typeof import("pdf-lib").rgb) {
+function hexToRgb(hex: string) {
   const n = parseInt(hex.replace("#", ""), 16);
-  return rgbFn(((n >> 16) & 255) / 255, ((n >> 8) & 255) / 255, (n & 255) / 255);
+  return rgb(((n >> 16) & 255) / 255, ((n >> 8) & 255) / 255, (n & 255) / 255);
 }
+
+const GREEN  = hexToRgb("#16a34a");
+const DARK   = hexToRgb("#0d2010");
+const GREY   = hexToRgb("#6b7280");
+const LGREY  = hexToRgb("#9ca3af");
+const WHITE  = rgb(1, 1, 1);
+const LGREEN = hexToRgb("#f0fdf4");
+const BLUE   = hexToRgb("#0369a1");
+const PURPLE = hexToRgb("#6d28d9");
 
 // ── PDF builder ───────────────────────────────────────────────────────────────
 async function buildPdf(data: {
@@ -43,18 +52,6 @@ async function buildPdf(data: {
     amountCents: number;
   }[];
 }): Promise<Uint8Array> {
-  const { PDFDocument, rgb, StandardFonts } = await import("pdf-lib");
-
-  const h  = (hex: string) => hexToRgb(hex, rgb);
-  const GREEN  = h("#16a34a");
-  const DARK   = h("#0d2010");
-  const GREY   = h("#6b7280");
-  const LGREY  = h("#9ca3af");
-  const WHITE  = rgb(1, 1, 1);
-  const LGREEN = h("#f0fdf4");
-  const BLUE   = h("#0369a1");
-  const PURPLE = h("#6d28d9");
-
   const doc  = await PDFDocument.create();
   const bold = await doc.embedFont(StandardFonts.HelveticaBold);
   const reg  = await doc.embedFont(StandardFonts.Helvetica);
@@ -68,10 +65,10 @@ async function buildPdf(data: {
 
   // helper: draw from top-left
   const draw = {
-    rect(x: number, yTop: number, w: number, h: number, color: RGB) {
+    rect(x: number, yTop: number, w: number, h: number, color: ReturnType<typeof rgb>) {
       page.drawRectangle({ x, y: yTop - h, width: w, height: h, color });
     },
-    text(t: string, x: number, yTop: number, size: number, color: RGB, font = reg, maxW?: number) {
+    text(t: string, x: number, yTop: number, size: number, color: ReturnType<typeof rgb>, font = reg, maxW?: number) {
       let str = t;
       if (maxW) {
         while (str.length > 1 && font.widthOfTextAtSize(str, size) > maxW) str = str.slice(0, -1);
@@ -79,11 +76,11 @@ async function buildPdf(data: {
       }
       page.drawText(str, { x, y: yTop - size, size, font, color });
     },
-    textR(t: string, xRight: number, yTop: number, size: number, color: RGB, font = reg) {
+    textR(t: string, xRight: number, yTop: number, size: number, color: ReturnType<typeof rgb>, font = reg) {
       const w = font.widthOfTextAtSize(t, size);
       page.drawText(t, { x: xRight - w, y: yTop - size, size, font, color });
     },
-    line(x1: number, y1: number, x2: number, thickness: number, color: RGB) {
+    line(x1: number, y1: number, x2: number, thickness: number, color: ReturnType<typeof rgb>) {
       page.drawLine({ start: { x: x1, y: y1 }, end: { x: x2, y: y1 }, thickness, color });
     },
   };
@@ -100,8 +97,8 @@ async function buildPdf(data: {
   const cw3 = (CW - 16) / 3;
   const cards = [
     { label: "DAY TOTAL",       value: usd(data.dayTotal),     bg: LGREEN,              valCol: DARK  },
-    { label: "BOOKING REVENUE", value: usd(data.bookingTotal), bg: h("#eff9ff"),  valCol: BLUE  },
-    { label: "OTHER REVENUE",   value: usd(data.manualTotal),  bg: h("#f5f3ff"),  valCol: PURPLE },
+    { label: "BOOKING REVENUE", value: usd(data.bookingTotal), bg: hexToRgb("#eff9ff"),  valCol: BLUE  },
+    { label: "OTHER REVENUE",   value: usd(data.manualTotal),  bg: hexToRgb("#f5f3ff"),  valCol: PURPLE },
   ];
   cards.forEach((c, i) => {
     const cx = ML + i * (cw3 + 8);
@@ -130,8 +127,8 @@ async function buildPdf(data: {
   }
 
   const ROW_H = 20;
-  function tableRow(cols: { text: string; x: number; w: number; right?: boolean; bold?: boolean; color?: RGB }[], even: boolean) {
-    if (even) draw.rect(ML, y, CW, ROW_H, h("#fafff9"));
+  function tableRow(cols: { text: string; x: number; w: number; right?: boolean; bold?: boolean; color?: ReturnType<typeof rgb> }[], even: boolean) {
+    if (even) draw.rect(ML, y, CW, ROW_H, hexToRgb("#fafff9"));
     cols.forEach(c => {
       const font  = c.bold ? bold : reg;
       const color = c.color ?? DARK;
@@ -210,7 +207,7 @@ async function buildPdf(data: {
   y -= 56;
 
   // ── Footer ────────────────────────────────────────────────────────────────
-  draw.line(ML, y, ML + CW, 0.5, h("#e5e7eb"));
+  draw.line(ML, y, ML + CW, 0.5, hexToRgb("#e5e7eb"));
   y -= 8;
   draw.text("Padel Leaf · Mezher, Bsalim, Mount Lebanon", ML, y - 8, 8, LGREY);
   draw.textR(data.dateLabel, ML + CW, y - 8, 8, LGREY);
