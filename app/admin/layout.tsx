@@ -2,6 +2,7 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { destroyAdminSession, getAdminSession } from "@/lib/session";
 import AdminNav from "./admin-nav";
+import { IdleGuard } from "./idle-guard";
 
 export const dynamic = "force-dynamic";
 
@@ -39,6 +40,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
       {/* Top accent line */}
       <div style={{ height: 3, background: "linear-gradient(90deg, #15803d 0%, #4ade80 50%, #15803d 100%)", flexShrink: 0 }} />
 
+      <IdleGuard />
       <AdminNav logoutForm={logoutForm} />
 
       <main style={{ flex: 1 }}>{children}</main>
@@ -120,9 +122,4 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           main > div { padding-left: 14px !important; padding-right: 14px !important; }
           .admin-form-grid { grid-template-columns: 1fr !important; }
           .admin-tabs-bar  { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-          .admin-tabs-bar button { flex-shrink: 0; }
-        }
-      `}</style>
-    </div>
-  );
-}
+          .admin-tabs-bar button { f

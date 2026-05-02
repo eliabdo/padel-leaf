@@ -13,10 +13,10 @@ async function loginAction(formData: FormData): Promise<void> {
   redirect("/admin");
 }
 
-export default async function AdminLoginPage({ searchParams }: { searchParams: Promise<{ e?: string }> }) {
+export default async function AdminLoginPage({ searchParams }: { searchParams: Promise<{ e?: string; timeout?: string }> }) {
   const session = await getAdminSession();
   if (session.valid) redirect("/admin");
-  const { e } = await searchParams;
+  const { e, timeout } = await searchParams;
 
   return (
     <div style={{
@@ -61,6 +61,13 @@ export default async function AdminLoginPage({ searchParams }: { searchParams: P
             />
           </div>
 
+          {timeout === "1" && (
+            <div style={{ display: "flex", alignItems: "center", gap: 8, background: "rgba(234,179,8,0.08)", border: "1px solid rgba(234,179,8,0.30)", borderRadius: 9, padding: "10px 14px" }}>
+              <span style={{ fontSize: 14 }}>⏱️</span>
+              <span style={{ fontFamily: "system-ui, sans-serif", fontSize: 13, fontWeight: 500, color: "#92400e" }}>Session timed out after 5 minutes of inactivity.</span>
+            </div>
+          )}
+
           {e === "1" && (
             <div style={{ display: "flex", alignItems: "center", gap: 8, background: "rgba(220,38,38,0.07)", border: "1px solid rgba(220,38,38,0.22)", borderRadius: 9, padding: "10px 14px" }}>
               <span style={{ fontSize: 14 }}>⚠️</span>
@@ -68,15 +75,4 @@ export default async function AdminLoginPage({ searchParams }: { searchParams: P
             </div>
           )}
 
-          <button type="submit" style={{ fontFamily: "system-ui, sans-serif", fontSize: 14, fontWeight: 600, color: "#fff", background: "#16a34a", border: "none", borderRadius: 10, padding: "13px 24px", cursor: "pointer", marginTop: 4, boxShadow: "0 2px 8px rgba(22,163,74,0.30), 0 1px 3px rgba(22,163,74,0.20)" }}>
-            Sign in →
-          </button>
-        </form>
-
-        <a href="/" style={{ display: "block", marginTop: 24, textAlign: "center", fontFamily: "system-ui, sans-serif", fontSize: 12, color: "#9ca3af", textDecoration: "none" }}>
-          ← Back to site
-        </a>
-      </div>
-    </div>
-  );
-}
+          <button type="submit" style={{ fontFamily: "system-ui, sans-serif", fontSize: 14, fontWeight: 600, c

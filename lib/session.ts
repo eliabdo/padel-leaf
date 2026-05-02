@@ -9,7 +9,7 @@ import { eq, gt, and } from "drizzle-orm";
 import bcrypt from "bcryptjs";
 
 const SESSION_COOKIE = "pl_admin_session";
-const SESSION_DURATION_DAYS = 14;
+const SESSION_TIMEOUT_MS = 5 * 60 * 1000; // 5 minutes
 
 export async function verifyAdminPassword(password: string): Promise<boolean> {
   const raw = process.env.ADMIN_PASSWORD_HASH;
@@ -25,7 +25,7 @@ export async function verifyAdminPassword(password: string): Promise<boolean> {
 
 export async function createAdminSession(): Promise<void> {
   const token = randomBytes(32).toString("hex");
-  const expiresAt = new Date(Date.now() + SESSION_DURATION_DAYS * 24 * 60 * 60 * 1000);
+  const expiresAt = new Date(Date.now() + SESSION_TIMEOUT_MS);
 
   await db.insert(schema.adminSessions).values({ token, expiresAt });
 
@@ -58,11 +58,10 @@ export async function getAdminSession(): Promise<{ valid: boolean }> {
   return { valid: rows.length > 0 };
 }
 
-export async function destroyAdminSession(): Promise<void> {
+/** Extend the current session by another 5 minutes (called on user activity). */
+export async function touchAdminSession(): Promise<boolean> {
   const cookieStore = await cookies();
   const token = cookieStore.get(SESSION_COOKIE)?.value;
-  if (token) {
-    await db.delete(schema.adminSessions).where(eq(schema.adminSessions.token, token));
-  }
-  cookieStore.delete(SESSION_COOKIE);
-}
+  if (!token) return false;
+
+  const newExpiry = new Date(Date.now()
