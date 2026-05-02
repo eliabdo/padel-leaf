@@ -2,6 +2,9 @@ import Link from "next/link";
 import { SiteNav } from "../components/site-nav";
 import { SiteFooter } from "../components/site-footer";
 import { SectionHeader } from "../components/section-header";
+import { db, schema } from "@/lib/db";
+import { eq, asc } from "drizzle-orm";
+import { priceForDuration, formatUsd, FALLBACK_HOURLY_CENTS } from "@/lib/pricing";
 
 import type { Metadata } from "next";
 export const metadata: Metadata = {
@@ -13,9 +16,22 @@ export const metadata: Metadata = {
   },
 };
 
+export const dynamic = "force-dynamic";
 
+export default async function PricingPage() {
+  // Fetch the first active pricing rule (the standard flat rate)
+  const rules = await db.select().from(schema.pricingRules)
+    .where(eq(schema.pricingRules.active, true))
+    .orderBy(asc(schema.pricingRules.id))
+    .limit(1);
 
-export default function PricingPage() {
+  const hourlyCents = rules[0]?.hourlyRateCents ?? FALLBACK_HOURLY_CENTS;
+  const hourlyLabel = formatUsd(hourlyCents);
+
+  const p60  = formatUsd(priceForDuration(hourlyCents, 60));
+  const p90  = formatUsd(priceForDuration(hourlyCents, 90));
+  const p120 = formatUsd(priceForDuration(hourlyCents, 120));
+
   return (
     <>
       <SiteNav />
@@ -29,7 +45,7 @@ export default function PricingPage() {
             One rate. <em className="italic font-medium text-sage">Pay at the venue.</em>
           </h1>
           <p className="text-lg text-cream/80 max-w-xl">
-            Twenty dollars per hour, any court, any time. No peak surcharges,
+            {hourlyLabel} per hour, any court, any time. No peak surcharges,
             no hidden fees, no member tiers to figure out.
           </p>
         </div>
@@ -40,12 +56,12 @@ export default function PricingPage() {
 
         <div className="bg-sage-soft rounded-2xl p-10 mt-8">
           <div className="space-y-1">
-            <PriceRow duration="60 minutes"  price="$20.00" />
-            <PriceRow duration="90 minutes"  price="$30.00" />
-            <PriceRow duration="120 minutes" price="$40.00" />
+            <PriceRow duration="60 minutes"  price={p60} />
+            <PriceRow duration="90 minutes"  price={p90} />
+            <PriceRow duration="120 minutes" price={p120} />
           </div>
           <p className="text-sm text-char-soft mt-8">
-            Rate is <strong>$20/hour</strong>, billed proportionally. Same rate
+            Rate is <strong>{hourlyLabel}/hour</strong>, billed proportionally. Same rate
             for all three courts and any time of day.
           </p>
         </div>
@@ -81,24 +97,4 @@ export default function PricingPage() {
       </section>
 
       <section className="max-w-4xl mx-auto px-6 py-20">
-        <SectionHeader number="03" label="Payment" title="At the venue, on arrival." />
-        <p className="text-lg text-char-soft leading-relaxed">
-          We accept cash and card at reception when you arrive for your
-          session. Online payment is coming in a future update — for now, the
-          booking holds the slot, the payment happens when you walk in.
-        </p>
-      </section>
-
-      <SiteFooter />
-    </>
-  );
-}
-
-function PriceRow({ duration, price }: { duration: string; price: string }) {
-  return (
-    <div className="flex items-baseline justify-between py-4 border-b border-forest/15 last:border-0">
-      <div className="text-charcoal text-lg">{duration}</div>
-      <div className="font-serif text-2xl text-forest-deep">{price}</div>
-    </div>
-  );
-}
+        <SectionHeader number="03" label="
