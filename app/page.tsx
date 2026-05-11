@@ -207,4 +207,21 @@ function CourtCard({ name, tag, desc }: { name: string; tag: string; desc: strin
           <line x1="140" y1="10" x2="140" y2="90" stroke="#B5E6BD" strokeWidth="1" strokeDasharray="4,3"/>
           <circle cx="100" cy="50" r="12" stroke="#B5E6BD" strokeWidth="1" fill="none"/>
         </svg>
-        <span className="absolute top-4 r
+        <span className="absolute top-4 right-4 text-xs tracking-[0.2em] text-sage/70 font-bold uppercase">{tag}</span>
+      </div>
+      <div className="p-7">
+        <h3 className="font-serif text-xl text-forest-deep mb-2">Court · {name}</h3>
+        <p className="text-sm text-char-soft leading-relaxed">{desc}</p>
+      </div>
+    </div>
+  );
+}
+
+function PriceRow({ label, price }: { label: string; price: string }) {
+  return (
+    <div className="flex items-baseline justify-between py-4 border-b border-forest/10 group hover:bg-sage/5 px-2 -mx-2 rounded transition-colors">
+      <div className="text-char-soft">{label}</div>
+      <div className="font-serif text-xl text-forest-deep">{price}</div>
+    </div>
+  );
+}

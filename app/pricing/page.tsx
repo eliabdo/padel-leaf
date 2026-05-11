@@ -97,4 +97,24 @@ export default async function PricingPage() {
       </section>
 
       <section className="max-w-4xl mx-auto px-6 py-20">
-        <SectionHeader number="03" label="
+        <SectionHeader number="03" label="Payment" title="At the venue, on arrival." />
+        <p className="text-lg text-char-soft leading-relaxed">
+          We accept cash and card at reception when you arrive for your
+          session. Online payment is coming in a future update — for now, the
+          booking holds the slot, the payment happens when you walk in.
+        </p>
+      </section>
+
+      <SiteFooter />
+    </>
+  );
+}
+
+function PriceRow({ duration, price }: { duration: string; price: string }) {
+  return (
+    <div className="flex items-baseline justify-between py-4 border-b border-forest/15 last:border-0">
+      <div className="text-charcoal text-lg">{duration}</div>
+      <div className="font-serif text-2xl text-forest-deep">{price}</div>
+    </div>
+  );
+}

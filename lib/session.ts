@@ -64,4 +64,37 @@ export async function touchAdminSession(): Promise<boolean> {
   const token = cookieStore.get(SESSION_COOKIE)?.value;
   if (!token) return false;
 
-  const newExpiry = new Date(Date.now()
+  const newExpiry = new Date(Date.now() + SESSION_TIMEOUT_MS);
+
+  const result = await db
+    .update(schema.adminSessions)
+    .set({ expiresAt: newExpiry })
+    .where(
+      and(
+        eq(schema.adminSessions.token, token),
+        gt(schema.adminSessions.expiresAt, new Date()),
+      ),
+    );
+
+  if (!result.rowCount) return false;
+
+  // Refresh the cookie expiry too
+  cookieStore.set(SESSION_COOKIE, token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    expires: newExpiry,
+    path: "/",
+  });
+
+  return true;
+}
+
+export async function destroyAdminSession(): Promise<void> {
+  const cookieStore = await cookies();
+  const token = cookieStore.get(SESSION_COOKIE)?.value;
+  if (token) {
+    await db.delete(schema.adminSessions).where(eq(schema.adminSessions.token, token));
+  }
+  cookieStore.delete(SESSION_COOKIE);
+}

@@ -311,7 +311,7 @@ function Field({
   label, value, onChangeText, placeholder, keyboardType, autoCapitalize,
 }: {
   label: string; value: string; onChangeText: (t: string) => void;
-  placeholder?: string; keyboardType?: any; autoCapitalize?: any;
+  placeholder?: string; keyboardType?: import("react-native").KeyboardTypeOptions; autoCapitalize?: "none" | "sentences" | "words" | "characters";
 }) {
   const [focused, setFocused] = useState(false);
   return (

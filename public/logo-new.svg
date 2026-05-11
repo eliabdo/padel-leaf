@@ -1,0 +1,57 @@
+<svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <path id="arc" d="M 42,200 A 158,158 0 0,1 358,200"/>
+  </defs>
+
+  <!-- Background -->
+  <circle cx="200" cy="200" r="198" fill="#0d2010"/>
+
+  <!-- Outer ring -->
+  <circle cx="200" cy="200" r="188" fill="none" stroke="#b5e6bd" stroke-width="1.6" opacity="0.54"/>
+  <!-- Inner ring -->
+  <circle cx="200" cy="200" r="181" fill="none" stroke="#b5e6bd" stroke-width="0.8" opacity="0.26"/>
+
+  <!-- Curved top text -->
+  <text font-family="Georgia,'Times New Roman',serif" font-size="17" letter-spacing="6" fill="#b5e6bd" opacity="0.90">
+    <textPath href="#arc" startOffset="50%" text-anchor="middle">PADEL  LEAF  CLUB</textPath>
+  </text>
+
+  <!-- Flanking dots -->
+  <circle cx="80"  cy="181" r="1.8" fill="#b5e6bd" opacity="0.46"/>
+  <circle cx="320" cy="181" r="1.8" fill="#b5e6bd" opacity="0.46"/>
+
+  <!-- Separator: line · diamond · line -->
+  <line x1="148" y1="120" x2="190" y2="120" stroke="#b5e6bd" stroke-width="0.9" opacity="0.40"/>
+  <path d="M 200,117 L 204,120 L 200,123 L 196,120 Z" fill="#b5e6bd" opacity="0.40"/>
+  <line x1="210" y1="120" x2="252" y2="120" stroke="#b5e6bd" stroke-width="0.9" opacity="0.40"/>
+
+  <!-- PL Monogram -->
+  <text font-family="Georgia,'Times New Roman',serif" font-size="175" font-weight="700" fill="#b5e6bd" opacity="0.93">
+    <tspan x="124" y="290">P</tspan><tspan dx="-58" opacity="0.82">L</tspan>
+  </text>
+
+  <!-- Left sprig leaves -->
+  <g fill="#b5e6bd" opacity="0.64">
+    <path transform="translate(174,315) rotate(215)" d="M 0,0 C 5,-7 5,-15 0,-20 C -5,-15 -5,-7 0,0 Z"/>
+    <path transform="translate(163,307) rotate(225)" d="M 0,0 C 5,-7 5,-15 0,-20 C -5,-15 -5,-7 0,0 Z"/>
+    <path transform="translate(152,298) rotate(238)" d="M 0,0 C 5,-7 5,-15 0,-20 C -5,-15 -5,-7 0,0 Z"/>
+    <path transform="translate(141,288) rotate(252)" d="M 0,0 C 5,-7 5,-15 0,-20 C -5,-15 -5,-7 0,0 Z"/>
+    <path transform="translate(132,277) rotate(265)" d="M 0,0 C 5,-7 5,-15 0,-20 C -5,-15 -5,-7 0,0 Z"/>
+  </g>
+  <path d="M 182,319 C 170,312 156,301 132,274" stroke="#b5e6bd" stroke-width="1.2" fill="none" opacity="0.32"/>
+
+  <!-- Right sprig (mirror of left) -->
+  <g transform="translate(400,0) scale(-1,1)" fill="#b5e6bd" opacity="0.64">
+    <path transform="translate(174,315) rotate(215)" d="M 0,0 C 5,-7 5,-15 0,-20 C -5,-15 -5,-7 0,0 Z"/>
+    <path transform="translate(163,307) rotate(225)" d="M 0,0 C 5,-7 5,-15 0,-20 C -5,-15 -5,-7 0,0 Z"/>
+    <path transform="translate(152,298) rotate(238)" d="M 0,0 C 5,-7 5,-15 0,-20 C -5,-15 -5,-7 0,0 Z"/>
+    <path transform="translate(141,288) rotate(252)" d="M 0,0 C 5,-7 5,-15 0,-20 C -5,-15 -5,-7 0,0 Z"/>
+    <path transform="translate(132,277) rotate(265)" d="M 0,0 C 5,-7 5,-15 0,-20 C -5,-15 -5,-7 0,0 Z"/>
+  </g>
+  <g transform="translate(400,0) scale(-1,1)">
+    <path d="M 182,319 C 170,312 156,301 132,274" stroke="#b5e6bd" stroke-width="1.2" fill="none" opacity="0.32"/>
+  </g>
+
+  <!-- Centre ornament -->
+  <path d="M 200,330 L 204,326 L 200,322 L 196,326 Z" fill="#b5e6bd" opacity="0.46"/>
+</svg>

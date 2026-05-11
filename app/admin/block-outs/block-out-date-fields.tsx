@@ -58,7 +58,7 @@ export default function BlockOutDateFields() {
           </button>
         </div>
         <div style={{ fontFamily: "system-ui, sans-serif", fontSize: 11, color: "#9ca3af", marginTop: 6 }}>
-          Select "All Courts" above to close the whole venue for the day.
+          Select &quot;All Courts&quot; above to close the whole venue for the day.
         </div>
       </div>
 

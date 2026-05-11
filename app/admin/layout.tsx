@@ -122,4 +122,9 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           main > div { padding-left: 14px !important; padding-right: 14px !important; }
           .admin-form-grid { grid-template-columns: 1fr !important; }
           .admin-tabs-bar  { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-          .admin-tabs-bar button { f
+          .admin-tabs-bar button { flex-shrink: 0; }
+        }
+      `}</style>
+    </div>
+  );
+}

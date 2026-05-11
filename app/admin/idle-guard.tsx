@@ -14,10 +14,13 @@ const TOUCH_INTERVAL_MS = 2 * 60 * 1000; // ping server every 2 min of activity
  */
 export function IdleGuard() {
   const router       = useRouter();
-  const lastActivity = useRef<number>(Date.now());
-  const lastTouch    = useRef<number>(Date.now());
+  const lastActivity = useRef<number>(0);
+  const lastTouch    = useRef<number>(0);
 
   useEffect(() => {
+    lastActivity.current = Date.now();
+    lastTouch.current    = Date.now();
+
     function resetTimer() {
       lastActivity.current = Date.now();
     }

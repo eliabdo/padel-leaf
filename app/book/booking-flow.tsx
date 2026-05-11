@@ -55,13 +55,15 @@ export function BookingFlow({
 
   useEffect(() => {
     const url = `/api/availability?date=${dateOnlyKey(selectedDate)}&duration=${duration}`;
+    let active = true;
     setLoading(true);
     setSelectedSlotIso(null);
     fetch(url)
       .then((r) => r.json())
-      .then((data: AvailabilityResp) => setAvailability(data))
-      .catch(() => setAvailability(null))
-      .finally(() => setLoading(false));
+      .then((data: AvailabilityResp) => { if (active) setAvailability(data); })
+      .catch(() => { if (active) setAvailability(null); })
+      .finally(() => { if (active) setLoading(false); });
+    return () => { active = false; };
   }, [selectedDate, duration]);
 
   const courtAvail = availability?.courts.find((c) => c.id === courtId);

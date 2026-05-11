@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import Link from "next/link";
 import { createAdminSession, verifyAdminPassword, getAdminSession } from "@/lib/session";
 
 export const metadata = { title: "Admin · Sign in" };
@@ -75,4 +76,15 @@ export default async function AdminLoginPage({ searchParams }: { searchParams: P
             </div>
           )}
 
-          <button type="submit" style={{ fontFamily: "system-ui, sans-serif", fontSize: 14, fontWeight: 600, c
+          <button type="submit" style={{ fontFamily: "system-ui, sans-serif", fontSize: 14, fontWeight: 600, color: "#fff", background: "#16a34a", border: "none", borderRadius: 10, padding: "13px 24px", cursor: "pointer", marginTop: 4, boxShadow: "0 2px 8px rgba(22,163,74,0.30), 0 1px 3px rgba(22,163,74,0.20)" }}>
+            Sign in →
+          </button>
+        </form>
+
+        <Link href="/" style={{ display: "block", marginTop: 24, textAlign: "center", fontFamily: "system-ui, sans-serif", fontSize: 12, color: "#9ca3af", textDecoration: "none" }}>
+          ← Back to site
+        </Link>
+      </div>
+    </div>
+  );
+}

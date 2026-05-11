@@ -54,6 +54,9 @@ export default async function AdminCustomersPage({
                   </td>
                   <td style={{ padding: "13px 16px", fontFamily: "ui-monospace, 'SF Mono', monospace", fontSize: 13, fontWeight: 600, color: "#111827" }}>{formatUsd(c.lifetimeSpentCents)}</td>
                   <td style={{ padding: "13px 16px", fontFamily: "system-ui, sans-serif", fontSize: 13, color: "#6b7280" }}>{new Date(c.lastBookingAt).toLocaleDateString()}</td>
+                  <td style={{ padding: "13px 16px" }}>
+                    <Link href={`/admin/customers/${encodeURIComponent(c.email)}`} className="admin-row-action" style={{ fontFamily: "system-ui, sans-serif", fontSize: 12, fontWeight: 600, color: "#16a34a", textDecoration: "none", display: "inline-block", padding: "5px 14px", borderRadius: 8, border: "1px solid rgba(22,163,74,0.30)", background: "rgba(22,163,74,0.06)", whiteSpace: "nowrap" }}>Manage →</Link>
+                  </td>
                 </tr>
               ))}
             </tbody>
