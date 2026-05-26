@@ -44,7 +44,7 @@ export default function FindUsPage() {
 
           <div className="space-y-6 text-lg">
             <Detail label="Address" value="Mezher, Bsalim, Mount Lebanon, Lebanon" />
-            <Detail label="Hours"   value="7:00 — 23:00, every day" />
+            <Detail label="Hours"   value="8:00 — 24:00, every day" />
             <Detail label="Parking" value="Free, on-site" />
             <Detail label="Surface" value="Three outdoor courts, synthetic turf" />
           </div>

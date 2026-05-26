@@ -14,9 +14,9 @@ const labelStyle: React.CSSProperties = {
   color: "#6b7280", marginBottom: 7,
 };
 
-// Venue opens 07:00 – 23:00
-const OPEN  = "07:00";
-const CLOSE = "23:00";
+// Venue opens 08:00 – midnight
+const OPEN  = "08:00";
+const CLOSE = "23:59";
 
 export default function BlockOutDateFields() {
   const [quickDate, setQuickDate] = useState("");
@@ -54,7 +54,7 @@ export default function BlockOutDateFields() {
               whiteSpace: "nowrap", transition: "all 0.15s ease",
             }}
           >
-            ☀︎ Full day (7 am – 11 pm)
+            ☀︎ Full day (8 am – midnight)
           </button>
         </div>
         <div style={{ fontFamily: "system-ui, sans-serif", fontSize: 11, color: "#9ca3af", marginTop: 6 }}>

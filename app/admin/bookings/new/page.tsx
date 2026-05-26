@@ -7,6 +7,7 @@ import SlotPicker from "../slot-picker";
 import { getActiveHourlyRateCents } from "@/lib/pricing-db";
 import { priceForDuration } from "@/lib/pricing";
 import { PhoneInput } from "@/app/components/phone-input";
+import { sendBookingConfirmation } from "@/lib/email";
 
 export const metadata = { title: "Admin · Add booking" };
 export const dynamic = "force-dynamic";
@@ -16,8 +17,13 @@ async function createManualBooking(formData: FormData): Promise<void> {
   const courtId = Number(formData.get("courtId"));
   const startsAtStr = String(formData.get("startsAt") ?? "");
   const durationMinutes = Number(formData.get("durationMinutes"));
-  const customerName  = String(formData.get("customerName")  ?? "").trim();
-  const customerEmail = String(formData.get("customerEmail") ?? "").trim();
+  const firstName     = String(formData.get("firstName")    ?? "").trim();
+  const lastName      = String(formData.get("lastName")     ?? "").trim();
+  const customerName  = `${firstName} ${lastName}`.trim();
+  // Normalise email so the customers GROUP BY treats variations of the
+  // same address ("J@x.com" vs "j@x.com") as one customer with a higher
+  // booking count instead of two separate rows.
+  const customerEmail = String(formData.get("customerEmail") ?? "").trim().toLowerCase();
   const customerPhone = String(formData.get("customerPhone") ?? "").trim();
   const notes = String(formData.get("notes") ?? "").trim() || null;
 
@@ -37,7 +43,47 @@ async function createManualBooking(formData: FormData): Promise<void> {
 
   const hourlyRateCents = await getActiveHourlyRateCents();
   const totalCents = priceForDuration(hourlyRateCents, durationMinutes);
-  await db.insert(schema.bookings).values({ courtId, customerName, customerEmail, customerPhone, startsAt, endsAt, durationMinutes, totalCents, status: "confirmed", notes, readAt: new Date() });
+  const [createdRow] = await db.insert(schema.bookings)
+    .values({ courtId, customerName, customerEmail, customerPhone, startsAt, endsAt, durationMinutes, totalCents, status: "confirmed", notes, readAt: new Date() })
+    .returning({ id: schema.bookings.id });
+
+  // Look up court name for the email.
+  const [courtRow] = await db.select({ name: schema.courts.name })
+    .from(schema.courts)
+    .where(eq(schema.courts.id, courtId));
+
+  // Mirror the customer into the customers table. Resilient to missing
+  // table (pre db:push) - booking still succeeds either way.
+  try {
+    await db
+      .insert(schema.customers)
+      .values({
+        email: customerEmail.toLowerCase(),
+        name: customerName,
+        phone: customerPhone,
+        source: "booking",
+      })
+      .onConflictDoUpdate({
+        target: schema.customers.email,
+        set: { name: customerName, phone: customerPhone },
+      });
+  } catch (e) {
+    console.warn("[admin/bookings/new] customers upsert skipped (run db:push):", e);
+  }
+
+  // Fire-and-forget confirmation email. Never throws - failures are logged.
+  void sendBookingConfirmation({
+    bookingId: createdRow.id,
+    customerName,
+    customerEmail,
+    courtName: courtRow?.name ?? `Court ${courtId}`,
+    startsAt,
+    endsAt,
+    durationMinutes,
+    totalCents,
+    paymentMethod: "venue",
+  });
+
   redirect("/admin");
 }
 
@@ -70,7 +116,6 @@ export default async function AdminNewBookingPage({
         <h1 style={{ fontFamily: "system-ui, sans-serif", fontSize: 26, fontWeight: 700, color: "#0d2010", margin: 0 }}>Add a booking</h1>
       </div>
 
-      {/* Overlap alert */}
       {hasOverlap && (
         <div style={{ display: "flex", alignItems: "flex-start", gap: 12, background: "rgba(220,38,38,0.06)", border: "1px solid rgba(220,38,38,0.25)", borderRadius: 12, padding: "16px 20px", marginBottom: 24 }}>
           <span style={{ fontSize: 18, flexShrink: 0, lineHeight: 1.2 }}>⚠️</span>
@@ -83,7 +128,10 @@ export default async function AdminNewBookingPage({
 
       <form action={createManualBooking} style={{ background: "#fff", border: `1px solid ${hasOverlap ? "rgba(220,38,38,0.30)" : "rgba(22,163,74,0.12)"}`, borderRadius: 14, padding: "32px 28px", display: "flex", flexDirection: "column", gap: 20, boxShadow: "0 1px 3px rgba(0,0,0,0.04), 0 4px 16px rgba(0,0,0,0.03)" }}>
 
-        <div><label style={labelStyle}>Customer name</label><input name="customerName" type="text" required style={inputStyle} /></div>
+        <div className="admin-form-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+          <div><label style={labelStyle}>First name</label><input name="firstName" type="text" required style={inputStyle} /></div>
+          <div><label style={labelStyle}>Last name</label><input name="lastName" type="text" required style={inputStyle} /></div>
+        </div>
 
         <div className="admin-form-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
           <div><label style={labelStyle}>Phone</label><PhoneInput name="customerPhone" required /></div>
@@ -113,7 +161,6 @@ export default async function AdminNewBookingPage({
         <div><label style={labelStyle}>Notes (optional)</label><textarea name="notes" rows={3} style={{ ...inputStyle, resize: "vertical" }} /></div>
 
         <button type="submit" style={{ fontFamily: "system-ui, sans-serif", fontSize: 14, fontWeight: 600, color: "#fff", background: "#16a34a", border: "none", borderRadius: 9, padding: "13px 24px", cursor: "pointer", boxShadow: "0 2px 8px rgba(22,163,74,0.30)", marginTop: 4 }}>
-          Add booking →
           Add booking →
         </button>
       </form>

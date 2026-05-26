@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
-import { db, schema } from "@/lib/db";
-import { and, eq, lt } from "drizzle-orm";
+import { sweepPastConfirmedBookings } from "@/lib/auto-complete";
 
 export const dynamic = "force-dynamic";
 
@@ -8,9 +7,10 @@ export const dynamic = "force-dynamic";
  * GET /api/cron/auto-complete
  *
  * Called by Vercel Cron every 5 minutes (see vercel.json).
- * Marks any "confirmed" booking whose endsAt is in the past as "completed".
+ * Delegates to lib/auto-complete which is shared with the admin layout's
+ * inline sweep, so logic stays in one place.
  *
- * Protected by a CRON_SECRET env var — Vercel sends it automatically as
+ * Protected by CRON_SECRET - Vercel Cron sends it as
  *   Authorization: Bearer <CRON_SECRET>
  * If the secret is not set we allow the call (safe for local dev / preview).
  */
@@ -23,20 +23,6 @@ export async function GET(req: Request) {
     }
   }
 
-  const now = new Date();
-
-  const result = await db
-    .update(schema.bookings)
-    .set({ status: "completed" })
-    .where(
-      and(
-        eq(schema.bookings.status, "confirmed"),
-        lt(schema.bookings.endsAt, now),
-      ),
-    );
-
-  const count = result.rowCount ?? 0;
-  console.log(`[auto-complete] ${count} booking(s) marked completed at ${now.toISOString()}`);
-
-  return NextResponse.json({ ok: true, completed: count, at: now.toISOString() });
+  const result = await sweepPastConfirmedBookings();
+  return NextResponse.json({ ok: true, ...result });
 }

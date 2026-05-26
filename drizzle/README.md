@@ -5,3 +5,4 @@
 The pre-existing file here is **not** auto-generated:
 
 - **`0001_overlap_constraint.sql`** — adds the Postgres `EXCLUDE` constraint that prevents double-booking at the database level. Drizzle can't express this in TypeScript yet, so it's hand-written. Run it once after `db:push`.
+- **`0002_seed_customers_from_bookings.sql`** — backfills the `customers` table from existing booking history so the admin customers list isn't empty after the customers-table migration. Idempotent (`ON CONFLICT DO NOTHING`). Run once after the `customers` table exists (i.e. after `npm run db:push`).

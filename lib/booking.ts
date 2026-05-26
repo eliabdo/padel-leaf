@@ -3,8 +3,8 @@
  */
 
 export const OPERATING_HOURS = {
-  open: 7,    // 07:00
-  close: 23,  // 23:00 (last play ends here)
+  open: 8,    // 08:00
+  close: 24,  // 24:00 / midnight (last play ends here)
 };
 export const SLOT_INCREMENT_MINUTES = 30;
 export const MIN_BOOKING_NOTICE_MS = 60 * 60 * 1000; // 1 hour

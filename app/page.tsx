@@ -7,15 +7,12 @@ import { SectionHeader } from "./components/section-header";
 import { db, schema } from "@/lib/db";
 import { eq, asc } from "drizzle-orm";
 import { priceForDuration, formatUsd, FALLBACK_HOURLY_CENTS } from "@/lib/pricing";
-
 export const dynamic = "force-dynamic";
-
 export default async function Home() {
   const rules = await db.select().from(schema.pricingRules)
     .where(eq(schema.pricingRules.active, true))
     .orderBy(asc(schema.pricingRules.id))
     .limit(1);
-
   const hourlyCents = rules[0]?.hourlyRateCents ?? FALLBACK_HOURLY_CENTS;
   const hourlyLabel = formatUsd(hourlyCents);
   const p60  = formatUsd(priceForDuration(hourlyCents, 60));
@@ -24,7 +21,6 @@ export default async function Home() {
   return (
     <>
       <SiteNav />
-
       {/* HERO ─────────────────────────────────── */}
       <header
         className="text-cream relative overflow-hidden"
@@ -68,15 +64,14 @@ export default async function Home() {
               </Link>
             </div>
           </div>
-
           <div className="relative max-w-md mx-auto md:ml-auto w-full">
-            <div className="aspect-square rounded-full overflow-hidden shadow-2xl ring-1 ring-sage/30">
+            <div className="aspect-square rounded-full overflow-hidden flex items-center justify-center">
               <Image
-                src="/logo2.png"
+                src="/Padelleaf Club Logo-03.png"
                 alt="Padel Leaf crest"
                 width={460}
                 height={460}
-                className="object-cover w-full h-full"
+                className="object-cover w-[200%] h-[200%]"
                 priority
               />
             </div>
@@ -85,20 +80,17 @@ export default async function Home() {
           </div>
         </div>
       </header>
-
       {/* MARQUEE ──────────────────────────────── */}
       <Marquee />
-
       {/* STATS STRIP ─────────────────────────── */}
       <section className="bg-cream-deep border-b border-forest/10">
         <div className="max-w-7xl mx-auto px-6 py-10 grid grid-cols-2 md:grid-cols-4 gap-8">
           <Stat label="Courts"   value="3 · outdoor" />
-          <Stat label="Open"     value="7am — 11pm" />
+          <Stat label="Open"     value="8am — midnight" />
           <Stat label="Surface"  value="Synthetic turf" />
           <Stat label="Rate"     value={`${hourlyLabel} / hour`} />
         </div>
       </section>
-
       {/* SECTION 01 — THE CLUB ───────────────── */}
       <section className="max-w-7xl mx-auto px-6 py-24">
         <SectionHeader number="01" label="The Club" title="A club, not a" italic="court rental." />
@@ -111,7 +103,6 @@ export default async function Home() {
           Read our principles →
         </Link>
       </section>
-
       {/* SECTION 02 — THE COURTS ─────────────── */}
       <section className="bg-sage-soft">
         <div className="max-w-7xl mx-auto px-6 py-24">
@@ -126,7 +117,6 @@ export default async function Home() {
           </Link>
         </div>
       </section>
-
       {/* SECTION 03 — RESERVE ────────────────── */}
       <section className="max-w-7xl mx-auto px-6 py-24">
         <SectionHeader number="03" label="Reserve" title="Reserve a court in" italic="under a minute." />
@@ -134,19 +124,16 @@ export default async function Home() {
           Pick a time, pick a court, play. No upsells, no pop-ups, no asking
           how the booking went.
         </p>
-
         <div className="mt-10 max-w-2xl">
           <PriceRow label="60 minutes"  price={p60} />
           <PriceRow label="90 minutes"  price={p90} />
           <PriceRow label="120 minutes" price={p120} />
         </div>
-
         <div className="mt-10 flex gap-3 flex-wrap">
           <Link href="/book"    className="btn btn-primary">Reserve a court →</Link>
           <Link href="/pricing" className="btn btn-outline">See pricing</Link>
         </div>
       </section>
-
       {/* CTA BAND ────────────────────────────── */}
       <section
         className="text-cream relative overflow-hidden"
@@ -165,19 +152,17 @@ export default async function Home() {
             See you <em className="italic font-medium text-sage">at the courts.</em>
           </h2>
           <p className="text-cream/75 text-lg max-w-md mx-auto mb-9">
-            Mezher · Bsalim · Mount Lebanon. Open daily 7am — 11pm.
+            Mezher · Bsalim · Mount Lebanon. Open daily 8am — midnight.
           </p>
           <Link href="/book" className="btn btn-primary bg-cream text-forest hover:bg-sage">
             Reserve a court →
           </Link>
         </div>
       </section>
-
       <SiteFooter />
     </>
   );
 }
-
 function Stat({ label, value }: { label: string; value: string }) {
   return (
     <div className="group">
@@ -190,7 +175,6 @@ function Stat({ label, value }: { label: string; value: string }) {
     </div>
   );
 }
-
 function CourtCard({ name, tag, desc }: { name: string; tag: string; desc: string }) {
   return (
     <div className="group bg-cream rounded-3xl overflow-hidden border border-forest/10 hover:border-forest/25 hover:shadow-2xl hover:-translate-y-1.5 transition-all duration-300"
@@ -216,7 +200,6 @@ function CourtCard({ name, tag, desc }: { name: string; tag: string; desc: strin
     </div>
   );
 }
-
 function PriceRow({ label, price }: { label: string; price: string }) {
   return (
     <div className="flex items-baseline justify-between py-4 border-b border-forest/10 group hover:bg-sage/5 px-2 -mx-2 rounded transition-colors">

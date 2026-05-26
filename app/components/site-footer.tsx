@@ -34,7 +34,7 @@ export function SiteFooter() {
               <li>Padel Leaf Club</li>
               <li>Mezher, Bsalim</li>
               <li>Mount Lebanon</li>
-              <li>Open daily, 7am — 11pm</li>
+              <li>Open daily, 8am — midnight</li>
             </ul>
           </div>
 

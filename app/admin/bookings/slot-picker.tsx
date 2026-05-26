@@ -2,13 +2,13 @@
 
 import { useEffect, useRef, useState } from "react";
 
-const OPEN  = 7;   // 07:00
-const CLOSE = 23;  // 23:00
+const OPEN  = 8;   // 08:00
+const CLOSE = 24;  // 24:00 / midnight
 const STEP  = 30;  // minutes
 
 function pad(n: number) { return String(n).padStart(2, "0"); }
 
-// Generate every 30-min label from 07:00 to 22:30
+// Generate every 30-min label from 08:00 to 23:30
 const TIME_OPTIONS: string[] = [];
 for (let h = OPEN; h < CLOSE; h++) {
   for (let m = 0; m < 60; m += STEP) {

@@ -65,7 +65,7 @@ export default function RootLayout({
               "addressCountry": "LB"
             },
             "geo": { "@type": "GeoCoordinates", "latitude": 33.8938, "longitude": 35.5731 },
-            "openingHours": "Mo-Su 07:00-23:00",
+            "openingHours": "Mo-Su 08:00-24:00",
             "priceRange": "$$",
             "sport": "Padel",
             "amenityFeature": [

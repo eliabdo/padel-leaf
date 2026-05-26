@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { db, schema } from "@/lib/db";
 import { eq, desc, and, gte, lt } from "drizzle-orm";
 import { parseDateKey, dateOnlyKey } from "@/lib/booking";
-import type { PDFDocument as PDFDocumentType, RGB } from "pdf-lib";
+import { formatLbp } from "@/lib/pricing";
+import type { RGB } from "pdf-lib";
 import path from "path";
 import fs from "fs";
 
@@ -11,6 +12,9 @@ export const dynamic = "force-dynamic";
 // ── helpers ───────────────────────────────────────────────────────────────────
 function usd(cents: number) {
   return "$" + (cents / 100).toFixed(2);
+}
+function lbp(cents: number) {
+  return formatLbp(cents);
 }
 function fmtTime(d: Date) {
   return d.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
@@ -64,9 +68,8 @@ async function buildPdf(data: {
   const CW = PAGE_W - ML - MR; // 515
 
   let page = doc.addPage([PAGE_W, PAGE_H]);
-  let y = PAGE_H - MT; // y counts DOWN from top in pdf-lib (we flip)
+  let y = PAGE_H - MT;
 
-  // helper: draw from top-left
   const draw = {
     rect(x: number, yTop: number, w: number, h: number, color: RGB) {
       page.drawRectangle({ x, y: yTop - h, width: w, height: h, color });
@@ -97,25 +100,30 @@ async function buildPdf(data: {
   y -= 68;
 
   // ── Summary cards (3-up) ──────────────────────────────────────────────────
+  // Each card now shows USD on top + LBP equivalent underneath in a smaller
+  // grey font. Cards are taller (62px instead of 52px) to fit both lines.
   const cw3 = (CW - 16) / 3;
   const cards = [
-    { label: "DAY TOTAL",       value: usd(data.dayTotal),     bg: LGREEN,              valCol: DARK  },
-    { label: "BOOKING REVENUE", value: usd(data.bookingTotal), bg: h("#eff9ff"),  valCol: BLUE  },
-    { label: "OTHER REVENUE",   value: usd(data.manualTotal),  bg: h("#f5f3ff"),  valCol: PURPLE },
+    { label: "DAY TOTAL",       cents: data.dayTotal,     bg: LGREEN,        valCol: DARK   },
+    { label: "BOOKING REVENUE", cents: data.bookingTotal, bg: h("#eff9ff"),  valCol: BLUE   },
+    { label: "OTHER REVENUE",   cents: data.manualTotal,  bg: h("#f5f3ff"),  valCol: PURPLE },
   ];
   cards.forEach((c, i) => {
     const cx = ML + i * (cw3 + 8);
-    draw.rect(cx, y, cw3, 52, c.bg);
-    draw.text(c.label, cx + 10, y - 8,  7,  GREY, bold);
-    draw.text(c.value, cx + 10, y - 24, 18, c.valCol, bold);
+    draw.rect(cx, y, cw3, 62, c.bg);
+    draw.text(c.label,       cx + 10, y - 8,  7,  GREY, bold);
+    draw.text(usd(c.cents),  cx + 10, y - 24, 17, c.valCol, bold);
+    draw.text(lbp(c.cents),  cx + 10, y - 46, 9,  GREY, reg);
   });
-  y -= 64;
+  y -= 74;
 
   // ── Section helpers ───────────────────────────────────────────────────────
-  function sectionHeader(title: string, total: string) {
+  // Section headers now show "$total · LBP total" so both currencies are
+  // visible at a glance without making the bar taller.
+  function sectionHeader(title: string, cents: number) {
     draw.rect(ML, y, CW, 24, GREEN);
     draw.text(title.toUpperCase(), ML + 12, y - 7, 9, WHITE, bold);
-    draw.textR(total, ML + CW - 12, y - 7, 9, WHITE, bold);
+    draw.textR(usd(cents) + "  ·  " + lbp(cents), ML + CW - 12, y - 7, 9, WHITE, bold);
     y -= 24;
   }
 
@@ -142,7 +150,7 @@ async function buildPdf(data: {
   }
 
   // ── Completed Bookings ────────────────────────────────────────────────────
-  sectionHeader("Completed Bookings", usd(data.bookingTotal));
+  sectionHeader("Completed Bookings", data.bookingTotal);
 
   const bCols = [
     { label: "#",        x: ML+4,   w: 28 },
@@ -177,7 +185,7 @@ async function buildPdf(data: {
   if (y < 160) { page = doc.addPage([PAGE_W, PAGE_H]); y = PAGE_H - MT; }
 
   // ── Other Revenue ─────────────────────────────────────────────────────────
-  sectionHeader("Other Revenue", usd(data.manualTotal));
+  sectionHeader("Other Revenue", data.manualTotal);
 
   const mCols = [
     { label: "Item",   x: ML+4,   w: 200 },
@@ -203,11 +211,14 @@ async function buildPdf(data: {
   y -= 16;
 
   // ── Grand Total ───────────────────────────────────────────────────────────
-  draw.rect(ML, y, CW, 40, LGREEN);
+  // Taller box to fit both USD and LBP. USD is the big number, LBP smaller
+  // underneath in green.
+  draw.rect(ML, y, CW, 54, LGREEN);
   draw.line(ML, y, ML + CW, 2, GREEN);
   draw.text("GRAND TOTAL", ML + 12, y - 13, 9, GREY, bold);
-  draw.textR(usd(data.dayTotal), ML + CW - 12, y - 8, 20, DARK, bold);
-  y -= 56;
+  draw.textR(usd(data.dayTotal),  ML + CW - 12, y - 8,  20, DARK,  bold);
+  draw.textR(lbp(data.dayTotal),  ML + CW - 12, y - 36, 11, GREEN, bold);
+  y -= 70;
 
   // ── Footer ────────────────────────────────────────────────────────────────
   draw.line(ML, y, ML + CW, 0.5, h("#e5e7eb"));

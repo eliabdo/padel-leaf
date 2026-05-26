@@ -113,6 +113,47 @@ export type PricingRule = typeof pricingRules.$inferSelect;
 export type ContactMessage = typeof contactMessages.$inferSelect;
 
 /**
+ * Customers — canonical identity table.
+ *
+ * In v1 we initially derived the customers list by GROUP BY customer_email over
+ * bookings, which meant a person didn't "exist" in the system until they booked.
+ * Eli asked for the ability to add a customer manually (e.g. a friend, a regular
+ * who only walks in, someone we want pre-loaded before they call to book), so
+ * we promoted customers to a first-class table.
+ *
+ * - email is the natural key (lowercased, unique)
+ * - source distinguishes manually-added rows from ones auto-created at booking time
+ * - category is the skill-level LOV (see lib/customer-categories.ts)
+ * - bookings still embed customer_name/email/phone for historical accuracy
+ *   (if a customer renames themselves, old bookings keep their old name unless
+ *   admin explicitly propagates — see /admin/customers/[email] edit flow)
+ */
+export const customers = pgTable(
+  "customers",
+  {
+    id: serial("id").primaryKey(),
+    email: text("email").notNull(),
+    name: text("name").notNull(),
+    phone: text("phone").notNull(),
+    notes: text("notes"),
+    // Skill-level LOV — see lib/customer-categories.ts for allowed values.
+    // Stored as lowercase text so it's easy to extend without an enum migration.
+    // Null = not yet categorised (default).
+    category: text("category"),
+    // Gender LOV — see lib/customer-genders.ts. Null = not specified.
+    gender: text("gender"),
+    source: text("source").notNull().default("booking"), // "booking" | "manual"
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => ({
+    emailIdx: uniqueIndex("customers_email_idx").on(table.email),
+  }),
+);
+
+export type Customer = typeof customers.$inferSelect;
+export type NewCustomer = typeof customers.$inferInsert;
+
+/**
  * Revenue items — manual line items added by admin (e.g. shop sales, lessons).
  * Completed bookings are the primary revenue source; these supplement them.
  */

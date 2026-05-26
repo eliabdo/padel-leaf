@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { PhoneInput } from "@/app/components/phone-input";
 import {
@@ -53,6 +53,14 @@ export function BookingFlow({
 
   const totalCents = priceForDuration(hourlyRateCents, duration);
 
+  // Date strip scroll - arrows scroll by one visible page (7 days).
+  const dateStripRef = useRef<HTMLDivElement>(null);
+  const scrollDates = (direction: 1 | -1) => {
+    const el = dateStripRef.current;
+    if (!el) return;
+    el.scrollBy({ left: el.clientWidth * direction, behavior: "smooth" });
+  };
+
   useEffect(() => {
     const url = `/api/availability?date=${dateOnlyKey(selectedDate)}&duration=${duration}`;
     let active = true;
@@ -75,11 +83,13 @@ export function BookingFlow({
     setError(null);
 
     const f = new FormData(e.currentTarget);
+    const firstName = String(f.get("firstName") ?? "").trim();
+    const lastName  = String(f.get("lastName")  ?? "").trim();
     const body = {
       courtId,
       startsAtIso: selectedSlotIso,
       durationMinutes: duration,
-      customerName:    String(f.get("name")  ?? ""),
+      customerName:    `${firstName} ${lastName}`.trim(),
       customerEmail:   String(f.get("email") ?? ""),
       customerPhone:   String(f.get("phone") ?? ""),
       paymentMethod,
@@ -102,10 +112,23 @@ export function BookingFlow({
 
   return (
     <div className="space-y-8">
-      {/* DATE STRIP — responsive grid, no horizontal scroll */}
+      {/* DATE STRIP — 7 days visible, arrows + swipe to scroll the rest */}
       <div>
         <Label>Date</Label>
-        <div className="grid grid-cols-4 sm:grid-cols-7 gap-1.5">
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => scrollDates(-1)}
+            aria-label="Earlier dates"
+            className="flex-shrink-0 w-9 h-9 rounded-full border border-forest/20 bg-cream text-forest hover:bg-forest hover:text-cream transition flex items-center justify-center text-lg font-bold leading-none"
+          >
+            ‹
+          </button>
+          <div
+            ref={dateStripRef}
+            className="flex-1 flex gap-1.5 overflow-x-auto snap-x snap-mandatory pb-1 [&::-webkit-scrollbar]:hidden"
+            style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+          >
           {dates.map((d) => {
             const isSelected = dateOnlyKey(d) === dateOnlyKey(selectedDate);
             const isDateBlocked = blockedDates.includes(dateOnlyKey(d));
@@ -118,7 +141,7 @@ export function BookingFlow({
                 onClick={() => { if (!isDateBlocked) setSelectedDate(parseDateKey(dateOnlyKey(d))); }}
                 disabled={isDateBlocked}
                 title={isDateBlocked ? "All courts unavailable" : undefined}
-                className={`flex flex-col items-center justify-center py-2.5 px-1 rounded-xl border text-center transition ${
+                className={`flex flex-col items-center justify-center py-2.5 px-1 rounded-xl border text-center transition flex-shrink-0 snap-start w-[calc((100%-2.25rem)/7)] ${
                   isDateBlocked
                     ? "bg-cream/50 text-charcoal/30 border-forest/10 cursor-not-allowed"
                     : isSelected
@@ -138,6 +161,15 @@ export function BookingFlow({
               </button>
             );
           })}
+          </div>
+          <button
+            type="button"
+            onClick={() => scrollDates(1)}
+            aria-label="Later dates"
+            className="flex-shrink-0 w-9 h-9 rounded-full border border-forest/20 bg-cream text-forest hover:bg-forest hover:text-cream transition flex items-center justify-center text-lg font-bold leading-none"
+          >
+            ›
+          </button>
         </div>
       </div>
 
@@ -321,13 +353,16 @@ export function BookingFlow({
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <Field name="name" label="Name" type="text" required />
+              <Field name="firstName" label="First name" type="text" required />
+              <Field name="lastName"  label="Last name"  type="text" required />
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-xs uppercase tracking-[0.18em] text-forest font-semibold mb-2">Phone</label>
                 <PhoneInput name="phone" required variant="booking" />
               </div>
+              <Field name="email" label="Email" type="email" required />
             </div>
-            <Field name="email" label="Email" type="email" required />
             {error && <div className="text-sm text-clay">{error}</div>}
             <button
               type="submit"

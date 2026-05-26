@@ -66,7 +66,7 @@ export default function AboutPage() {
         <SectionHeader number="03" label="Where" title="Mezher, Bsalim," italic="Mount Lebanon." />
         <p className="text-lg text-char-soft leading-relaxed">
           We&apos;re a 5-minute drive from the Bsalim main road. Free parking,
-          open daily from 7am to 11pm. The full address and a map live on our{" "}
+          open daily from 8am to midnight. The full address and a map live on our{" "}
           <a href="/find-us" className="text-forest underline underline-offset-4">find us page</a>.
         </p>
       </section>

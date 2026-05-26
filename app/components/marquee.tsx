@@ -5,7 +5,7 @@
 const ITEMS = [
   "Reserve a court",
   "Three outdoor courts",
-  "Open 7am — 11pm daily",
+  "Open 8am — midnight daily",
   "Pay at the venue",
   "Mezher · Bsalim",
 ];

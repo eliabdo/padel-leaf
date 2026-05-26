@@ -9,6 +9,7 @@ import {
 } from "@/lib/booking";
 import { getActiveHourlyRateCents } from "@/lib/pricing-db";
 import { priceForDuration } from "@/lib/pricing";
+import { sendBookingConfirmation } from "@/lib/email";
 
 
 const Schema = z.object({
@@ -48,7 +49,11 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Invalid input" }, { status: 400 });
   }
 
-  const { courtId, startsAtIso, durationMinutes, customerName, customerEmail, customerPhone, paymentMethod } = parsed.data;
+  const { courtId, startsAtIso, durationMinutes, customerName, customerPhone, paymentMethod } = parsed.data;
+  // Normalise email so a returning customer (e.g. "John@x.com" first time,
+  // "john@x.com" next time) always maps to the SAME customers row and the
+  // SAME bookings GROUP BY bucket - bookings count goes up, no duplicate.
+  const customerEmail = parsed.data.customerEmail.trim().toLowerCase();
   const startsAt = new Date(startsAtIso);
   const endsAt = new Date(startsAt.getTime() + durationMinutes * 60 * 1000);
 
@@ -107,6 +112,41 @@ export async function POST(req: NextRequest) {
         paymentMethod,
       })
       .returning({ id: schema.bookings.id });
+
+    // Upsert the customer record so they appear in /admin/customers.
+    // Wrapped so a missing customers table (i.e. before `db:push`) doesn't
+    // fail the booking itself - the customers list also reads from
+    // bookings GROUP BY, so the customer still shows up either way.
+    try {
+      await db
+        .insert(schema.customers)
+        .values({
+          email: customerEmail.toLowerCase(),
+          name: customerName,
+          phone: customerPhone,
+          source: "booking",
+        })
+        .onConflictDoUpdate({
+          target: schema.customers.email,
+          set: { name: customerName, phone: customerPhone },
+        });
+    } catch (e) {
+      console.warn("[bookings] customers upsert skipped (run db:push):", e);
+    }
+
+    // Fire-and-forget the confirmation email so we don't block the response.
+    // sendBookingConfirmation never throws — failures are logged inside it.
+    void sendBookingConfirmation({
+      bookingId: created.id,
+      customerName,
+      customerEmail,
+      courtName: court.name,
+      startsAt,
+      endsAt,
+      durationMinutes,
+      totalCents,
+      paymentMethod,
+    });
 
     return NextResponse.json({ id: created.id }, { status: 201, headers: CORS });
   } catch (err) {

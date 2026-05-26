@@ -1,8 +1,8 @@
 import { redirect } from "next/navigation";
 import { db, schema } from "@/lib/db";
-import { eq, desc, and, gte, lt, isNull } from "drizzle-orm";
-import { formatUsd } from "@/lib/pricing";
-import { formatDateLong, formatTime, parseDateKey, dateOnlyKey } from "@/lib/booking";
+import { eq, desc, and, gte, lt } from "drizzle-orm";
+import { formatUsd, formatLbp } from "@/lib/pricing";
+import { formatTime, parseDateKey, dateOnlyKey } from "@/lib/booking";
 import Link from "next/link";
 import { RevenueDownloadButton } from "./download-button";
 
@@ -136,13 +136,14 @@ export default async function AdminRevenuePage({
           <RevenueDownloadButton dateKey={viewKey} />
           {/* Day total */}
           <div style={{ background: "rgba(22,163,74,0.07)", border: "1px solid rgba(22,163,74,0.18)", borderRadius: 12, padding: "16px 24px", textAlign: "right" }}>
-          <div style={{ fontFamily: "system-ui, sans-serif", fontSize: 11, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: "#6b7280", marginBottom: 6 }}>Day total</div>
-          <div style={{ fontFamily: "ui-monospace, 'SF Mono', monospace", fontSize: 28, fontWeight: 700, color: "#0d2010" }}>{formatUsd(dayTotal)}</div>
-          {manualTotal > 0 && (
-            <div style={{ fontFamily: "system-ui, sans-serif", fontSize: 11, color: "#9ca3af", marginTop: 4 }}>
-              {formatUsd(bookingTotal)} bookings · {formatUsd(manualTotal)} other
-            </div>
-          )}
+            <div style={{ fontFamily: "system-ui, sans-serif", fontSize: 11, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: "#6b7280", marginBottom: 6 }}>Day total</div>
+            <div style={{ fontFamily: "ui-monospace, 'SF Mono', monospace", fontSize: 28, fontWeight: 700, color: "#0d2010" }}>{formatUsd(dayTotal)}</div>
+            <div style={{ fontFamily: "ui-monospace, 'SF Mono', monospace", fontSize: 14, fontWeight: 600, color: "#16a34a", marginTop: 2 }}>{formatLbp(dayTotal)}</div>
+            {manualTotal > 0 && (
+              <div style={{ fontFamily: "system-ui, sans-serif", fontSize: 11, color: "#9ca3af", marginTop: 4 }}>
+                {formatUsd(bookingTotal)} bookings · {formatUsd(manualTotal)} other
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -151,7 +152,10 @@ export default async function AdminRevenuePage({
       <div style={{ background: "#fff", border: "1px solid rgba(22,163,74,0.12)", borderRadius: 14, overflow: "hidden", boxShadow: "0 1px 3px rgba(0,0,0,0.04), 0 4px 16px rgba(0,0,0,0.03)" }}>
         <div style={{ padding: "14px 20px", background: "#fafdfb", borderBottom: "1px solid rgba(22,163,74,0.08)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <div style={{ fontFamily: "system-ui, sans-serif", fontSize: 14, fontWeight: 700, color: "#0d2010" }}>Completed bookings</div>
-          <div style={{ fontFamily: "ui-monospace,'SF Mono',monospace", fontSize: 13, fontWeight: 700, color: "#16a34a" }}>{formatUsd(bookingTotal)}</div>
+          <div style={{ textAlign: "right" }}>
+            <div style={{ fontFamily: "ui-monospace,'SF Mono',monospace", fontSize: 13, fontWeight: 700, color: "#16a34a" }}>{formatUsd(bookingTotal)}</div>
+            <div style={{ fontFamily: "ui-monospace,'SF Mono',monospace", fontSize: 11, fontWeight: 500, color: "#9ca3af", marginTop: 1 }}>{formatLbp(bookingTotal)}</div>
+          </div>
         </div>
         {completedBookings.length === 0 ? (
           <div style={{ padding: "36px 24px", textAlign: "center", color: "#9ca3af", fontFamily: "system-ui, sans-serif", fontSize: 13 }}>No completed bookings on {dayLabel(viewKey, todayKey).toLowerCase()}.</div>
@@ -187,7 +191,10 @@ export default async function AdminRevenuePage({
       <div style={{ background: "#fff", border: "1px solid rgba(22,163,74,0.12)", borderRadius: 14, overflow: "hidden", boxShadow: "0 1px 3px rgba(0,0,0,0.04), 0 4px 16px rgba(0,0,0,0.03)" }}>
         <div style={{ padding: "14px 20px", background: "#fafdfb", borderBottom: "1px solid rgba(22,163,74,0.08)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <div style={{ fontFamily: "system-ui, sans-serif", fontSize: 14, fontWeight: 700, color: "#0d2010" }}>Other revenue</div>
-          <div style={{ fontFamily: "ui-monospace,'SF Mono',monospace", fontSize: 13, fontWeight: 700, color: "#0891b2" }}>{formatUsd(manualTotal)}</div>
+          <div style={{ textAlign: "right" }}>
+            <div style={{ fontFamily: "ui-monospace,'SF Mono',monospace", fontSize: 13, fontWeight: 700, color: "#0891b2" }}>{formatUsd(manualTotal)}</div>
+            <div style={{ fontFamily: "ui-monospace,'SF Mono',monospace", fontSize: 11, fontWeight: 500, color: "#9ca3af", marginTop: 1 }}>{formatLbp(manualTotal)}</div>
+          </div>
         </div>
         {manualItems.length === 0 ? (
           <div style={{ padding: "28px 24px", textAlign: "center", color: "#9ca3af", fontFamily: "system-ui, sans-serif", fontSize: 13 }}>No manual items — add one below.</div>

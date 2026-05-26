@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { destroyAdminSession, getAdminSession } from "@/lib/session";
 import AdminNav from "./admin-nav";
 import { IdleGuard } from "./idle-guard";
+import { sweepIfDue } from "@/lib/auto-complete";
 
 export const dynamic = "force-dynamic";
 
@@ -19,6 +20,13 @@ export default async function AdminLayout({ children }: { children: React.ReactN
 
   const session = await getAdminSession();
   if (!session.valid) redirect("/admin/login");
+
+  // Throttled inline sweep: any past-end confirmed booking auto-flips to
+  // "completed" so admin always sees current state. Vercel Cron does the
+  // same sweep every 5 min in production; this is the dev/preview safety
+  // net + a no-cost catch-up on first admin pageload after downtime.
+  // sweepIfDue() runs at most once per 60s per server instance.
+  await sweepIfDue();
 
   const logoutForm = (
     <form action={logoutAction}>
