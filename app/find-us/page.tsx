@@ -27,29 +27,29 @@ export default function FindUsPage() {
     <>
       <SiteNav />
 
-      <header className="bg-forest text-cream py-20">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="text-xs font-semibold tracking-[0.18em] uppercase text-sage mb-5">
+      <header className="bg-forest text-cream py-14 sm:py-20">
+        <div className="max-w-7xl mx-auto px-5 sm:px-6">
+          <div className="text-[11px] sm:text-xs font-semibold tracking-[0.18em] uppercase text-sage mb-4 sm:mb-5">
             — Find Us
           </div>
-          <h1 className="text-5xl md:text-6xl mb-6">
+          <h1 className="text-[2.25rem] sm:text-5xl md:text-6xl leading-[1.08] mb-5 sm:mb-6">
             Mezher, Bsalim. <em className="italic font-medium text-sage">Five minutes off the main road.</em>
           </h1>
         </div>
       </header>
 
-      <section className="max-w-7xl mx-auto px-6 py-16 grid md:grid-cols-[1fr_1.5fr] gap-12">
+      <section className="max-w-7xl mx-auto px-5 sm:px-6 py-12 sm:py-16 grid md:grid-cols-[1fr_1.5fr] gap-8 md:gap-12">
         <div>
           <SectionHeader number="01" label="Visit" title="Open daily." />
 
-          <div className="space-y-6 text-lg">
+          <div className="space-y-5 sm:space-y-6 text-base sm:text-lg">
             <Detail label="Address" value="Mezher, Bsalim, Mount Lebanon, Lebanon" />
             <Detail label="Hours"   value="8:00 — 24:00, every day" />
             <Detail label="Parking" value="Free, on-site" />
             <Detail label="Surface" value="Three outdoor courts, synthetic turf" />
           </div>
 
-          <div className="mt-10 flex flex-wrap gap-3">
+          <div className="mt-8 sm:mt-10 flex flex-wrap gap-3">
             <a href={WHATSAPP_LINK} target="_blank" rel="noopener noreferrer" className="btn btn-primary">
               WhatsApp us →
             </a>
@@ -59,11 +59,11 @@ export default function FindUsPage() {
           </div>
         </div>
 
-        <div className="rounded-2xl overflow-hidden border border-forest/15 shadow-lg">
+        <div className="rounded-2xl overflow-hidden border border-forest/15 shadow-lg aspect-[4/3] sm:aspect-auto sm:h-[500px]">
           <iframe
             src={MAPS_EMBED}
             width="100%"
-            height="500"
+            height="100%"
             style={{ border: 0 }}
             allowFullScreen
             loading="lazy"

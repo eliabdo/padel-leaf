@@ -14,6 +14,10 @@
 
   --font-serif: var(--font-display), Georgia, serif;
   --font-sans: var(--font-body), system-ui, sans-serif;
+
+  /* Extra breakpoint for ~iPhone SE → iPhone Pro range.
+     Booking flow uses `xs:grid-cols-4` for time-slot grid. */
+  --breakpoint-xs: 30rem;
 }
 
 html { scroll-behavior: smooth; }
@@ -120,3 +124,25 @@ h1, h2, h3, h4 {
 input, textarea, select {
   transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
 }
+
+/* iOS Safari: stop zoom-on-focus by ensuring input font-size is ≥16px. */
+@media (max-width: 640px) {
+  input, textarea, select {
+    font-size: 16px;
+  }
+}
+
+/* Honour iPhone notch / Dynamic Island safe areas. Use on sticky bars
+   via `padding-top: max(env(safe-area-inset-top), 0px);` if needed. */
+@supports (padding: max(0px)) {
+  body { padding-left: env(safe-area-inset-left); padding-right: env(safe-area-inset-right); }
+}
+
+/* Touch targets — ensure all buttons/links meet 44×44 on coarse pointers
+   without affecting precise hover targets on desktop. */
+@media (hover: none) and (pointer: coarse) {
+  .btn { min-height: 44px; padding-top: 0.85rem; padding-bottom: 0.85rem; }
+}
+
+/* Guard against accidental horizontal overflow on small viewports. */
+html, body { overflow-x: hidden; }

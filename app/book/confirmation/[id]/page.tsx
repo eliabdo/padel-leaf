@@ -44,20 +44,20 @@ export default async function ConfirmationPage({
     <>
       <SiteNav />
 
-      <section className="max-w-2xl mx-auto px-6 py-20">
-        <div className="bg-sage-soft border border-sage rounded-2xl p-10 text-center mb-10">
-          <div className="text-xs uppercase tracking-[0.18em] text-forest font-semibold mb-3">
+      <section className="max-w-2xl mx-auto px-5 sm:px-6 py-12 sm:py-20">
+        <div className="bg-sage-soft border border-sage rounded-2xl p-6 sm:p-10 text-center mb-7 sm:mb-10">
+          <div className="text-[11px] sm:text-xs uppercase tracking-[0.18em] text-forest font-semibold mb-3">
             Confirmed
           </div>
-          <h1 className="font-serif text-4xl text-forest-deep mb-3">
+          <h1 className="font-serif text-2xl sm:text-4xl text-forest-deep mb-3">
             See you at the courts.
           </h1>
-          <p className="text-char-soft">
+          <p className="text-sm sm:text-base text-char-soft">
             Booking #{booking.id} · we&apos;ll see {booking.customerName.split(" ")[0]} at the venue.
           </p>
         </div>
 
-        <div className="bg-cream border border-forest/15 rounded-2xl p-8 mb-8">
+        <div className="bg-cream border border-forest/15 rounded-2xl p-5 sm:p-8 mb-7 sm:mb-8">
           <Row label="Court"        value={`Court · ${booking.courtName}`} />
           <Row label="Date"         value={formatDateLong(startsAt)} />
           <Row label="Time"         value={`${formatTime(startsAt)} — ${formatTime(endsAt)}`} />
@@ -65,20 +65,20 @@ export default async function ConfirmationPage({
           <Row label="Total (pay at venue)" value={formatUsd(booking.totalCents)} />
         </div>
 
-        <div className="flex flex-wrap gap-3 justify-center mb-12">
+        <div className="flex flex-col sm:flex-row sm:flex-wrap gap-3 sm:justify-center mb-10 sm:mb-12">
           <a
             href={`/api/bookings/${booking.id}/ics`}
-            className="btn btn-outline"
+            className="btn btn-outline w-full sm:w-auto justify-center"
             download={`padel-leaf-booking-${booking.id}.ics`}
           >
             Add to calendar (.ics) →
           </a>
-          <Link href="/book" className="btn btn-primary">
+          <Link href="/book" className="btn btn-primary w-full sm:w-auto justify-center">
             Book another
           </Link>
         </div>
 
-        <div className="text-sm text-char-soft text-center max-w-md mx-auto leading-relaxed">
+        <div className="text-xs sm:text-sm text-char-soft text-center max-w-md mx-auto leading-relaxed">
           To cancel: just reply to this confirmation or message us on WhatsApp.
           Free up to 24 hours before. Same-day cancellations owe the full fee.
         </div>
@@ -91,11 +91,11 @@ export default async function ConfirmationPage({
 
 function Row({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex flex-wrap items-baseline justify-between gap-4 py-3 border-b border-forest/10 last:border-0">
-      <div className="text-xs uppercase tracking-[0.18em] text-forest font-semibold">
+    <div className="flex flex-col sm:flex-row sm:flex-wrap sm:items-baseline sm:justify-between gap-1 sm:gap-4 py-3 border-b border-forest/10 last:border-0">
+      <div className="text-[11px] sm:text-xs uppercase tracking-[0.18em] text-forest font-semibold">
         {label}
       </div>
-      <div className="font-serif text-lg text-forest-deep text-right">
+      <div className="font-serif text-base sm:text-lg text-forest-deep sm:text-right">
         {value}
       </div>
     </div>

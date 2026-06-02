@@ -42,7 +42,7 @@ export function SiteNav() {
           : "none",
       }}
     >
-      <div className="max-w-7xl mx-auto px-6 py-3.5 flex items-center justify-between">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 sm:py-3.5 flex items-center justify-between">
 
         {/* Logo */}
         <Link href="/" className="flex items-center gap-3 group" onClick={() => setOpen(false)}>
@@ -56,10 +56,10 @@ export function SiteNav() {
               alt="Padel Leaf"
               width={40}
               height={40}
-              className="rounded-full border border-sage/60 group-hover:border-forest/60 transition-colors duration-200"
+              className="w-9 h-9 sm:w-10 sm:h-10 rounded-full border border-sage/60 group-hover:border-forest/60 transition-colors duration-200"
             />
           </div>
-          <span className="font-serif font-bold text-lg text-forest-deep group-hover:text-forest transition-colors duration-200">
+          <span className="font-serif font-bold text-base sm:text-lg text-forest-deep group-hover:text-forest transition-colors duration-200">
             Padel Leaf
           </span>
         </Link>

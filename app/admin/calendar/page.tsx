@@ -213,9 +213,13 @@ function DayView({
   hours: number[];
   totalHeight: number;
 }) {
+  // Each court column needs ~100px to read; on small screens we horizontal-scroll.
+  const minInner = 56 + Math.max(courts.length, 1) * 110;
   return (
     <div className="rounded-2xl overflow-hidden"
       style={{ background: D.panel, border: `1px solid ${D.border}`, boxShadow: "0 1px 3px rgba(0,0,0,0.04), 0 4px 16px rgba(0,0,0,0.03)" }}>
+    <div style={{ overflowX: "auto", WebkitOverflowScrolling: "touch" }}>
+    <div style={{ minWidth: minInner }}>
 
       {/* Court header */}
       <div className="flex sticky top-0 z-30" style={{ background: D.header, borderBottom: `1px solid ${D.border}` }}>
@@ -243,7 +247,7 @@ function DayView({
 
       {/* Scrollable time grid */}
       <div className="overflow-y-auto" style={{ maxHeight: "70vh" }}>
-        <div className="flex" style={{ height: `${totalHeight}px` }}>
+        <div className="flex" style={{ height: `${totalHeight}px`, minWidth: minInner }}>
           <TimeGutter hours={hours} />
           {courts.map((court, ci) => {
             const n = NEON[court.name as CourtName] ?? NEON.Laurel;
@@ -325,6 +329,8 @@ function DayView({
         </div>
       </div>
     </div>
+    </div>
+    </div>
   );
 }
 
@@ -344,10 +350,14 @@ function WeekView({
   totalHeight: number;
 }) {
   const dayNames = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+  // Week view needs ~70px per day on small screens; force horizontal scroll if narrower.
+  const minWeekInner = 56 + 7 * 80;
 
   return (
     <div className="rounded-2xl overflow-hidden"
       style={{ background: D.panel, border: `1px solid ${D.border}`, boxShadow: "0 1px 3px rgba(0,0,0,0.04), 0 4px 16px rgba(0,0,0,0.03)" }}>
+    <div style={{ overflowX: "auto", WebkitOverflowScrolling: "touch" }}>
+    <div style={{ minWidth: minWeekInner }}>
 
       {/* Day headers */}
       <div className="flex sticky top-0 z-30" style={{ background: D.header, borderBottom: `1px solid ${D.border}` }}>
@@ -487,6 +497,8 @@ function WeekView({
         </div>
       </div>
     </div>
+    </div>
+    </div>
   );
 }
 
@@ -504,10 +516,14 @@ function MonthView({
 }) {
   const dayLabels = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
   const MAX_PILLS = 3;
+  // Month grid needs ~90px per column to keep pills readable
+  const minMonthInner = 7 * 90;
 
   return (
     <div className="rounded-2xl overflow-hidden"
       style={{ background: D.panel, border: `1px solid ${D.border}`, boxShadow: "0 1px 3px rgba(0,0,0,0.04), 0 4px 16px rgba(0,0,0,0.03)" }}>
+    <div style={{ overflowX: "auto", WebkitOverflowScrolling: "touch" }}>
+    <div style={{ minWidth: minMonthInner }}>
 
       {/* Day-of-week header */}
       <div className="grid grid-cols-7" style={{ borderBottom: `1px solid ${D.border}`, background: D.header }}>
@@ -615,6 +631,8 @@ function MonthView({
           );
         })}
       </div>
+    </div>
+    </div>
     </div>
   );
 }
@@ -726,7 +744,7 @@ export default async function AdminCalendarPage({
   }
 
   return (
-    <div style={{ background: D.bg, minHeight: "100vh" }} className="px-6 py-10">
+    <div style={{ background: D.bg, minHeight: "100vh" }} className="px-3 sm:px-6 py-6 sm:py-10">
       <div className="max-w-7xl mx-auto">
 
         {/* ── Page header ─────────────────────────────────────────────────────── */}
@@ -747,7 +765,7 @@ export default async function AdminCalendarPage({
                 aria-label="Previous">
                 ‹
               </Link>
-              <h1 className="font-mono text-2xl tracking-tight" style={{ color: D.bright, fontWeight: 900, letterSpacing: "-0.02em" }}>
+              <h1 className="font-mono text-base sm:text-2xl tracking-tight" style={{ color: D.bright, fontWeight: 900, letterSpacing: "-0.02em" }}>
                 {displayLabel}
               </h1>
               <Link

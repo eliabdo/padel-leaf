@@ -141,7 +141,7 @@ export function BookingFlow({
                 onClick={() => { if (!isDateBlocked) setSelectedDate(parseDateKey(dateOnlyKey(d))); }}
                 disabled={isDateBlocked}
                 title={isDateBlocked ? "All courts unavailable" : undefined}
-                className={`flex flex-col items-center justify-center py-2.5 px-1 rounded-xl border text-center transition flex-shrink-0 snap-start w-[calc((100%-2.25rem)/7)] ${
+                className={`flex flex-col items-center justify-center py-2.5 px-1 rounded-xl border text-center transition flex-shrink-0 snap-start w-[calc((100%-1.5rem)/5)] xs:w-[calc((100%-1.875rem)/6)] sm:w-[calc((100%-2.25rem)/7)] ${
                   isDateBlocked
                     ? "bg-cream/50 text-charcoal/30 border-forest/10 cursor-not-allowed"
                     : isSelected
@@ -240,7 +240,7 @@ export function BookingFlow({
             </div>
           </div>
         ) : (
-          <div className="grid grid-cols-3 xs:grid-cols-4 sm:grid-cols-5 md:grid-cols-6 gap-1.5">
+          <div className="grid grid-cols-3 xs:grid-cols-4 sm:grid-cols-5 md:grid-cols-6 gap-1.5 sm:gap-2">
             {courtAvail.slots.map((s) => {
               const isSelected = s.startIso === selectedSlotIso;
               const baseClass =
@@ -249,7 +249,7 @@ export function BookingFlow({
                 return (
                   <div
                     key={s.startIso}
-                    className={`${baseClass} text-char-soft/50 line-through border-forest/10 cursor-not-allowed bg-cream/40`}
+                    className={`${baseClass} text-char-soft/50 line-through border-forest/10 cursor-not-allowed bg-cream/40 min-h-[44px] flex items-center justify-center`}
                   >
                     {formatTime(new Date(s.startIso))}
                   </div>
@@ -259,7 +259,7 @@ export function BookingFlow({
                 <button
                   key={s.startIso}
                   onClick={() => setSelectedSlotIso(s.startIso)}
-                  className={`${baseClass} ${
+                  className={`${baseClass} min-h-[44px] ${
                     isSelected
                       ? "bg-forest text-cream border-forest"
                       : "bg-cream border-forest/30 hover:border-forest"

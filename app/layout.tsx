@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Playfair_Display, Inter } from "next/font/google";
 import "./globals.css";
 
@@ -41,6 +41,13 @@ export const metadata: Metadata = {
     description: "Three premium outdoor padel courts in Mezher, Bsalim, Mount Lebanon. Reserve by the hour.",
   },
   alternates: { canonical: "https://padel-leaf.vercel.app" },
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+  themeColor: "#0d2010",
 };
 
 export default function RootLayout({

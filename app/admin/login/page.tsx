@@ -30,7 +30,7 @@ export default async function AdminLoginPage({ searchParams }: { searchParams: P
       {/* Subtle glow behind card */}
       <div style={{ position: "fixed", top: "35%", left: "50%", transform: "translate(-50%,-50%)", width: 500, height: 500, borderRadius: "50%", background: "radial-gradient(circle, rgba(22,163,74,0.07) 0%, transparent 70%)", pointerEvents: "none" }} />
 
-      <div style={{
+      <div className="admin-login-card" style={{
         background: "#fff",
         border: "1px solid rgba(22,163,74,0.15)",
         borderRadius: 18,
@@ -39,6 +39,7 @@ export default async function AdminLoginPage({ searchParams }: { searchParams: P
         boxShadow: "0 4px 16px rgba(0,0,0,0.06), 0 20px 48px rgba(0,0,0,0.06), 0 0 0 1px rgba(22,163,74,0.04)",
         position: "relative",
       }}>
+        <style>{`@media (max-width: 480px) { .admin-login-card { padding: 32px 24px !important; } }`}</style>
         {/* Top accent bar */}
         <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 3, background: "linear-gradient(90deg, #15803d, #4ade80, #15803d)", borderRadius: "18px 18px 0 0" }} />
 

@@ -35,10 +35,10 @@ function fmtUsd(cents: number) {
 
 type Tab = "upcoming" | "completed" | "cancelled";
 
-const TABS: { id: Tab; label: string; color: string; badgeBg: string }[] = [
-  { id: "upcoming",  label: "Upcoming",           color: "#16a34a", badgeBg: "rgba(22,163,74,0.10)" },
-  { id: "completed", label: "Completed",           color: "#2563eb", badgeBg: "rgba(37,99,235,0.10)" },
-  { id: "cancelled", label: "Cancelled / No-show", color: "#dc2626", badgeBg: "rgba(220,38,38,0.10)" },
+const TABS: { id: Tab; label: string; shortLabel: string; color: string; badgeBg: string }[] = [
+  { id: "upcoming",  label: "Upcoming",            shortLabel: "Upcoming",  color: "#16a34a", badgeBg: "rgba(22,163,74,0.10)" },
+  { id: "completed", label: "Completed",           shortLabel: "Completed", color: "#2563eb", badgeBg: "rgba(37,99,235,0.10)" },
+  { id: "cancelled", label: "Cancelled / No-show", shortLabel: "Cancelled", color: "#dc2626", badgeBg: "rgba(220,38,38,0.10)" },
 ];
 
 const statusBadge = (status: string): React.CSSProperties => {

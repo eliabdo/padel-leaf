@@ -19,15 +19,15 @@ export default function AboutPage() {
     <>
       <SiteNav />
 
-      <header className="bg-forest text-cream py-24">
-        <div className="max-w-4xl mx-auto px-6">
-          <div className="text-xs font-semibold tracking-[0.18em] uppercase text-sage mb-5">
+      <header className="bg-forest text-cream py-16 sm:py-24">
+        <div className="max-w-4xl mx-auto px-5 sm:px-6">
+          <div className="text-[11px] sm:text-xs font-semibold tracking-[0.18em] uppercase text-sage mb-4 sm:mb-5">
             — The Club
           </div>
-          <h1 className="text-5xl md:text-6xl mb-6">
+          <h1 className="text-[2.25rem] sm:text-5xl md:text-6xl leading-[1.08] mb-5 sm:mb-6">
             A club, not a <em className="italic font-medium text-sage">court rental.</em>
           </h1>
-          <p className="text-lg text-cream/80 leading-relaxed max-w-2xl">
+          <p className="text-base sm:text-lg text-cream/80 leading-relaxed max-w-2xl">
             Padel Leaf is a small outdoor club in Mezher, Bsalim. Three courts,
             run with care. We trust the reader to be smart, and we never shout
             to be heard.
@@ -35,15 +35,15 @@ export default function AboutPage() {
         </div>
       </header>
 
-      <section className="max-w-4xl mx-auto px-6 py-20">
+      <section className="max-w-4xl mx-auto px-5 sm:px-6 py-14 sm:py-20">
         <SectionHeader number="01" label="Why we built it" title="The booking should be the" italic="easiest part." />
-        <p className="text-lg text-char-soft leading-relaxed mb-6">
+        <p className="text-base sm:text-lg text-char-soft leading-relaxed mb-5 sm:mb-6">
           Most padel reservations feel like an obstacle. Phone calls, WhatsApp
           back-and-forth, double-bookings the moment you arrive. We started
           Padel Leaf because we wanted somewhere we&apos;d actually want to
           play — and a system that just works.
         </p>
-        <p className="text-lg text-char-soft leading-relaxed">
+        <p className="text-base sm:text-lg text-char-soft leading-relaxed">
           Pick a time, pick a court, show up, play. The fee is owed at the
           venue when you arrive. No pre-payment friction, no surprise
           cancellation fees, no upsells. If something goes wrong (rain, you
@@ -51,10 +51,10 @@ export default function AboutPage() {
         </p>
       </section>
 
-      <section className="bg-sage-soft py-20">
-        <div className="max-w-4xl mx-auto px-6">
+      <section className="bg-sage-soft py-14 sm:py-20">
+        <div className="max-w-4xl mx-auto px-5 sm:px-6">
           <SectionHeader number="02" label="What we care about" title="Three things, in" italic="this order." />
-          <div className="grid md:grid-cols-3 gap-8 mt-10">
+          <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-7 sm:gap-8 mt-8 sm:mt-10">
             <Pillar n="i" title="The courts" body="Synthetic turf, well-maintained, lit for evening play. We brush the surfaces between sessions." />
             <Pillar n="ii" title="The people" body="Members, regulars, first-timers — everyone gets the same court time and the same welcome." />
             <Pillar n="iii" title="The booking" body="No queues, no gymnastics. Reserve in under a minute. The system handles the rest." />
@@ -62,9 +62,9 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className="max-w-4xl mx-auto px-6 py-20">
+      <section className="max-w-4xl mx-auto px-5 sm:px-6 py-14 sm:py-20">
         <SectionHeader number="03" label="Where" title="Mezher, Bsalim," italic="Mount Lebanon." />
-        <p className="text-lg text-char-soft leading-relaxed">
+        <p className="text-base sm:text-lg text-char-soft leading-relaxed">
           We&apos;re a 5-minute drive from the Bsalim main road. Free parking,
           open daily from 8am to midnight. The full address and a map live on our{" "}
           <a href="/find-us" className="text-forest underline underline-offset-4">find us page</a>.

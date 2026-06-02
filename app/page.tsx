@@ -42,16 +42,16 @@ export default async function Home() {
               "radial-gradient(circle at 75% 15%, rgba(181,230,189,0.12), transparent 45%), radial-gradient(circle at 10% 85%, rgba(181,230,189,0.08), transparent 40%)",
           }}
         />
-        <div className="max-w-7xl mx-auto px-6 py-28 md:py-36 grid md:grid-cols-[1.2fr_1fr] gap-16 items-center relative">
-          <div>
-            <div className="text-xs font-semibold tracking-[0.18em] uppercase text-sage pb-5">
+        <div className="max-w-7xl mx-auto px-5 sm:px-6 py-20 sm:py-28 md:py-36 grid md:grid-cols-[1.2fr_1fr] gap-10 md:gap-16 items-center relative">
+          <div className="order-2 md:order-1">
+            <div className="text-[11px] sm:text-xs font-semibold tracking-[0.18em] uppercase text-sage pb-4 sm:pb-5">
               — Est. Padel Leaf · Mezher · Bsalim
             </div>
-            <h1 className="text-5xl md:text-7xl leading-[1.05] mb-6">
+            <h1 className="text-[2.5rem] leading-[1.05] sm:text-5xl md:text-7xl mb-5 sm:mb-6">
               Outdoor padel,<br />
               <em className="italic font-medium text-sage">played right.</em>
             </h1>
-            <p className="text-lg leading-relaxed text-cream/80 max-w-md mb-9">
+            <p className="text-base sm:text-lg leading-relaxed text-cream/80 max-w-md mb-7 sm:mb-9">
               Three premium outdoor courts in the heart of Bsalim. Reserve by the
               hour, pay at the venue, and play the way it should be.
             </p>
@@ -64,7 +64,7 @@ export default async function Home() {
               </Link>
             </div>
           </div>
-          <div className="relative max-w-md mx-auto md:ml-auto w-full">
+          <div className="order-1 md:order-2 relative max-w-[14rem] sm:max-w-xs md:max-w-md mx-auto md:ml-auto w-full">
             <div className="aspect-square rounded-full overflow-hidden flex items-center justify-center">
               <Image
                 src="/Padelleaf Club Logo-03.png"
@@ -75,8 +75,8 @@ export default async function Home() {
                 priority
               />
             </div>
-            <div className="absolute -inset-6 rounded-full border border-dashed border-sage/35 pointer-events-none" />
-            <div className="absolute -inset-12 rounded-full border border-dashed border-sage/15 pointer-events-none" />
+            <div className="absolute -inset-3 sm:-inset-6 rounded-full border border-dashed border-sage/35 pointer-events-none" />
+            <div className="absolute -inset-6 sm:-inset-12 rounded-full border border-dashed border-sage/15 pointer-events-none" />
           </div>
         </div>
       </header>
@@ -84,7 +84,7 @@ export default async function Home() {
       <Marquee />
       {/* STATS STRIP ─────────────────────────── */}
       <section className="bg-cream-deep border-b border-forest/10">
-        <div className="max-w-7xl mx-auto px-6 py-10 grid grid-cols-2 md:grid-cols-4 gap-8">
+        <div className="max-w-7xl mx-auto px-5 sm:px-6 py-8 sm:py-10 grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8">
           <Stat label="Courts"   value="3 · outdoor" />
           <Stat label="Open"     value="8am — midnight" />
           <Stat label="Surface"  value="Synthetic turf" />
@@ -92,9 +92,9 @@ export default async function Home() {
         </div>
       </section>
       {/* SECTION 01 — THE CLUB ───────────────── */}
-      <section className="max-w-7xl mx-auto px-6 py-24">
+      <section className="max-w-7xl mx-auto px-5 sm:px-6 py-16 sm:py-24">
         <SectionHeader number="01" label="The Club" title="A club, not a" italic="court rental." />
-        <p className="max-w-2xl text-lg text-char-soft leading-relaxed">
+        <p className="max-w-2xl text-base sm:text-lg text-char-soft leading-relaxed">
           Padel Leaf is built around three things: great courts, great people,
           and a booking experience that doesn&apos;t make you want to throw your
           phone. We trust the reader to be smart, and we never shout to be heard.
@@ -105,9 +105,9 @@ export default async function Home() {
       </section>
       {/* SECTION 02 — THE COURTS ─────────────── */}
       <section className="bg-sage-soft">
-        <div className="max-w-7xl mx-auto px-6 py-24">
+        <div className="max-w-7xl mx-auto px-5 sm:px-6 py-16 sm:py-24">
           <SectionHeader number="02" label="The Courts" title="Three courts," italic="named for the trees." />
-          <div className="grid md:grid-cols-3 gap-6 mt-10">
+          <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-5 sm:gap-6 mt-8 sm:mt-10">
             <CourtCard name="Laurel" tag="LAUREL" desc="Our flagship — slightly faster surface, favoured by competitive players." />
             <CourtCard name="Oak"    tag="OAK"    desc="The all-rounder. Perfect for regulars, social games, and most lessons." />
             <CourtCard name="Olive"  tag="OLIVE"  desc="Easier on the knees. Recommended for beginners, juniors, and longer sessions." />
@@ -118,18 +118,18 @@ export default async function Home() {
         </div>
       </section>
       {/* SECTION 03 — RESERVE ────────────────── */}
-      <section className="max-w-7xl mx-auto px-6 py-24">
+      <section className="max-w-7xl mx-auto px-5 sm:px-6 py-16 sm:py-24">
         <SectionHeader number="03" label="Reserve" title="Reserve a court in" italic="under a minute." />
-        <p className="max-w-2xl text-lg text-char-soft leading-relaxed">
+        <p className="max-w-2xl text-base sm:text-lg text-char-soft leading-relaxed">
           Pick a time, pick a court, play. No upsells, no pop-ups, no asking
           how the booking went.
         </p>
-        <div className="mt-10 max-w-2xl">
+        <div className="mt-8 sm:mt-10 max-w-2xl">
           <PriceRow label="60 minutes"  price={p60} />
           <PriceRow label="90 minutes"  price={p90} />
           <PriceRow label="120 minutes" price={p120} />
         </div>
-        <div className="mt-10 flex gap-3 flex-wrap">
+        <div className="mt-8 sm:mt-10 flex gap-3 flex-wrap">
           <Link href="/book"    className="btn btn-primary">Reserve a court →</Link>
           <Link href="/pricing" className="btn btn-outline">See pricing</Link>
         </div>
@@ -147,11 +147,11 @@ export default async function Home() {
           backgroundPosition: "center 60%",
         }}
       >
-        <div className="max-w-7xl mx-auto px-6 py-28 text-center relative z-10">
-          <h2 className="text-5xl md:text-6xl mb-6">
+        <div className="max-w-7xl mx-auto px-5 sm:px-6 py-20 sm:py-28 text-center relative z-10">
+          <h2 className="text-[2.5rem] sm:text-5xl md:text-6xl leading-[1.05] mb-5 sm:mb-6">
             See you <em className="italic font-medium text-sage">at the courts.</em>
           </h2>
-          <p className="text-cream/75 text-lg max-w-md mx-auto mb-9">
+          <p className="text-cream/75 text-base sm:text-lg max-w-md mx-auto mb-7 sm:mb-9">
             Mezher · Bsalim · Mount Lebanon. Open daily 8am — midnight.
           </p>
           <Link href="/book" className="btn btn-primary bg-cream text-forest hover:bg-sage">
@@ -179,7 +179,7 @@ function CourtCard({ name, tag, desc }: { name: string; tag: string; desc: strin
   return (
     <div className="group bg-cream rounded-3xl overflow-hidden border border-forest/10 hover:border-forest/25 hover:shadow-2xl hover:-translate-y-1.5 transition-all duration-300"
          style={{ boxShadow: "0 1px 3px rgba(2,90,3,0.06), 0 4px 16px rgba(2,90,3,0.04)" }}>
-      <div className="h-48 bg-gradient-to-br from-forest-mid to-forest-deep relative overflow-hidden flex items-center justify-center">
+      <div className="h-40 sm:h-48 bg-gradient-to-br from-forest-mid to-forest-deep relative overflow-hidden flex items-center justify-center">
         <div className="absolute inset-0 opacity-20"
              style={{ background: "radial-gradient(circle at 30% 70%, rgba(181,230,189,0.6), transparent 60%)" }} />
         <svg viewBox="0 0 200 100" className="w-3/4 h-auto relative z-10" fill="none">
@@ -193,7 +193,7 @@ function CourtCard({ name, tag, desc }: { name: string; tag: string; desc: strin
         </svg>
         <span className="absolute top-4 right-4 text-xs tracking-[0.2em] text-sage/70 font-bold uppercase">{tag}</span>
       </div>
-      <div className="p-7">
+      <div className="p-6 sm:p-7">
         <h3 className="font-serif text-xl text-forest-deep mb-2">Court · {name}</h3>
         <p className="text-sm text-char-soft leading-relaxed">{desc}</p>
       </div>

@@ -4,9 +4,9 @@ import Link from "next/link";
 export function SiteFooter() {
   return (
     <footer className="bg-forest-deep text-cream/80 mt-auto">
-      <div className="max-w-7xl mx-auto px-6 pt-20 pb-8">
-        <div className="grid md:grid-cols-4 gap-12 pb-12 border-b border-sage/15">
-          <div>
+      <div className="max-w-7xl mx-auto px-5 sm:px-6 pt-14 sm:pt-20 pb-8">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 sm:gap-10 md:gap-12 pb-10 sm:pb-12 border-b border-sage/15">
+          <div className="col-span-2 md:col-span-1">
             <div className="flex items-center gap-3 mb-5">
               <Image
                 src="/logo2.png"
@@ -61,7 +61,7 @@ export function SiteFooter() {
           </div>
         </div>
 
-        <div className="pt-6 flex flex-wrap items-center justify-between gap-4 text-xs text-cream/50">
+        <div className="pt-6 flex flex-col sm:flex-row sm:flex-wrap items-start sm:items-center justify-between gap-3 sm:gap-4 text-xs text-cream/50">
           <div>© {new Date().getFullYear()} Padel Leaf Club · See you at the courts.</div>
           <div className="flex gap-4">
             <Link href="/terms"   className="hover:text-sage transition">Terms</Link>

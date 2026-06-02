@@ -15,10 +15,10 @@ export function Marquee() {
   const doubled = [...ITEMS, ...ITEMS, ...ITEMS, ...ITEMS];
 
   return (
-    <div className="bg-forest text-cream/85 overflow-hidden border-y border-forest-deep py-4">
-      <div className="flex gap-12 animate-marquee whitespace-nowrap font-serif italic text-lg">
+    <div className="bg-forest text-cream/85 overflow-hidden border-y border-forest-deep py-3 sm:py-4">
+      <div className="flex gap-8 sm:gap-12 animate-marquee whitespace-nowrap font-serif italic text-base sm:text-lg">
         {doubled.map((item, i) => (
-          <div key={i} className="flex items-center gap-12 shrink-0">
+          <div key={i} className="flex items-center gap-8 sm:gap-12 shrink-0">
             <span>{item}</span>
             <span className="text-sage">✦</span>
           </div>

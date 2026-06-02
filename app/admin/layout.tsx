@@ -123,14 +123,54 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         .admin-desktop-only { display: block !important; }
         .admin-mobile-only  { display: none !important; }
 
+        /* Tables wrapped in overflowX: auto get momentum scroll on touch */
+        main [style*="overflow-x: auto"],
+        main [style*="overflowX"] { -webkit-overflow-scrolling: touch; }
+
         @media (max-width: 720px) {
           .admin-desktop-nav  { display: none !important; }
           .admin-desktop-only { display: none !important; }
           .admin-mobile-only  { display: flex !important; }
-          main > div { padding-left: 14px !important; padding-right: 14px !important; }
+
+          /* Page wrapper — tighten side gutters and vertical padding */
+          main > div { padding-left: 14px !important; padding-right: 14px !important; padding-top: 20px !important; padding-bottom: 24px !important; }
+
+          /* Headings — admin h1 is fontSize:26 by default; bring to 22 on mobile */
+          main h1 { font-size: 22px !important; }
+
+          /* Stat cards: tighten padding so they fit nicely two-up at 375px */
+          .admin-stat-card { padding: 16px 18px !important; }
+          .admin-stat-card > div:last-child { font-size: 22px !important; }
+
+          /* Forms — single column always */
           .admin-form-grid { grid-template-columns: 1fr !important; }
+
+          /* Tab bars scroll horizontally */
           .admin-tabs-bar  { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-          .admin-tabs-bar button { flex-shrink: 0; }
+          .admin-tabs-bar button,
+          .admin-tabs-bar a { flex-shrink: 0; }
+
+          /* Subtle visual cue that tables can be horizontally scrolled */
+          main [style*="overflow-x: auto"]:has(table),
+          main [style*="overflowX"]:has(table) {
+            position: relative;
+            background-image: linear-gradient(to right, transparent calc(100% - 24px), rgba(13,32,16,0.08));
+            background-attachment: local;
+            background-size: 100% 100%;
+            background-repeat: no-repeat;
+          }
+
+          /* Inputs at min 16px to stop iOS Safari zooming on focus */
+          input:not([type=hidden]), select, textarea { font-size: 16px !important; }
+
+          /* Buttons / links — meet 44px touch target */
+          button[type=submit] { min-height: 44px; }
+          .admin-row-action { min-height: 36px; display: inline-flex !important; align-items: center; }
+        }
+
+        @media (max-width: 420px) {
+          /* On the smallest phones, stat cards drop to one column */
+          main > div > div[style*="grid-template-columns: repeat(auto-fit"] { grid-template-columns: 1fr !important; }
         }
       `}</style>
     </div>

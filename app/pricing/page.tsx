@@ -36,48 +36,48 @@ export default async function PricingPage() {
     <>
       <SiteNav />
 
-      <header className="bg-forest text-cream py-24">
-        <div className="max-w-4xl mx-auto px-6">
-          <div className="text-xs font-semibold tracking-[0.18em] uppercase text-sage mb-5">
+      <header className="bg-forest text-cream py-16 sm:py-24">
+        <div className="max-w-4xl mx-auto px-5 sm:px-6">
+          <div className="text-[11px] sm:text-xs font-semibold tracking-[0.18em] uppercase text-sage mb-4 sm:mb-5">
             — Pricing
           </div>
-          <h1 className="text-5xl md:text-6xl mb-6">
+          <h1 className="text-[2.25rem] sm:text-5xl md:text-6xl leading-[1.08] mb-5 sm:mb-6">
             One rate. <em className="italic font-medium text-sage">Pay at the venue.</em>
           </h1>
-          <p className="text-lg text-cream/80 max-w-xl">
+          <p className="text-base sm:text-lg text-cream/80 max-w-xl">
             {hourlyLabel} per hour, any court, any time. No peak surcharges,
             no hidden fees, no member tiers to figure out.
           </p>
         </div>
       </header>
 
-      <section className="max-w-4xl mx-auto px-6 py-20">
+      <section className="max-w-4xl mx-auto px-5 sm:px-6 py-14 sm:py-20">
         <SectionHeader number="01" label="Court Rates" title="Pick your duration." />
 
-        <div className="bg-sage-soft rounded-2xl p-10 mt-8">
+        <div className="bg-sage-soft rounded-2xl p-6 sm:p-10 mt-7 sm:mt-8">
           <div className="space-y-1">
             <PriceRow duration="60 minutes"  price={p60} />
             <PriceRow duration="90 minutes"  price={p90} />
             <PriceRow duration="120 minutes" price={p120} />
           </div>
-          <p className="text-sm text-char-soft mt-8">
+          <p className="text-sm text-char-soft mt-6 sm:mt-8">
             Rate is <strong>{hourlyLabel}/hour</strong>, billed proportionally. Same rate
             for all three courts and any time of day.
           </p>
         </div>
 
-        <div className="mt-10 flex gap-3 flex-wrap">
+        <div className="mt-8 sm:mt-10 flex gap-3 flex-wrap">
           <Link href="/book" className="btn btn-primary">
             Reserve a court →
           </Link>
         </div>
       </section>
 
-      <section className="bg-cream-deep py-20">
-        <div className="max-w-4xl mx-auto px-6">
+      <section className="bg-cream-deep py-14 sm:py-20">
+        <div className="max-w-4xl mx-auto px-5 sm:px-6">
           <SectionHeader number="02" label="Cancellation Policy" title="Plans change." italic="We get it." />
 
-          <div className="space-y-4 mt-8 text-lg text-char-soft leading-relaxed">
+          <div className="space-y-4 mt-7 sm:mt-8 text-base sm:text-lg text-char-soft leading-relaxed">
             <p>
               <strong className="text-forest-deep">More than 24 hours ahead:</strong> cancel
               freely, no questions asked. The slot opens back up for someone else.
@@ -96,9 +96,9 @@ export default async function PricingPage() {
         </div>
       </section>
 
-      <section className="max-w-4xl mx-auto px-6 py-20">
+      <section className="max-w-4xl mx-auto px-5 sm:px-6 py-14 sm:py-20">
         <SectionHeader number="03" label="Payment" title="At the venue, on arrival." />
-        <p className="text-lg text-char-soft leading-relaxed">
+        <p className="text-base sm:text-lg text-char-soft leading-relaxed">
           We accept cash and card at reception when you arrive for your
           session. Online payment is coming in a future update — for now, the
           booking holds the slot, the payment happens when you walk in.
@@ -112,9 +112,9 @@ export default async function PricingPage() {
 
 function PriceRow({ duration, price }: { duration: string; price: string }) {
   return (
-    <div className="flex items-baseline justify-between py-4 border-b border-forest/15 last:border-0">
-      <div className="text-charcoal text-lg">{duration}</div>
-      <div className="font-serif text-2xl text-forest-deep">{price}</div>
+    <div className="flex items-baseline justify-between py-3 sm:py-4 border-b border-forest/15 last:border-0 gap-3">
+      <div className="text-charcoal text-base sm:text-lg">{duration}</div>
+      <div className="font-serif text-xl sm:text-2xl text-forest-deep">{price}</div>
     </div>
   );
 }

@@ -132,7 +132,7 @@ export default async function AdminRevenuePage({
           </div>
         </div>
         {/* Right side: PDF download + Day total */}
-        <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 10 }}>
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 10, width: "100%", maxWidth: 320 }}>
           <RevenueDownloadButton dateKey={viewKey} />
           {/* Day total */}
           <div style={{ background: "rgba(22,163,74,0.07)", border: "1px solid rgba(22,163,74,0.18)", borderRadius: 12, padding: "16px 24px", textAlign: "right" }}>
@@ -160,7 +160,8 @@ export default async function AdminRevenuePage({
         {completedBookings.length === 0 ? (
           <div style={{ padding: "36px 24px", textAlign: "center", color: "#9ca3af", fontFamily: "system-ui, sans-serif", fontSize: 13 }}>No completed bookings on {dayLabel(viewKey, todayKey).toLowerCase()}.</div>
         ) : (
-          <table style={{ width: "100%", borderCollapse: "collapse" }}>
+          <div style={{ overflowX: "auto", WebkitOverflowScrolling: "touch" }}>
+          <table style={{ width: "100%", borderCollapse: "collapse", minWidth: 520 }}>
             <thead>
               <tr style={{ borderBottom: "1px solid rgba(22,163,74,0.08)", background: "#fafdfb" }}>
                 {["#", "Customer", "Court", "Time", "Amount"].map((h, i) => (
@@ -184,6 +185,7 @@ export default async function AdminRevenuePage({
               ))}
             </tbody>
           </table>
+          </div>
         )}
       </div>
 
@@ -199,7 +201,8 @@ export default async function AdminRevenuePage({
         {manualItems.length === 0 ? (
           <div style={{ padding: "28px 24px", textAlign: "center", color: "#9ca3af", fontFamily: "system-ui, sans-serif", fontSize: 13 }}>No manual items — add one below.</div>
         ) : (
-          <table style={{ width: "100%", borderCollapse: "collapse" }}>
+          <div style={{ overflowX: "auto", WebkitOverflowScrolling: "touch" }}>
+          <table style={{ width: "100%", borderCollapse: "collapse", minWidth: 440 }}>
             <thead>
               <tr style={{ borderBottom: "1px solid rgba(22,163,74,0.08)", background: "#fafdfb" }}>
                 {["Item", "Notes", "Amount", ""].map((h, i) => (
@@ -224,6 +227,7 @@ export default async function AdminRevenuePage({
               ))}
             </tbody>
           </table>
+          </div>
         )}
       </div>
 

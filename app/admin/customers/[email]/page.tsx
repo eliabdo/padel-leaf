@@ -232,7 +232,7 @@ export default async function CustomerDetailPage({
         </div>
       )}
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12 }}>
+      <div className="admin-form-grid" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12 }}>
         {[
           { label: "Total bookings",  value: String(bookings.length) },
           { label: "Completed",       value: String(completedCount) },
@@ -266,7 +266,7 @@ export default async function CustomerDetailPage({
               <input name="lastName" type="text" required defaultValue={(customerName ?? "").split(" ").slice(1).join(" ")} style={inputStyle} />
             </div>
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+          <div className="admin-form-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
             <div>
               <label style={labelStyle}>Phone</label>
               <PhoneInput name="customerPhone" required defaultValue={customerPhone ?? ""} />
@@ -276,7 +276,7 @@ export default async function CustomerDetailPage({
               <input name="customerEmail" type="email" required defaultValue={decodedEmail} style={inputStyle} />
             </div>
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+          <div className="admin-form-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
             <div>
               <label style={labelStyle}>Category</label>
               <select

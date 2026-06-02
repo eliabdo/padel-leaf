@@ -7,8 +7,8 @@ export default function PrivacyPage() {
   return (
     <>
       <SiteNav />
-      <article className="max-w-3xl mx-auto px-6 py-20 prose prose-lg">
-        <h1 className="font-serif text-5xl text-forest-deep mb-2">Privacy Policy</h1>
+      <article className="max-w-3xl mx-auto px-5 sm:px-6 py-14 sm:py-20 prose prose-lg">
+        <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl text-forest-deep mb-2">Privacy Policy</h1>
         <p className="text-char-soft text-sm mb-10">Last updated: {new Date().toLocaleDateString()}</p>
 
         <Section title="1. What we collect">
@@ -47,7 +47,7 @@ export default function PrivacyPage() {
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div className="mb-8">
-      <h2 className="font-serif text-2xl text-forest-deep mb-3">{title}</h2>
+      <h2 className="font-serif text-xl sm:text-2xl text-forest-deep mb-3">{title}</h2>
       <p className="text-charcoal leading-relaxed">{children}</p>
     </div>
   );

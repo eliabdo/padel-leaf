@@ -62,25 +62,26 @@ export default async function AdminTodayPage({
     <div style={{ maxWidth: 1360, margin: "0 auto", padding: "36px 28px" }}>
 
       {/* Header */}
-      <div style={{ marginBottom: 32, display: "flex", alignItems: "flex-end", justifyContent: "space-between", flexWrap: "wrap", gap: 16 }}>
-        <div>
+      <div style={{ marginBottom: 28, display: "flex", alignItems: "flex-end", justifyContent: "space-between", flexWrap: "wrap", gap: 12 }}>
+        <div style={{ minWidth: 0, flex: "1 1 auto" }}>
           <div style={{ fontFamily: "system-ui, sans-serif", fontSize: 11, fontWeight: 600, letterSpacing: "0.10em", textTransform: "uppercase", color: "#16a34a", marginBottom: 6 }}>
             {isToday ? "Today" : viewKey > todayKey ? "Future day" : "Past day"}
           </div>
-          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-            <Link href={`/admin?date=${prevKey}`} style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 32, height: 32, borderRadius: 8, border: "1px solid rgba(22,163,74,0.20)", color: "#16a34a", textDecoration: "none", fontWeight: 700, fontSize: 16, background: "#fff" }}>‹</Link>
-            <h1 style={{ fontFamily: "system-ui, sans-serif", fontSize: 26, fontWeight: 700, color: "#0d2010", margin: 0 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
+            <Link href={`/admin?date=${prevKey}`} aria-label="Previous day" style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 36, height: 36, borderRadius: 8, border: "1px solid rgba(22,163,74,0.20)", color: "#16a34a", textDecoration: "none", fontWeight: 700, fontSize: 16, background: "#fff", flexShrink: 0 }}>‹</Link>
+            <h1 style={{ fontFamily: "system-ui, sans-serif", fontSize: 26, fontWeight: 700, color: "#0d2010", margin: 0, minWidth: 0, overflowWrap: "break-word" }}>
               {formatDateLong(today)}
             </h1>
-            <Link href={`/admin?date=${nextKey}`} style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 32, height: 32, borderRadius: 8, border: "1px solid rgba(22,163,74,0.20)", color: "#16a34a", textDecoration: "none", fontWeight: 700, fontSize: 16, background: "#fff" }}>›</Link>
+            <Link href={`/admin?date=${nextKey}`} aria-label="Next day" style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 36, height: 36, borderRadius: 8, border: "1px solid rgba(22,163,74,0.20)", color: "#16a34a", textDecoration: "none", fontWeight: 700, fontSize: 16, background: "#fff", flexShrink: 0 }}>›</Link>
           </div>
         </div>
         <Link href="/admin/bookings/new" style={{
           fontFamily: "system-ui, sans-serif", fontSize: 13, fontWeight: 600,
           color: "#fff", background: "#16a34a",
           border: "none", borderRadius: 9,
-          padding: "10px 22px", textDecoration: "none",
+          padding: "11px 20px", textDecoration: "none",
           boxShadow: "0 2px 8px rgba(22,163,74,0.30), 0 1px 3px rgba(22,163,74,0.20)",
+          flexShrink: 0, minHeight: 44, display: "inline-flex", alignItems: "center",
         }}>
           + Add booking
         </Link>
