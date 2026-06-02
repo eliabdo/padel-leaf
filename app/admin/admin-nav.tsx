@@ -72,7 +72,7 @@ export default function AdminNav({ logoutForm, unreadCount = 0 }: Props) {
             </div>
             <div>
               <span style={{ fontFamily: "system-ui, sans-serif", fontSize: 14, fontWeight: 700, color: "#0d2010", letterSpacing: "-0.01em" }}>
-                Padel Leaf
+                Padelleaf
               </span>
               <span style={{ fontFamily: "system-ui, sans-serif", fontSize: 11, fontWeight: 500, color: "#86efac", marginLeft: 6, letterSpacing: "0.04em" }}>
                 ADMIN

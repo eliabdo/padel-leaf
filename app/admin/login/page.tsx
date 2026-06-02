@@ -48,7 +48,7 @@ export default async function AdminLoginPage({ searchParams }: { searchParams: P
           <div style={{ width: 48, height: 48, borderRadius: 12, background: "linear-gradient(135deg, #16a34a, #4ade80)", display: "inline-flex", alignItems: "center", justifyContent: "center", boxShadow: "0 4px 12px rgba(22,163,74,0.35)", marginBottom: 14 }}>
             <span style={{ fontFamily: "serif", fontSize: 20, fontWeight: 800, color: "#fff" }}>PL</span>
           </div>
-          <div style={{ fontFamily: "system-ui, sans-serif", fontSize: 18, fontWeight: 700, color: "#0d2010" }}>Padel Leaf</div>
+          <div style={{ fontFamily: "system-ui, sans-serif", fontSize: 18, fontWeight: 700, color: "#0d2010" }}>Padelleaf</div>
           <div style={{ fontFamily: "system-ui, sans-serif", fontSize: 12, color: "#9ca3af", marginTop: 4, letterSpacing: "0.06em" }}>ADMIN PANEL</div>
         </div>
 

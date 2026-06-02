@@ -4,10 +4,10 @@ import { SectionHeader } from "../components/section-header";
 
 import type { Metadata } from "next";
 export const metadata: Metadata = {
-  title: "About Padel Leaf",
-  description: "Padel Leaf is an outdoor padel club in Mezher, Bsalim, Mount Lebanon. Three courts, a passionate community, and a focus on the game over everything else.",
+  title: "About Padelleaf",
+  description: "Padelleaf is an outdoor padel club in Mezher, Bsalim, Mount Lebanon. Three courts, a passionate community, and a focus on the game over everything else.",
   openGraph: {
-    title: "About Padel Leaf · Our Story",
+    title: "About Padelleaf · Our Story",
     description: "An outdoor padel club in Mezher, Bsalim built for players who take the game seriously.",
   },
 };
@@ -28,7 +28,7 @@ export default function AboutPage() {
             A club, not a <em className="italic font-medium text-sage">court rental.</em>
           </h1>
           <p className="text-base sm:text-lg text-cream/80 leading-relaxed max-w-2xl">
-            Padel Leaf is a small outdoor club in Mezher, Bsalim. Three courts,
+            Padelleaf is a small outdoor club in Mezher, Bsalim. Three courts,
             run with care. We trust the reader to be smart, and we never shout
             to be heard.
           </p>
@@ -40,7 +40,7 @@ export default function AboutPage() {
         <p className="text-base sm:text-lg text-char-soft leading-relaxed mb-5 sm:mb-6">
           Most padel reservations feel like an obstacle. Phone calls, WhatsApp
           back-and-forth, double-bookings the moment you arrive. We started
-          Padel Leaf because we wanted somewhere we&apos;d actually want to
+          Padelleaf because we wanted somewhere we&apos;d actually want to
           play — and a system that just works.
         </p>
         <p className="text-base sm:text-lg text-char-soft leading-relaxed">

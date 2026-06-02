@@ -1,4 +1,4 @@
-# Padel Leaf — v2 Backlog
+# Padelleaf — v2 Backlog
 
 Everything we explicitly cut from v1. Captured here so we don't forget the good ideas.
 

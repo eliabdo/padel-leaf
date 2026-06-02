@@ -21,23 +21,23 @@ const inter = Inter({
 export const metadata: Metadata = {
   metadataBase: new URL("https://padel-leaf.vercel.app"),
   title: {
-    default: "Padel Leaf — Outdoor padel, played right.",
-    template: "%s · Padel Leaf",
+    default: "Padelleaf — Outdoor padel, played right.",
+    template: "%s · Padelleaf",
   },
   description:
     "Three premium outdoor padel courts in Mezher, Bsalim, Mount Lebanon. Reserve by the hour. A club, not a court rental.",
   openGraph: {
-    title: "Padel Leaf — Outdoor padel, played right.",
+    title: "Padelleaf — Outdoor padel, played right.",
     description:
       "Three premium outdoor padel courts in Mezher, Bsalim, Mount Lebanon.",
     type: "website",
     locale: "en_US",
-    siteName: "Padel Leaf",
+    siteName: "Padelleaf",
   },
   robots: { index: true, follow: true },
   twitter: {
     card: "summary_large_image",
-    title: "Padel Leaf — Outdoor padel, played right.",
+    title: "Padelleaf — Outdoor padel, played right.",
     description: "Three premium outdoor padel courts in Mezher, Bsalim, Mount Lebanon. Reserve by the hour.",
   },
   alternates: { canonical: "https://padel-leaf.vercel.app" },
@@ -61,7 +61,7 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify({
             "@context": "https://schema.org",
             "@type": ["SportsActivityLocation", "LocalBusiness"],
-            "name": "Padel Leaf",
+            "name": "Padelleaf",
             "description": "Three premium outdoor padel courts in Mezher, Bsalim, Mount Lebanon.",
             "url": "https://padel-leaf.vercel.app",
             "address": {

@@ -93,7 +93,7 @@ async function buildPdf(data: {
 
   // ── Header ────────────────────────────────────────────────────────────────
   draw.rect(ML, y, CW, 56, GREEN);
-  draw.text("Padel Leaf",        ML + 16, y - 8,  18, WHITE, bold);
+  draw.text("Padelleaf",        ML + 16, y - 8,  18, WHITE, bold);
   draw.text("Daily Revenue Report", ML + 16, y - 30, 10, rgb(1,1,1));
   draw.textR(data.dateLabel,     ML + CW - 16, y - 8,  13, WHITE, bold);
   draw.textR("Generated " + data.generatedAt, ML + CW - 16, y - 28, 9, rgb(0.9,0.9,0.9));
@@ -223,7 +223,7 @@ async function buildPdf(data: {
   // ── Footer ────────────────────────────────────────────────────────────────
   draw.line(ML, y, ML + CW, 0.5, h("#e5e7eb"));
   y -= 8;
-  draw.text("Padel Leaf · Mezher, Bsalim, Mount Lebanon", ML, y - 8, 8, LGREY);
+  draw.text("Padelleaf · Mezher, Bsalim, Mount Lebanon", ML, y - 8, 8, LGREY);
   draw.textR(data.dateLabel, ML + CW, y - 8, 8, LGREY);
 
   return doc.save();

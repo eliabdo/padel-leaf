@@ -12,7 +12,7 @@ export default function TermsPage() {
         <p className="text-char-soft text-sm mb-10">Last updated: {new Date().toLocaleDateString()}</p>
 
         <Section title="1. About">
-          Padel Leaf operates an outdoor padel club at Mezher, Bsalim, Mount Lebanon.
+          Padelleaf operates an outdoor padel club at Mezher, Bsalim, Mount Lebanon.
           By making a booking on this website you agree to the terms below.
         </Section>
 
@@ -36,7 +36,7 @@ export default function TermsPage() {
         </Section>
 
         <Section title="5. Liability">
-          Play is at your own risk. Padel Leaf is not responsible for injuries
+          Play is at your own risk. Padelleaf is not responsible for injuries
           sustained during play, lost or damaged personal items, or any
           consequences thereof. We recommend personal insurance for regular
           play.

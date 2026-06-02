@@ -6,6 +6,12 @@ import { SiteNav } from "@/app/components/site-nav";
 import { SiteFooter } from "@/app/components/site-footer";
 import { formatDateLong, formatTime } from "@/lib/booking";
 import { formatUsd } from "@/lib/pricing";
+import {
+  PAYMENT_PHONE,
+  PAY_FULL_LABEL,
+  requiresPrepayment,
+  type PaymentMethod,
+} from "@/lib/payment-info";
 
 export const dynamic = "force-dynamic";
 
@@ -28,6 +34,7 @@ export default async function ConfirmationPage({
       durationMinutes: schema.bookings.durationMinutes,
       totalCents: schema.bookings.totalCents,
       status: schema.bookings.status,
+      paymentMethod: schema.bookings.paymentMethod,
       courtName: schema.courts.name,
     })
     .from(schema.bookings)
@@ -39,6 +46,8 @@ export default async function ConfirmationPage({
 
   const startsAt = new Date(booking.startsAt);
   const endsAt = new Date(booking.endsAt);
+  const paymentMethod = (booking.paymentMethod ?? "venue") as PaymentMethod;
+  const needsPrepayment = requiresPrepayment(paymentMethod);
 
   return (
     <>
@@ -57,12 +66,37 @@ export default async function ConfirmationPage({
           </p>
         </div>
 
+        {needsPrepayment && (
+          <div className="bg-[#fffbeb] border-[1.5px] border-[#fcd34d] rounded-2xl p-5 sm:p-7 mb-7 sm:mb-8">
+            <div className="text-[11px] sm:text-xs uppercase tracking-[0.10em] text-[#b45309] font-bold mb-3">
+              Action required · {PAY_FULL_LABEL[paymentMethod]} payment
+            </div>
+            <p className="text-sm sm:text-base text-char-soft mb-4 leading-relaxed">
+              Send <strong className="text-forest-deep">{formatUsd(booking.totalCents)}</strong> via{" "}
+              <strong className="text-forest-deep">{PAY_FULL_LABEL[paymentMethod]}</strong> to:
+            </p>
+            <a
+              href={`tel:${PAYMENT_PHONE.replace(/\s+/g, "")}`}
+              className="block bg-white border border-[#fcd34d] rounded-xl py-3 sm:py-4 px-4 text-center font-mono text-xl sm:text-2xl font-bold text-forest-deep tracking-wide active:bg-[#fffbeb] transition-colors"
+            >
+              {PAYMENT_PHONE}
+            </a>
+            <p className="text-xs sm:text-sm text-char-soft mt-4 leading-relaxed">
+              Please send before your booking time. Reply to the confirmation email with a screenshot of the transfer so we can confirm your slot.
+            </p>
+          </div>
+        )}
+
         <div className="bg-cream border border-forest/15 rounded-2xl p-5 sm:p-8 mb-7 sm:mb-8">
-          <Row label="Court"        value={`Court · ${booking.courtName}`} />
-          <Row label="Date"         value={formatDateLong(startsAt)} />
-          <Row label="Time"         value={`${formatTime(startsAt)} — ${formatTime(endsAt)}`} />
-          <Row label="Duration"     value={`${booking.durationMinutes} minutes`} />
-          <Row label="Total (pay at venue)" value={formatUsd(booking.totalCents)} />
+          <Row label="Court"    value={`Court · ${booking.courtName}`} />
+          <Row label="Date"     value={formatDateLong(startsAt)} />
+          <Row label="Time"     value={`${formatTime(startsAt)} — ${formatTime(endsAt)}`} />
+          <Row label="Duration" value={`${booking.durationMinutes} minutes`} />
+          <Row
+            label={needsPrepayment ? "Total" : "Total (pay at venue)"}
+            value={formatUsd(booking.totalCents)}
+          />
+          <Row label="Payment" value={PAY_FULL_LABEL[paymentMethod]} />
         </div>
 
         <div className="flex flex-col sm:flex-row sm:flex-wrap gap-3 sm:justify-center mb-10 sm:mb-12">

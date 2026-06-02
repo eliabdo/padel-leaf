@@ -53,14 +53,14 @@ export function SiteNav() {
             />
             <Image
               src="/logo2.png"
-              alt="Padel Leaf"
+              alt="Padelleaf"
               width={40}
               height={40}
               className="w-9 h-9 sm:w-10 sm:h-10 rounded-full border border-sage/60 group-hover:border-forest/60 transition-colors duration-200"
             />
           </div>
           <span className="font-serif font-bold text-base sm:text-lg text-forest-deep group-hover:text-forest transition-colors duration-200">
-            Padel Leaf
+            Padelleaf
           </span>
         </Link>
 

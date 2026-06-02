@@ -5,10 +5,10 @@ import { SectionHeader } from "../components/section-header";
 import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Find Us",
-  description: "Directions to Padel Leaf in Mezher, Bsalim, Mount Lebanon. Easy access, free parking on site.",
+  description: "Directions to Padelleaf in Mezher, Bsalim, Mount Lebanon. Easy access, free parking on site.",
   openGraph: {
-    title: "Find Padel Leaf · Mezher, Bsalim",
-    description: "Directions to Padel Leaf in Mezher, Bsalim. Easy access with free parking.",
+    title: "Find Padelleaf · Mezher, Bsalim",
+    description: "Directions to Padelleaf in Mezher, Bsalim. Easy access with free parking.",
   },
 };
 
@@ -68,7 +68,7 @@ export default function FindUsPage() {
             allowFullScreen
             loading="lazy"
             referrerPolicy="no-referrer-when-downgrade"
-            title="Padel Leaf · Mezher, Bsalim"
+            title="Padelleaf · Mezher, Bsalim"
           />
         </div>
       </section>

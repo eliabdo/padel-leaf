@@ -45,7 +45,7 @@ export default async function Home() {
         <div className="max-w-7xl mx-auto px-5 sm:px-6 py-20 sm:py-28 md:py-36 grid md:grid-cols-[1.2fr_1fr] gap-10 md:gap-16 items-center relative">
           <div className="order-2 md:order-1">
             <div className="text-[11px] sm:text-xs font-semibold tracking-[0.18em] uppercase text-sage pb-4 sm:pb-5">
-              — Est. Padel Leaf · Mezher · Bsalim
+              — Est. Padelleaf · Mezher · Bsalim
             </div>
             <h1 className="text-[2.5rem] leading-[1.05] sm:text-5xl md:text-7xl mb-5 sm:mb-6">
               Outdoor padel,<br />
@@ -68,7 +68,7 @@ export default async function Home() {
             <div className="aspect-square rounded-full overflow-hidden flex items-center justify-center">
               <Image
                 src="/Padelleaf Club Logo-03.png"
-                alt="Padel Leaf crest"
+                alt="Padelleaf crest"
                 width={460}
                 height={460}
                 className="object-cover w-[200%] h-[200%]"
@@ -95,7 +95,7 @@ export default async function Home() {
       <section className="max-w-7xl mx-auto px-5 sm:px-6 py-16 sm:py-24">
         <SectionHeader number="01" label="The Club" title="A club, not a" italic="court rental." />
         <p className="max-w-2xl text-base sm:text-lg text-char-soft leading-relaxed">
-          Padel Leaf is built around three things: great courts, great people,
+          Padelleaf is built around three things: great courts, great people,
           and a booking experience that doesn&apos;t make you want to throw your
           phone. We trust the reader to be smart, and we never shout to be heard.
         </p>

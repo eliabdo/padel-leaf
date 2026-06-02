@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   title: "Reserve a Court",
   description: "Book an outdoor padel court in Mezher, Bsalim online. Choose your date, court, and duration — pay at the venue. 3 courts, 30-min slots, easy cancellation.",
   openGraph: {
-    title: "Reserve a Padel Court · Padel Leaf",
+    title: "Reserve a Padel Court · Padelleaf",
     description: "Book online in seconds. Three outdoor courts in Mezher, Bsalim — pay at the venue.",
   },
 };
@@ -82,9 +82,6 @@ export default async function BookPage() {
           <h1 className="text-3xl sm:text-4xl md:text-5xl mb-3">
             Pick a date, court, <em className="italic font-medium text-sage">and play.</em>
           </h1>
-          <p className="text-cream/75 max-w-md">
-            $20 / hour, paid at the venue. Cancel up to 24 hours before — free.
-          </p>
         </div>
       </header>
 

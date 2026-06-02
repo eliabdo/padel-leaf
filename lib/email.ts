@@ -2,7 +2,7 @@
 //
 // Configuration via env vars (added to .env.local + Vercel):
 //   RESEND_API_KEY        - re_xxx... from https://resend.com/api-keys
-//   BOOKING_EMAIL_FROM    - "Padel Leaf <bookings@padelleafclub.com>"
+//   BOOKING_EMAIL_FROM    - "Padelleaf <bookings@padelleaf.com>"
 //   BOOKING_EMAIL_BCC     - optional, BCC every confirmation here (Eli's inbox)
 //
 // If RESEND_API_KEY is unset, sends are skipped silently (lets dev/preview
@@ -10,6 +10,7 @@
 // of an email error.
 
 import { formatUsd, formatLbp } from "@/lib/pricing";
+import { PAYMENT_PHONE, PAY_FULL_LABEL, requiresPrepayment, type PaymentMethod } from "@/lib/payment-info";
 
 export type BookingEmailPayload = {
   bookingId: number;
@@ -20,7 +21,7 @@ export type BookingEmailPayload = {
   endsAt: Date;
   durationMinutes: number;
   totalCents: number;
-  paymentMethod: "venue" | "whish" | "omt";
+  paymentMethod: PaymentMethod;
 };
 
 const TZ = "Asia/Beirut";
@@ -37,11 +38,43 @@ function fmtTime(d: Date): string {
   });
 }
 
-const PAY_LABEL: Record<BookingEmailPayload["paymentMethod"], string> = {
+// Compact label used inside the booking summary table.
+const PAY_LABEL: Record<PaymentMethod, string> = {
   venue: "Pay at the venue",
   whish: "Whish",
   omt:   "OMT",
 };
+
+function buildPaymentInstructionsHtml(p: BookingEmailPayload): string {
+  if (!requiresPrepayment(p.paymentMethod)) return "";
+  const total = formatUsd(p.totalCents);
+  const method = PAY_FULL_LABEL[p.paymentMethod];
+  return `
+      <div style="margin-top:24px;padding:18px 20px;background:#fffbeb;border:1.5px solid #fcd34d;border-radius:10px;font-size:14px;line-height:1.55;color:#374151;">
+        <div style="font-size:11px;letter-spacing:0.10em;text-transform:uppercase;color:#b45309;font-weight:700;margin-bottom:8px;">Action required · ${method} payment</div>
+        <div style="margin-bottom:10px;">
+          Send <strong style="color:#0d2010;">${total}</strong> via <strong style="color:#0d2010;">${method}</strong> to:
+        </div>
+        <div style="background:#fff;border:1px solid #fcd34d;border-radius:8px;padding:12px 14px;font-family:ui-monospace,monospace;font-size:18px;font-weight:700;color:#0d2010;text-align:center;letter-spacing:0.02em;">
+          ${PAYMENT_PHONE}
+        </div>
+        <div style="margin-top:12px;font-size:13px;color:#6b7280;">
+          Please send before your booking time and reply to this email with a screenshot of the transfer so we can confirm your slot.
+        </div>
+      </div>`;
+}
+
+function buildPaymentInstructionsText(p: BookingEmailPayload): string[] {
+  if (!requiresPrepayment(p.paymentMethod)) return [];
+  const total = formatUsd(p.totalCents);
+  const method = PAY_FULL_LABEL[p.paymentMethod];
+  return [
+    ``,
+    `── ACTION REQUIRED · ${method.toUpperCase()} PAYMENT ──`,
+    `Send ${total} via ${method} to:  ${PAYMENT_PHONE}`,
+    `Please send before your booking time and reply with a screenshot to confirm your slot.`,
+  ];
+}
 
 function escapeHtml(s: string): string {
   return s
@@ -63,7 +96,7 @@ function buildHtml(p: BookingEmailPayload): string {
   return `<!DOCTYPE html><html><body style="margin:0;background:#f4f7f5;font-family:system-ui,-apple-system,Segoe UI,sans-serif;color:#0d2010;">
   <div style="max-width:560px;margin:0 auto;padding:32px 16px;">
     <div style="background:#0d2010;color:#fff;padding:28px 28px 22px;border-radius:14px 14px 0 0;">
-      <div style="font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:#86efac;margin-bottom:8px;">Padel Leaf Club</div>
+      <div style="font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:#86efac;margin-bottom:8px;">Padelleaf Club</div>
       <h1 style="margin:0;font-family:Georgia,serif;font-size:24px;font-weight:600;letter-spacing:-0.01em;">Booking confirmed</h1>
       <div style="font-size:14px;color:rgba(255,255,255,0.78);margin-top:6px;">Booking #${p.bookingId}</div>
     </div>
@@ -91,7 +124,7 @@ function buildHtml(p: BookingEmailPayload): string {
         <tr><td style="padding:9px 0;color:#6b7280;border-top:1px solid rgba(22,163,74,0.08);">Payment</td>
             <td style="padding:9px 0;font-weight:600;border-top:1px solid rgba(22,163,74,0.08);">${PAY_LABEL[p.paymentMethod]}</td></tr>
       </table>
-
+${buildPaymentInstructionsHtml(p)}
       <div style="margin-top:24px;padding:14px 16px;background:#fafdfb;border:1px solid rgba(22,163,74,0.10);border-radius:10px;font-size:13px;line-height:1.55;color:#374151;">
         <strong style="color:#0d2010;">Cancellation policy.</strong>
         Free cancellation up to 24 hours before. Same-day cancellations and
@@ -100,13 +133,13 @@ function buildHtml(p: BookingEmailPayload): string {
 
       <p style="margin:24px 0 4px;font-size:14px;line-height:1.55;color:#374151;">
         See you on court.<br/>
-        <strong style="color:#0d2010;">Padel Leaf Club</strong><br/>
+        <strong style="color:#0d2010;">Padelleaf Club</strong><br/>
         Mezher, Bsalim, Mount Lebanon
       </p>
     </div>
 
     <div style="text-align:center;font-size:11px;color:#9ca3af;margin-top:18px;">
-      You received this email because you booked a court at Padel Leaf Club.
+      You received this email because you booked a court at Padelleaf Club.
     </div>
   </div>
 </body></html>`;
@@ -116,7 +149,7 @@ function buildText(p: BookingEmailPayload): string {
   const dateStr = fmtDate(p.startsAt);
   const timeStr = `${fmtTime(p.startsAt)} - ${fmtTime(p.endsAt)}`;
   return [
-    `PADEL LEAF CLUB - Booking confirmed (#${p.bookingId})`,
+    `PADELLEAF CLUB - Booking confirmed (#${p.bookingId})`,
     ``,
     `Hi ${p.customerName},`,
     `Your court is booked. Details:`,
@@ -127,12 +160,13 @@ function buildText(p: BookingEmailPayload): string {
     `  Duration: ${p.durationMinutes} min`,
     `  Total:    ${formatUsd(p.totalCents)}  /  ${formatLbp(p.totalCents)}`,
     `  Payment:  ${PAY_LABEL[p.paymentMethod]}`,
+    ...buildPaymentInstructionsText(p),
     ``,
     `Cancellation policy: free cancellation up to 24 hours before.`,
     `Same-day cancellations and no-shows are charged the full fee.`,
     ``,
     `See you on court.`,
-    `Padel Leaf Club, Mezher, Bsalim, Mount Lebanon`,
+    `Padelleaf Club, Mezher, Bsalim, Mount Lebanon`,
   ].join("\n");
 }
 
@@ -161,7 +195,7 @@ export async function sendBookingConfirmation(p: BookingEmailPayload): Promise<v
         from,
         to: [p.customerEmail],
         bcc: bcc ? [bcc] : undefined,
-        subject: `Booking confirmed — Padel Leaf · ${p.courtName} · ${fmtDate(p.startsAt)} ${fmtTime(p.startsAt)}`,
+        subject: `Booking confirmed — Padelleaf · ${p.courtName} · ${fmtDate(p.startsAt)} ${fmtTime(p.startsAt)}`,
         html: buildHtml(p),
         text: buildText(p),
       }),

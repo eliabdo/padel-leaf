@@ -106,7 +106,7 @@ export default function BookingScreen({ navigation, route }: Props) {
       >
         {/* Hero */}
         <View style={styles.hero}>
-          <Text style={styles.heroLabel}>PADEL LEAF</Text>
+          <Text style={styles.heroLabel}>PADELLEAF</Text>
           <Text style={styles.heroTitle}>Reserve a Court</Text>
           <Text style={styles.heroSub}>Mezher, Bsalim · Outdoor · 3 courts</Text>
         </View>

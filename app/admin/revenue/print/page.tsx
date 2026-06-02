@@ -115,7 +115,7 @@ export default async function RevenuePrintPage({
         {/* Header */}
         <div className="header">
           <div className="header-left">
-            <h1>Padel Leaf</h1>
+            <h1>Padelleaf</h1>
             <p>Daily Revenue Report</p>
           </div>
           <div className="header-right">
@@ -218,7 +218,7 @@ export default async function RevenuePrintPage({
 
         {/* Footer */}
         <div className="footer">
-          <span>Padel Leaf · Mezher, Bsalim, Mount Lebanon</span>
+          <span>Padelleaf · Mezher, Bsalim, Mount Lebanon</span>
           <span>padel-leaf.vercel.app</span>
           <span>{dateLabel}</span>
         </div>

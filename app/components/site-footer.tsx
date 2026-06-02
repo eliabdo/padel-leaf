@@ -10,13 +10,13 @@ export function SiteFooter() {
             <div className="flex items-center gap-3 mb-5">
               <Image
                 src="/logo2.png"
-                alt="Padel Leaf"
+                alt="Padelleaf"
                 width={48}
                 height={48}
                 className="rounded-full border border-sage"
               />
               <span className="font-serif font-bold text-xl text-cream">
-                Padel Leaf
+                Padelleaf
               </span>
             </div>
             <p className="text-sm leading-relaxed text-cream/65 max-w-xs">
@@ -31,7 +31,7 @@ export function SiteFooter() {
               Visit
             </h4>
             <ul className="space-y-2 text-sm">
-              <li>Padel Leaf Club</li>
+              <li>Padelleaf Club</li>
               <li>Mezher, Bsalim</li>
               <li>Mount Lebanon</li>
               <li>Open daily, 8am — midnight</li>
@@ -62,7 +62,7 @@ export function SiteFooter() {
         </div>
 
         <div className="pt-6 flex flex-col sm:flex-row sm:flex-wrap items-start sm:items-center justify-between gap-3 sm:gap-4 text-xs text-cream/50">
-          <div>© {new Date().getFullYear()} Padel Leaf Club · See you at the courts.</div>
+          <div>© {new Date().getFullYear()} Padelleaf Club · See you at the courts.</div>
           <div className="flex gap-4">
             <Link href="/terms"   className="hover:text-sage transition">Terms</Link>
             <Link href="/privacy" className="hover:text-sage transition">Privacy</Link>

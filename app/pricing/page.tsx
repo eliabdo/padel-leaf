@@ -9,9 +9,9 @@ import { priceForDuration, formatUsd, FALLBACK_HOURLY_CENTS } from "@/lib/pricin
 import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Pricing",
-  description: "Transparent padel court pricing at Padel Leaf. Hourly rate, pay at the venue. No hidden fees, no membership required.",
+  description: "Transparent padel court pricing at Padelleaf. Hourly rate, pay at the venue. No hidden fees, no membership required.",
   openGraph: {
-    title: "Court Pricing · Padel Leaf",
+    title: "Court Pricing · Padelleaf",
     description: "Simple hourly pricing. Pay at the venue — no hidden fees, no membership required.",
   },
 };

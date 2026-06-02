@@ -29,13 +29,13 @@ export async function GET(
   const booking = rows[0];
   if (!booking) return new NextResponse("Not found", { status: 404 });
 
-  const cal = ical({ name: "Padel Leaf" });
+  const cal = ical({ name: "Padelleaf" });
   cal.createEvent({
     start: new Date(booking.startsAt),
     end: new Date(booking.endsAt),
-    summary: `Padel Leaf · Court ${booking.courtName}`,
+    summary: `Padelleaf · Court ${booking.courtName}`,
     description: `Reservation #${booking.id} for ${booking.customerName}. Pay at the venue on arrival.`,
-    location: "Padel Leaf, Mezher, Bsalim, Mount Lebanon",
+    location: "Padelleaf, Mezher, Bsalim, Mount Lebanon",
     url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://padel-leaf.vercel.app",
   });
 
