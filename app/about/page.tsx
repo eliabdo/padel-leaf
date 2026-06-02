@@ -5,10 +5,10 @@ import { SectionHeader } from "../components/section-header";
 import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "About Padelleaf",
-  description: "Padelleaf is an outdoor padel club in Mezher, Bsalim, Mount Lebanon. Three courts, a passionate community, and a focus on the game over everything else.",
+  description: "Padelleaf is an outdoor padel club in Mezher, Mount Lebanon. Three courts, a passionate community, and a focus on the game over everything else.",
   openGraph: {
     title: "About Padelleaf · Our Story",
-    description: "An outdoor padel club in Mezher, Bsalim built for players who take the game seriously.",
+    description: "An outdoor padel club in Mezher built for players who take the game seriously.",
   },
 };
 
@@ -28,7 +28,7 @@ export default function AboutPage() {
             A club, not a <em className="italic font-medium text-sage">court rental.</em>
           </h1>
           <p className="text-base sm:text-lg text-cream/80 leading-relaxed max-w-2xl">
-            Padelleaf is a small outdoor club in Mezher, Bsalim. Three courts,
+            Padelleaf is a small outdoor club in Mezher. Three courts,
             run with care. We trust the reader to be smart, and we never shout
             to be heard.
           </p>
@@ -63,9 +63,9 @@ export default function AboutPage() {
       </section>
 
       <section className="max-w-4xl mx-auto px-5 sm:px-6 py-14 sm:py-20">
-        <SectionHeader number="03" label="Where" title="Mezher, Bsalim," italic="Mount Lebanon." />
+        <SectionHeader number="03" label="Where" title="Mezher," italic="Mount Lebanon." />
         <p className="text-base sm:text-lg text-char-soft leading-relaxed">
-          We&apos;re a 5-minute drive from the Bsalim main road. Free parking,
+          We&apos;re a 5-minute drive from the main road. Free parking,
           open daily from 8am to midnight. The full address and a map live on our{" "}
           <a href="/find-us" className="text-forest underline underline-offset-4">find us page</a>.
         </p>

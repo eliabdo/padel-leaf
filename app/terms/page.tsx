@@ -12,7 +12,7 @@ export default function TermsPage() {
         <p className="text-char-soft text-sm mb-10">Last updated: {new Date().toLocaleDateString()}</p>
 
         <Section title="1. About">
-          Padelleaf operates an outdoor padel club at Mezher, Bsalim, Mount Lebanon.
+          Padelleaf operates an outdoor padel club at Mezher, Mount Lebanon.
           By making a booking on this website you agree to the terms below.
         </Section>
 

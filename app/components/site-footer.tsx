@@ -20,7 +20,7 @@ export function SiteFooter() {
               </span>
             </div>
             <p className="text-sm leading-relaxed text-cream/65 max-w-xs">
-              Three outdoor padel courts in Mezher, Bsalim. Built around three
+              Three outdoor padel courts in Mezher. Built around three
               things: great courts, great people, and a booking experience
               that doesn&apos;t make you want to throw your phone.
             </p>
@@ -32,7 +32,7 @@ export function SiteFooter() {
             </h4>
             <ul className="space-y-2 text-sm">
               <li>Padelleaf Club</li>
-              <li>Mezher, Bsalim</li>
+              <li>Mezher</li>
               <li>Mount Lebanon</li>
               <li>Open daily, 8am — midnight</li>
             </ul>

@@ -14,10 +14,10 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Reserve a Court",
-  description: "Book an outdoor padel court in Mezher, Bsalim online. Choose your date, court, and duration — pay at the venue. 3 courts, 30-min slots, easy cancellation.",
+  description: "Book an outdoor padel court in Mezher online. Choose your date, court, and duration — pay at the venue. 3 courts, 30-min slots, easy cancellation.",
   openGraph: {
     title: "Reserve a Padel Court · Padelleaf",
-    description: "Book online in seconds. Three outdoor courts in Mezher, Bsalim — pay at the venue.",
+    description: "Book online in seconds. Three outdoor courts in Mezher — pay at the venue.",
   },
 };
 

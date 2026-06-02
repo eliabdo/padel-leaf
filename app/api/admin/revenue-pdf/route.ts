@@ -223,7 +223,7 @@ async function buildPdf(data: {
   // ── Footer ────────────────────────────────────────────────────────────────
   draw.line(ML, y, ML + CW, 0.5, h("#e5e7eb"));
   y -= 8;
-  draw.text("Padelleaf · Mezher, Bsalim, Mount Lebanon", ML, y - 8, 8, LGREY);
+  draw.text("Padelleaf · Mezher, Mount Lebanon", ML, y - 8, 8, LGREY);
   draw.textR(data.dateLabel, ML + CW, y - 8, 8, LGREY);
 
   return doc.save();

@@ -25,11 +25,11 @@ export const metadata: Metadata = {
     template: "%s · Padelleaf",
   },
   description:
-    "Three premium outdoor padel courts in Mezher, Bsalim, Mount Lebanon. Reserve by the hour. A club, not a court rental.",
+    "Three premium outdoor padel courts in Mezher, Mount Lebanon. Reserve by the hour. A club, not a court rental.",
   openGraph: {
     title: "Padelleaf — Outdoor padel, played right.",
     description:
-      "Three premium outdoor padel courts in Mezher, Bsalim, Mount Lebanon.",
+      "Three premium outdoor padel courts in Mezher, Mount Lebanon.",
     type: "website",
     locale: "en_US",
     siteName: "Padelleaf",
@@ -38,7 +38,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Padelleaf — Outdoor padel, played right.",
-    description: "Three premium outdoor padel courts in Mezher, Bsalim, Mount Lebanon. Reserve by the hour.",
+    description: "Three premium outdoor padel courts in Mezher, Mount Lebanon. Reserve by the hour.",
   },
   alternates: { canonical: "https://padel-leaf.vercel.app" },
 };
@@ -62,12 +62,12 @@ export default function RootLayout({
             "@context": "https://schema.org",
             "@type": ["SportsActivityLocation", "LocalBusiness"],
             "name": "Padelleaf",
-            "description": "Three premium outdoor padel courts in Mezher, Bsalim, Mount Lebanon.",
+            "description": "Three premium outdoor padel courts in Mezher, Mount Lebanon.",
             "url": "https://padel-leaf.vercel.app",
             "address": {
               "@type": "PostalAddress",
               "streetAddress": "Mezher",
-              "addressLocality": "Bsalim",
+              "addressLocality": "Mezher",
               "addressRegion": "Mount Lebanon",
               "addressCountry": "LB"
             },

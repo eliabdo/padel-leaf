@@ -6,10 +6,10 @@ import { ContactForm } from "./contact-form";
 import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Contact Us",
-  description: "Get in touch with Padelleaf. Reach us by phone, WhatsApp, or email. Located in Mezher, Bsalim, Mount Lebanon.",
+  description: "Get in touch with Padelleaf. Reach us by phone, WhatsApp, or email. Located in Mezher, Mount Lebanon.",
   openGraph: {
     title: "Contact Padelleaf",
-    description: "Reach us by phone, WhatsApp, or email. Located in Mezher, Bsalim, Mount Lebanon.",
+    description: "Reach us by phone, WhatsApp, or email. Located in Mezher, Mount Lebanon.",
   },
 };
 

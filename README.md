@@ -1,6 +1,6 @@
 # Padelleaf
 
-Outdoor padel club website + booking system for **Padelleaf** — three courts in Mezher, Bsalim, Mount Lebanon.
+Outdoor padel club website + booking system for **Padelleaf** — three courts in Mezher, Mount Lebanon.
 
 Built with Next.js 16 (App Router), Tailwind v4, Neon Postgres, Drizzle ORM, and a tiny custom admin auth (bcrypt + cookie session — no NextAuth needed for one user).
 

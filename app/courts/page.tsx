@@ -6,10 +6,10 @@ import { SectionHeader } from "../components/section-header";
 import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Our Courts",
-  description: "Three premium outdoor padel courts — Laurel, Oak, and Olive — in Mezher, Bsalim, Mount Lebanon. Synthetic clay surface, LED lighting, open year-round.",
+  description: "Three premium outdoor padel courts — Laurel, Oak, and Olive — in Mezher, Mount Lebanon. Synthetic clay surface, LED lighting, open year-round.",
   openGraph: {
     title: "Our Padel Courts · Padelleaf",
-    description: "Laurel, Oak, and Olive — three outdoor courts with synthetic clay surface and LED lights in Mezher, Bsalim.",
+    description: "Laurel, Oak, and Olive — three outdoor courts with synthetic clay surface and LED lights in Mezher.",
   },
 };
 

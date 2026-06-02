@@ -35,7 +35,7 @@ export async function GET(
     end: new Date(booking.endsAt),
     summary: `Padelleaf · Court ${booking.courtName}`,
     description: `Reservation #${booking.id} for ${booking.customerName}. Pay at the venue on arrival.`,
-    location: "Padelleaf, Mezher, Bsalim, Mount Lebanon",
+    location: "Padelleaf, Mezher, Mount Lebanon",
     url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://padel-leaf.vercel.app",
   });
 

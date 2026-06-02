@@ -7,7 +7,7 @@ const ITEMS = [
   "Three outdoor courts",
   "Open 8am — midnight daily",
   "Pay at the venue",
-  "Mezher · Bsalim",
+  "Mezher",
 ];
 
 export function Marquee() {

@@ -218,7 +218,7 @@ export default async function RevenuePrintPage({
 
         {/* Footer */}
         <div className="footer">
-          <span>Padelleaf · Mezher, Bsalim, Mount Lebanon</span>
+          <span>Padelleaf · Mezher, Mount Lebanon</span>
           <span>padel-leaf.vercel.app</span>
           <span>{dateLabel}</span>
         </div>

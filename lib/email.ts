@@ -134,7 +134,7 @@ ${buildPaymentInstructionsHtml(p)}
       <p style="margin:24px 0 4px;font-size:14px;line-height:1.55;color:#374151;">
         See you on court.<br/>
         <strong style="color:#0d2010;">Padelleaf Club</strong><br/>
-        Mezher, Bsalim, Mount Lebanon
+        Mezher, Mount Lebanon
       </p>
     </div>
 
@@ -166,7 +166,7 @@ function buildText(p: BookingEmailPayload): string {
     `Same-day cancellations and no-shows are charged the full fee.`,
     ``,
     `See you on court.`,
-    `Padelleaf Club, Mezher, Bsalim, Mount Lebanon`,
+    `Padelleaf Club, Mezher, Mount Lebanon`,
   ].join("\n");
 }
 

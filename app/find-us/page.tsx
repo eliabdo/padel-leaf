@@ -5,10 +5,10 @@ import { SectionHeader } from "../components/section-header";
 import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Find Us",
-  description: "Directions to Padelleaf in Mezher, Bsalim, Mount Lebanon. Easy access, free parking on site.",
+  description: "Directions to Padelleaf in Mezher, Mount Lebanon. Easy access, free parking on site.",
   openGraph: {
-    title: "Find Padelleaf · Mezher, Bsalim",
-    description: "Directions to Padelleaf in Mezher, Bsalim. Easy access with free parking.",
+    title: "Find Padelleaf · Mezher",
+    description: "Directions to Padelleaf in Mezher. Easy access with free parking.",
   },
 };
 
@@ -18,9 +18,9 @@ export const metadata: Metadata = {
 const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "9610000000";
 const WHATSAPP_LINK = `https://wa.me/${WHATSAPP_NUMBER}`;
 
-// Google Maps embed for Mezher, Bsalim — swap for your exact pin when you have one
+// Google Maps embed for Mezher — swap for your exact pin when you have one
 const MAPS_EMBED =
-  "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3308.0!2d35.6!3d33.92!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2sMezher%2C%20Bsalim!5e0!3m2!1sen!2slb!4v1700000000000!5m2!1sen!2slb";
+  "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3308.0!2d35.6!3d33.92!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2sMezher!5e0!3m2!1sen!2slb!4v1700000000000!5m2!1sen!2slb";
 
 export default function FindUsPage() {
   return (
@@ -33,7 +33,7 @@ export default function FindUsPage() {
             — Find Us
           </div>
           <h1 className="text-[2.25rem] sm:text-5xl md:text-6xl leading-[1.08] mb-5 sm:mb-6">
-            Mezher, Bsalim. <em className="italic font-medium text-sage">Five minutes off the main road.</em>
+            Mezher. <em className="italic font-medium text-sage">Five minutes off the main road.</em>
           </h1>
         </div>
       </header>
@@ -43,7 +43,7 @@ export default function FindUsPage() {
           <SectionHeader number="01" label="Visit" title="Open daily." />
 
           <div className="space-y-5 sm:space-y-6 text-base sm:text-lg">
-            <Detail label="Address" value="Mezher, Bsalim, Mount Lebanon, Lebanon" />
+            <Detail label="Address" value="Mezher, Mount Lebanon, Lebanon" />
             <Detail label="Hours"   value="8:00 — 24:00, every day" />
             <Detail label="Parking" value="Free, on-site" />
             <Detail label="Surface" value="Three outdoor courts, synthetic turf" />
@@ -68,7 +68,7 @@ export default function FindUsPage() {
             allowFullScreen
             loading="lazy"
             referrerPolicy="no-referrer-when-downgrade"
-            title="Padelleaf · Mezher, Bsalim"
+            title="Padelleaf · Mezher"
           />
         </div>
       </section>

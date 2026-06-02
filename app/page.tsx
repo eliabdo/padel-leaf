@@ -45,14 +45,14 @@ export default async function Home() {
         <div className="max-w-7xl mx-auto px-5 sm:px-6 py-20 sm:py-28 md:py-36 grid md:grid-cols-[1.2fr_1fr] gap-10 md:gap-16 items-center relative">
           <div className="order-2 md:order-1">
             <div className="text-[11px] sm:text-xs font-semibold tracking-[0.18em] uppercase text-sage pb-4 sm:pb-5">
-              — Est. Padelleaf · Mezher · Bsalim
+              — Est. Padelleaf · Mezher
             </div>
             <h1 className="text-[2.5rem] leading-[1.05] sm:text-5xl md:text-7xl mb-5 sm:mb-6">
               Outdoor padel,<br />
               <em className="italic font-medium text-sage">played right.</em>
             </h1>
             <p className="text-base sm:text-lg leading-relaxed text-cream/80 max-w-md mb-7 sm:mb-9">
-              Three premium outdoor courts in the heart of Bsalim. Reserve by the
+              Three premium outdoor courts in the heart of Mezher. Reserve by the
               hour, pay at the venue, and play the way it should be.
             </p>
             <div className="flex flex-wrap gap-3">
@@ -152,7 +152,7 @@ export default async function Home() {
             See you <em className="italic font-medium text-sage">at the courts.</em>
           </h2>
           <p className="text-cream/75 text-base sm:text-lg max-w-md mx-auto mb-7 sm:mb-9">
-            Mezher · Bsalim · Mount Lebanon. Open daily 8am — midnight.
+            Mezher · Mount Lebanon. Open daily 8am — midnight.
           </p>
           <Link href="/book" className="btn btn-primary bg-cream text-forest hover:bg-sage">
             Reserve a court →

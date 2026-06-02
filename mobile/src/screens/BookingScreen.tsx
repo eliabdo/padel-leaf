@@ -108,7 +108,7 @@ export default function BookingScreen({ navigation, route }: Props) {
         <View style={styles.hero}>
           <Text style={styles.heroLabel}>PADELLEAF</Text>
           <Text style={styles.heroTitle}>Reserve a Court</Text>
-          <Text style={styles.heroSub}>Mezher, Bsalim · Outdoor · 3 courts</Text>
+          <Text style={styles.heroSub}>Mezher · Outdoor · 3 courts</Text>
         </View>
 
         {/* DATE */}
